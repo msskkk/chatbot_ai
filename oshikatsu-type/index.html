@@ -4,145 +4,204 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>あなたの推し活タイプ診断</title>
-<meta name="description" content="布教型？箱推し型？ガチ恋型？あなたの推し活スタイルを診断！">
-<meta property="og:title" content="あなたの推し活タイプ診断">
-<meta property="og:description" content="あなたの推し活スタイルを診断！">
+<meta name="description" content="あなたの推し活タイプを診断！布教マスター？ガチ恋？考察オタク？">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#a18cd1 0%,#fbc2eb 100%);display:flex;justify-content:center;align-items:center;padding:20px}
-.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#a18cd1,#fbc2eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
-.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
-.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
-.btn-primary{background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(161,140,209,.4)}
-.btn-option{background:#f8f0ff;color:#333;border:2px solid #eedeff;text-align:left;padding:14px 18px}
-.btn-option:hover{border-color:#a18cd1;background:#f3e8ff}
-.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#a18cd1,#fbc2eb);border-radius:3px;transition:width .3s ease}
-.q-number{font-size:.85em;color:#999;margin-bottom:8px}
-.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
-.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
-.result-center{text-align:center}
-.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
-.advice-box{background:#f8f0ff;border-radius:12px;padding:16px;margin:15px 0}
-.advice-box h3{font-size:.95em;color:#9b59b6;margin-bottom:8px}
-.advice-box p{font-size:.9em;color:#555;line-height:1.6}
-.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
-.trait-tag{background:#f8f0ff;color:#9b59b6;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
-.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
-.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
-.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
-.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#a18cd1;background:#f3e8ff}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#9b59b6}
+body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#fff0f5 0%,#f8e8ff 50%,#e8f0ff 100%);display:flex;justify-content:center;align-items:flex-start;padding:20px}
+.container{max-width:520px;width:100%;margin:0 auto}
+.hero-card,.quiz-card,.result-card{background:#fff;border-radius:28px;box-shadow:0 8px 40px rgba(233,30,99,.15);margin-bottom:16px;overflow:hidden}
+.hero-card{padding:36px 28px 28px;position:relative}
+.char-emoji{font-size:4em;text-align:center;display:block;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.badge{display:inline-block;background:linear-gradient(135deg,#f093fb,#e91e63);color:#fff;font-size:.7em;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:12px}
+h1{font-size:1.55em;font-weight:900;color:#2D0030;line-height:1.4;margin-bottom:8px}
+.subtitle{color:#888;font-size:.88em;line-height:1.6;margin-bottom:24px}
+.start-btn{display:block;width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#f093fb 0%,#e91e63 100%);color:#fff;font-family:inherit;font-size:1.1em;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(233,30,99,.4)}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(233,30,99,.5)}
+.hint{text-align:center;font-size:.78em;color:#bbb;margin-top:12px}
+.quiz-card{padding:28px 24px;display:none;animation:slideUp .35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card.active,.result-card.active{display:block}
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.progress-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f093fb,#e91e63);border-radius:4px;transition:width .4s ease}
+.q-count{font-size:.8em;color:#aaa;white-space:nowrap;font-weight:700}
+.q-label{display:inline-block;background:#fff0f5;color:#e91e63;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;border:1.5px solid #fce4ec}
+.question{font-size:1.18em;font-weight:700;color:#2D0030;line-height:1.65;margin-bottom:22px}
+.opt-btn{display:flex;align-items:center;width:100%;padding:14px 18px;border:2px solid #f0f0f0;border-radius:14px;background:#fafafa;color:#333;font-family:inherit;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px;text-align:left;gap:10px}
+.opt-btn::before{content:'';display:block;width:22px;height:22px;min-width:22px;border:2.5px solid #ddd;border-radius:50%;transition:all .2s}
+.opt-btn:hover{border-color:#e91e63;background:#fff0f5;color:#e91e63}
+.opt-btn:hover::before{border-color:#e91e63;background:#e91e63}
+.result-card{display:none;animation:slideUp .35s ease}
+.result-hero{padding:32px 24px 24px;text-align:center}
+.result-emoji{font-size:4.5em;line-height:1;margin-bottom:8px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.result-label{font-size:.8em;font-weight:700;letter-spacing:.1em;margin-bottom:6px;color:rgba(255,255,255,.8)}
+.result-name{font-size:1.6em;font-weight:900;color:#fff;margin-bottom:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.tag{padding:5px 14px;border-radius:20px;font-size:.78em;font-weight:700;background:rgba(255,255,255,.25);color:#fff}
+.result-body{padding:16px 24px 24px}
+.desc-box{background:#fafafa;border-radius:16px;padding:18px;margin-bottom:16px;font-size:.92em;line-height:1.85;color:#444}
+.info-box{background:linear-gradient(135deg,#fff0f5,#f8e8ff);border-radius:16px;padding:18px;margin-bottom:16px;border:1.5px solid #fce4ec}
+.info-box h3{font-size:.9em;font-weight:700;color:#e91e63;margin-bottom:10px}
+.info-box p{font-size:.88em;color:#555;line-height:1.7}
+.section-head{font-size:.82em;font-weight:700;color:#bbb;letter-spacing:.1em;margin:16px 0 10px}
+.all-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.type-chip{background:#f8f8f8;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;border:2px solid transparent}
+.type-chip.me{border-color:#e91e63;background:#fff0f5}
+.tc-icon{font-size:1.6em}
+.tc-name{font-size:.8em;font-weight:700;color:#333;line-height:1.3}
+.tc-me{font-size:.7em;color:#e91e63;font-weight:700}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.share-btn{padding:14px;border:none;border-radius:14px;font-family:inherit;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.share-btn:hover{transform:translateY(-2px)}
+.btn-x{background:#000;color:#fff}
+.btn-line{background:#06C755;color:#fff}
+.retry-btn{display:block;width:100%;padding:14px;border:2px solid #eee;border-radius:14px;background:#fff;font-family:inherit;font-size:.9em;font-weight:700;color:#999;cursor:pointer;margin-top:10px;transition:all .2s}
+.retry-btn:hover{border-color:#e91e63;color:#e91e63}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="screen active" id="start">
-<div class="start-icon">💜</div>
-<h1>あなたの推し活タイプ診断</h1>
-<p class="subtitle">7つの質問で、あなたの推し活スタイルが丸わかり！</p>
-<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+
+<div class="hero-card" id="start">
+  <div style="text-align:center"><span class="badge">⭐ 推し活診断</span></div>
+  <span class="char-emoji">📢🌈💘🔬</span>
+  <h1>あなたの推し活<br>タイプ診断</h1>
+  <p class="subtitle">7つの質問で、あなたの推し活スタイルを診断！<br>布教マスター？ガチ恋？考察オタク？</p>
+  <button class="start-btn" onclick="startQuiz()">💫 診断スタート！</button>
+  <p class="hint">全7問・約1分で完了</p>
 </div>
-<div class="screen" id="quiz">
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<p class="q-number" id="qNumber"></p>
-<p class="question" id="qText"></p>
-<div id="options"></div>
+
+<div class="quiz-card" id="quiz">
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <span class="q-count" id="qCount">1/7</span>
+  </div>
+  <span class="q-label" id="qLabel">Q1</span>
+  <p class="question" id="qText"></p>
+  <div id="options"></div>
 </div>
-<div class="screen" id="result">
-<div class="result-center">
-<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたの推し活タイプは…</p>
-<div class="result-type" id="resultType"></div>
+
+<div class="result-card" id="result">
+  <div class="result-hero" id="resultHero">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <p class="result-label">あなたの推し活タイプは…</p>
+    <div class="result-name" id="resultName"></div>
+    <div class="tags" id="resultTags"></div>
+  </div>
+  <div class="result-body">
+    <div class="desc-box" id="resultDesc"></div>
+    <div class="info-box" id="adviceBox"></div>
+    <p class="section-head">🗺 全タイプ一覧</p>
+    <div class="all-grid" id="allGrid"></div>
+    <div class="share-row">
+      <button class="share-btn btn-x" onclick="shareX()">𝕏 シェア</button>
+      <button class="share-btn btn-line" onclick="shareLine()">LINE シェア</button>
+    </div>
+    <button class="retry-btn" onclick="location.reload()">🔄 もう一度診断する</button>
+  </div>
 </div>
-<p class="result-desc" id="resultDesc"></p>
-<div class="advice-box" id="adviceBox"></div>
-<div class="result-traits" id="resultTraits"></div>
-<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
-<div class="compat-section"><p class="section-title">推し活相性</p><div id="compatPairs"></div></div>
-<div class="share-buttons">
-<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
-<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
-</div>
-<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
-</div>
+
 </div>
 <script>
 const questions=[
-{q:"推しの新情報が出たとき、最初にすることは？",opts:[
-{t:"すぐSNSでシェアして布教する",s:{B:3}},
-{t:"グループ全体の情報もチェックする",s:{H:3}},
-{t:"ドキドキしながら一人で噛みしめる",s:{G:3}},
-{t:"詳細を調べて考察を始める",s:{R:3}}
+{q:"推しの新曲が出た！まず何をする？",opts:[
+{t:"📣 友達や SNS に布教しまくる",s:{B:3}},
+{t:"🎵 グループ全員の感想を集めて比較する",s:{H:3}},
+{t:"💘 推しのパート何回も繰り返し聴く",s:{G:3}},
+{t:"🔍 歌詞や演出の意味を徹底分析する",s:{R:3}}
 ]},
-{q:"推し活での出費、一番多いのは？",opts:[
-{t:"友達へのプレゼン用布教グッズ",s:{B:3}},
-{t:"グループ全員分のグッズ・チケット",s:{H:3}},
-{t:"推し一人に全振りしたグッズ・チケット",s:{G:3}},
-{t:"資料集・パンフレット・設定集など",s:{R:3}}
+{q:"推しのライブに行くとき、あなたのスタイルは？",opts:[
+{t:"📸 グッズ全部揃えて写真を撮りまくる",s:{B:3}},
+{t:"🌈 グループ全員のメンカラを身につける",s:{H:3}},
+{t:"❤️ 推しだけを目で追い続ける",s:{G:3}},
+{t:"🎬 セトリや演出を全て記録・分析する",s:{R:3}}
 ]},
-{q:"ライブやイベントでの楽しみ方は？",opts:[
-{t:"隣の人にも推しの魅力をプレゼンしちゃう",s:{B:3}},
-{t:"メンバー全員のパフォーマンスを見届ける",s:{H:3}},
-{t:"推ししか見えない。目が離せない",s:{G:3}},
-{t:"演出・構成・セトリを分析しながら楽しむ",s:{R:3}}
+{q:"推し活費用について、あなたの考えは？",opts:[
+{t:"💰 布教グッズを作ったり配ったりに使う",s:{B:3}},
+{t:"🎁 全員分のグッズを買う（差はつけられない）",s:{H:3}},
+{t:"💖 推し専用の推し活費を確保して全額つぎ込む",s:{G:3}},
+{t:"📚 二次創作や資料収集・考察本に使う",s:{R:3}}
 ]},
-{q:"SNSでの推し活スタイルは？",opts:[
-{t:"積極的に推しの魅力を発信・布教",s:{B:3}},
-{t:"グループ全体のファンアートやまとめをRT",s:{H:3}},
-{t:"推しの投稿は全いいね＆保存。でも発信は控えめ",s:{G:3}},
-{t:"考察スレッドや分析を長文で投稿する",s:{R:3}}
+{q:"推しが落ち込んでいるSNS投稿をした。あなたは？",opts:[
+{t:"📢「みんなで応援しよう！」と呼びかける",s:{B:3}},
+{t:"🤗 グループ全員に心配のコメントをする",s:{H:3}},
+{t:"😢 自分も一緒に落ち込んでしまう…",s:{G:3}},
+{t:"🔍 なぜ落ち込んでいるか原因を考え始める",s:{R:3}}
 ]},
-{q:"もし推しに会えたら何をする？",opts:[
-{t:"「あなたの魅力はここが最高です！」と熱弁する",s:{B:3}},
-{t:"「みんなのことも応援してます！」と伝える",s:{H:3}},
-{t:"緊張で固まるけど幸せすぎて泣きそう",s:{G:3}},
-{t:"「あの作品のあのシーン、どう解釈してますか？」と聞く",s:{R:3}}
+{q:"推しに関するSNS、あなたの使い方は？",opts:[
+{t:"📣 推しの良さを語りつくす布教ツイート連投",s:{B:3}},
+{t:"📊 グループ全体の情報を網羅的にまとめる",s:{H:3}},
+{t:"💌 推しへのラブレターのようなツイートをする",s:{G:3}},
+{t:"🧵 長文考察スレッドを定期的に投稿する",s:{R:3}}
 ]},
-{q:"友達に推しを紹介するときの方法は？",opts:[
-{t:"プレゼン資料レベルの布教スライドを用意",s:{B:3}},
-{t:"「このグループまるごと良いから見て」と全体推し",s:{H:3}},
-{t:"「この人だけは見て…」と一人を推しまくる",s:{G:3}},
-{t:"時系列や関係性をまとめた相関図を見せる",s:{R:3}}
+{q:"推し活仲間に求めることは？",opts:[
+{t:"🔥 一緒に布教活動ができる同士感",s:{B:3}},
+{t:"🌈 推しやジャンルが被っていること",s:{H:3}},
+{t:"💞 推しへの深い愛を理解してくれること",s:{G:3}},
+{t:"🧠 一緒に考察・議論ができる知的な仲間",s:{R:3}}
 ]},
-{q:"推しのスキャンダルが出たときの反応は？",opts:[
-{t:"「推しは推し！変わらず布教する」と揺るがない",s:{B:3}},
-{t:"「グループへの影響が心配…」と全体を気にする",s:{H:3}},
-{t:"「嘘でしょ…」と心が大打撃を受ける",s:{G:3}},
-{t:"情報の信憑性を冷静に検証する",s:{R:3}}
+{q:"推しが発表した驚きのニュース（活動変更など）、あなたの反応は？",opts:[
+{t:"📣「みんな、これ見た！？」と速攻拡散する",s:{B:3}},
+{t:"🤔 グループ全体に与える影響を考える",s:{H:3}},
+{t:"😭 感情が溢れてしばらく立ち直れない",s:{G:3}},
+{t:"📊 背景や理由を徹底的に調べ始める",s:{R:3}}
 ]}
 ];
 const results={
-B:{name:"📢 布教マスタータイプ",color:"#e74c3c",bg:"#fff0f0",desc:"あなたは推しの魅力を世界に広めることに命を懸けるタイプ！推しの良さを語り出すと止まらず、気づけば周りの人も推しのファンに。布教力の高さはピカイチで、推しの最強の広報担当とも言える存在です。",advice:"<h3>💡 推し活アドバイス</h3><p>布教する相手のペースも大事にしよう。押しすぎると逆効果になることも。「興味あったら教えてね」くらいの余裕を持つと、もっと自然に沼に引きずり込める（？）はず！</p>",traits:["布教力MAX","プレゼン上手","情熱的","コミュ力おばけ","推し愛が溢れる"]},
-H:{name:"🌈 箱推しハーモニータイプ",color:"#3498db",bg:"#f0f5ff",desc:"あなたはグループ全体を愛する博愛タイプ！メンバーそれぞれの良さを理解し、グループの関係性やケミストリーにときめきます。「みんな違ってみんないい」がモットーで、ファン同士の争いを仲裁することも。",advice:"<h3>💡 推し活アドバイス</h3><p>全員を推すことで出費がかさみがちなので、予算管理はしっかりと。全体を見渡せるからこそ、新規ファンにグループの魅力を教える最適な存在です！</p>",traits:["博愛主義","全体を見渡せる","平和主義","関係性萌え","バランス感覚"]},
-G:{name:"💘 ガチ恋一途タイプ",color:"#e91e63",bg:"#fff0f5",desc:"あなたは推し一人に全力で愛を注ぐ一途タイプ！推しの一挙一動にドキドキし、推しの幸せが自分の幸せ。感情の振れ幅が大きく、推しの活動に一喜一憂しますが、その純粋な愛の深さこそがあなたの推し活の魅力です。",advice:"<h3>💡 推し活アドバイス</h3><p>推しとの「距離感」を大切にしよう。推しが自分のものじゃないことを受け入れた上で応援できると、もっと楽しく推し活できます。推しの幸せ＝あなたの幸せ！</p>",traits:["一途","純粋","感情豊か","献身的","推しの幸せ第一"]},
-R:{name:"🔬 研究者・考察オタクタイプ",color:"#2ecc71",bg:"#f0fef5",desc:"あなたは推しや作品を深く分析・考察するのが大好きなタイプ！裏設定、伏線、演出意図…表面だけでは満足できず、その奥にある意味を読み解くことに快感を覚えます。あなたの考察はファンコミュニティの知識の宝庫になっています。",advice:"<h3>💡 推し活アドバイス</h3><p>考察にのめり込みすぎて「公式より詳しい」状態になることも。時には感情のままに楽しむことも忘れずに。あなたの分析力はブログやYouTubeで発信すると反響があるかも！</p>",traits:["分析力","知識量がヤバい","考察好き","冷静","探究心旺盛"]}
+B:{name:"布教マスタータイプ",emoji:"📢",bg:"linear-gradient(135deg,#e74c3c,#c0392b)",
+  desc:"あなたは推しの魅力を世界に広めることに命を懸けるタイプ！推しの良さを語り出すと止まらず、気づけば周りの人も推しのファンに。布教力の高さはピカイチで、推しの最強の広報担当とも言える存在です。",
+  advice:"💡 推し活アドバイス：布教する相手のペースも大事にしよう。押しすぎると逆効果になることも。「興味あったら教えてね」くらいの余裕を持つと、もっと自然に沼に引きずり込める（？）はず！",
+  traits:["布教力MAX📣","プレゼン上手🎤","情熱的🔥","コミュ力おばけ💬","推し愛が溢れる❤️"]},
+H:{name:"箱推しハーモニータイプ",emoji:"🌈",bg:"linear-gradient(135deg,#3498db,#1abc9c)",
+  desc:"あなたはグループ全体を愛する博愛タイプ！メンバーそれぞれの良さを理解し、グループの関係性やケミストリーにときめきます。「みんな違ってみんないい」がモットーで、ファン同士の争いを仲裁することも。",
+  advice:"💡 推し活アドバイス：全員を推すことで出費がかさみがちなので、予算管理はしっかりと。全体を見渡せるからこそ、新規ファンにグループの魅力を教える最適な存在です！",
+  traits:["博愛主義🌈","全体を見渡す👀","平和主義🕊","関係性萌え💞","バランス感覚⚖️"]},
+G:{name:"ガチ恋一途タイプ",emoji:"💘",bg:"linear-gradient(135deg,#e91e63,#f06292)",
+  desc:"あなたは推し一人に全力で愛を注ぐ一途タイプ！推しの一挙一動にドキドキし、推しの幸せが自分の幸せ。感情の振れ幅が大きく、推しの活動に一喜一憂しますが、その純粋な愛の深さこそがあなたの推し活の魅力です。",
+  advice:"💡 推し活アドバイス：推しとの「距離感」を大切にしよう。推しが自分のものじゃないことを受け入れた上で応援できると、もっと楽しく推し活できます。推しの幸せ＝あなたの幸せ！",
+  traits:["一途💘","純粋🌸","感情豊か😭","献身的🙏","推しの幸せ第一❤️"]},
+R:{name:"研究者・考察オタクタイプ",emoji:"🔬",bg:"linear-gradient(135deg,#2ecc71,#27ae60)",
+  desc:"あなたは推しや作品を深く分析・考察するのが大好きなタイプ！裏設定、伏線、演出意図…表面だけでは満足できず、その奥にある意味を読み解くことに快感を覚えます。あなたの考察はファンコミュニティの知識の宝庫になっています。",
+  advice:"💡 推し活アドバイス：考察にのめり込みすぎて「公式より詳しい」状態になることも。時には感情のままに楽しむことも忘れずに。あなたの分析力はブログやYouTubeで発信すると反響があるかも！",
+  traits:["分析力🔍","知識量がヤバい📚","考察好き🧩","冷静🧊","探究心旺盛🌟"]}
 };
+const allTypes=[
+{key:'B',emoji:'📢',name:'布教マスタータイプ'},{key:'H',emoji:'🌈',name:'箱推しハーモニータイプ'},
+{key:'G',emoji:'💘',name:'ガチ恋一途タイプ'},{key:'R',emoji:'🔬',name:'研究者・考察オタクタイプ'}
+];
 let current=0,scores={B:0,H:0,G:0,R:0};
-function startQuiz(){show('quiz');render()}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){let max='B',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('adviceBox').innerHTML=r.advice;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});renderAllTypes(max);renderCompat();show('result')}
-const typeList=[
-{key:'B',icon:'📢',name:'布教マスタータイプ',desc:'推しの魅力を世界に広める最強の広報担当'},
-{key:'H',icon:'🌈',name:'箱推しハーモニータイプ',desc:'グループ全体を愛する博愛の調和派'},
-{key:'G',icon:'💘',name:'ガチ恋一途タイプ',desc:'推し一人に全力で愛を注ぐ純粋派'},
-{key:'R',icon:'🔬',name:'研究者・考察オタクタイプ',desc:'深掘り＆分析でファン界の知恵袋'}
-];
-const compatList=[
-{a:'📢 布教',b:'🔬 研究者',desc:'布教力×考察力で最強のファンアカウント爆誕'},
-{a:'🌈 箱推し',b:'💘 ガチ恋',desc:'全体愛×一途さでお互いの推し方を尊重できる良き友'},
-{a:'📢 布教',b:'💘 ガチ恋',desc:'熱量×熱量で推し活のテンションが爆上がりペア'},
-{a:'🌈 箱推し',b:'🔬 研究者',desc:'幅広い知識×深い考察で新規ファンの最強ガイドコンビ'}
-];
-function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
-function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
-function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の推し活タイプは「${r}」でした！\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+function render(){
+  const q=questions[current];
+  document.getElementById('progress').style.width=(current/questions.length*100)+'%';
+  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
+  document.getElementById('qLabel').textContent='Q'+(current+1);
+  document.getElementById('qText').textContent=q.q;
+  const o=document.getElementById('options');o.innerHTML='';
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+function showResult(){
+  let max='B',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  const r=results[max];
+  document.getElementById('quiz').classList.remove('active');
+  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  document.getElementById('resultEmoji').textContent=r.emoji;
+  document.getElementById('resultName').textContent=r.name;
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc;
+  document.getElementById('adviceBox').innerHTML='<h3>💡 推し活アドバイス</h3><p>'+r.advice+'</p>';
+  const ag=document.getElementById('allGrid');ag.innerHTML='';
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  document.getElementById('result').classList.add('active');
+}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の推し活タイプは「'+n+'」でした！⭐\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
 </script>
 </body>
 </html>

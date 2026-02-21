@@ -5,144 +5,254 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>あなたを動物に例えると診断</title>
 <meta name="description" content="性格や行動パターンから、あなたにピッタリの動物を診断！">
-<meta property="og:title" content="あなたを動物に例えると診断">
-<meta property="og:description" content="あなたにピッタリの動物キャラを診断！">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#ffecd2 0%,#fcb69f 100%);display:flex;justify-content:center;align-items:center;padding:20px}
-.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f5a623,#e8795a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
-.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
-.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
-.btn-primary{background:linear-gradient(135deg,#f5a623,#e8795a);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(245,166,35,.4)}
-.btn-option{background:#fff8f0;color:#333;border:2px solid #fde8d0;text-align:left;padding:14px 18px}
-.btn-option:hover{border-color:#f5a623;background:#fff3e5}
-.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#f5a623,#e8795a);border-radius:3px;transition:width .3s ease}
-.q-number{font-size:.85em;color:#999;margin-bottom:8px}
-.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
-.result-icon{text-align:center;font-size:5em;margin-bottom:10px}
-.result-type{text-align:center;font-size:1.4em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
-.result-center{text-align:center}
-.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
-.compat-box{background:#fff8f0;border-radius:12px;padding:16px;margin:15px 0}
-.compat-box h3{font-size:.95em;color:#e8795a;margin-bottom:8px}
-.compat-box p{font-size:.9em;color:#555;line-height:1.6}
-.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
-.trait-tag{background:#fff8f0;color:#e8795a;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
-.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
-.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
-.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
-.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#f5a623;background:#fff3e5}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#e8795a}
+:root{--orange:#FF7043;--orange-light:#FFCCBC;--pink:#EC407A;--purple:#7E57C2;--dark:#2D2D2D;--radius:18px}
+body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#fff8f0 0%,#fce4ec 50%,#ede7f6 100%);display:flex;justify-content:center;align-items:flex-start;padding:20px}
+.container{max-width:520px;width:100%;margin:0 auto}
+
+/* ===== HERO CARD ===== */
+.hero-card{background:#fff;border-radius:28px;padding:36px 28px 28px;box-shadow:0 8px 40px rgba(255,112,67,.18);margin-bottom:16px;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,#ffe0b2 0%,transparent 70%);border-radius:50%}
+.hero-card::after{content:'';position:absolute;bottom:-40px;left:-40px;width:120px;height:120px;background:radial-gradient(circle,#f8bbd0 0%,transparent 70%);border-radius:50%}
+
+.char-img{display:block;width:200px;height:140px;object-fit:contain;margin:0 auto 16px;position:relative;z-index:1;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.badge{display:inline-block;background:linear-gradient(135deg,#FF7043,#EC407A);color:#fff;font-size:.7em;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.05em;margin-bottom:12px}
+h1{font-size:1.55em;font-weight:900;color:var(--dark);line-height:1.4;margin-bottom:8px;position:relative;z-index:1}
+.subtitle{color:#888;font-size:.88em;line-height:1.6;margin-bottom:24px}
+.start-btn{display:block;width:100%;padding:18px;border:none;border-radius:var(--radius);background:linear-gradient(135deg,#FF7043 0%,#EC407A 100%);color:#fff;font-family:inherit;font-size:1.1em;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(255,112,67,.4);letter-spacing:.05em}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,112,67,.5)}
+.start-btn:active{transform:translateY(0)}
+
+.hint{text-align:center;font-size:.78em;color:#bbb;margin-top:12px}
+
+/* ===== QUIZ CARD ===== */
+.quiz-card{background:#fff;border-radius:28px;padding:28px 24px;box-shadow:0 8px 40px rgba(0,0,0,.1);display:none;animation:slideUp .35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card.active{display:block}
+
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.progress-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FF7043,#EC407A);border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.q-count{font-size:.8em;color:#aaa;white-space:nowrap;font-weight:700}
+
+.q-label{display:inline-block;background:#fff8f0;color:#FF7043;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;border:1.5px solid #FFCCBC}
+.question{font-size:1.18em;font-weight:700;color:var(--dark);line-height:1.65;margin-bottom:22px}
+
+.opt-btn{display:flex;align-items:center;width:100%;padding:14px 18px;border:2px solid #f0f0f0;border-radius:14px;background:#fafafa;color:#333;font-family:inherit;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px;text-align:left;gap:10px}
+.opt-btn::before{content:'';display:block;width:22px;height:22px;min-width:22px;border:2.5px solid #ddd;border-radius:50%;transition:all .2s}
+.opt-btn:hover{border-color:#FF7043;background:#fff8f0;color:#FF7043}
+.opt-btn:hover::before{border-color:#FF7043;background:#FF7043}
+
+/* ===== RESULT CARD ===== */
+.result-card{background:#fff;border-radius:28px;padding:0 0 28px;box-shadow:0 8px 40px rgba(0,0,0,.12);display:none;animation:slideUp .35s ease;overflow:hidden}
+.result-card.active{display:block}
+
+.result-hero{padding:32px 24px 24px;text-align:center;position:relative}
+.result-char{width:140px;height:140px;object-fit:contain;margin:0 auto 12px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.result-emoji{font-size:4.5em;line-height:1;margin-bottom:8px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.result-label{font-size:.8em;font-weight:700;color:#999;letter-spacing:.1em;margin-bottom:6px}
+.result-name{font-size:1.9em;font-weight:900;margin-bottom:12px}
+.result-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:0}
+.tag{padding:5px 14px;border-radius:20px;font-size:.78em;font-weight:700;background:#f5f5f5;color:#555}
+
+.result-body{padding:0 24px}
+.desc-box{background:#fafafa;border-radius:16px;padding:18px;margin:16px 0;font-size:.92em;line-height:1.85;color:#444}
+
+.compat-row{display:flex;gap:10px;margin:0 0 12px}
+.compat-chip{flex:1;background:linear-gradient(135deg,#fff8f0,#fce4ec);border-radius:14px;padding:14px;text-align:center;border:1.5px solid #FFCCBC}
+.compat-chip .c-icon{font-size:1.8em;display:block;margin-bottom:4px}
+.compat-chip .c-name{font-size:.8em;font-weight:700;color:#FF7043}
+.compat-chip .c-note{font-size:.72em;color:#999;margin-top:3px;line-height:1.4}
+
+.section-head{font-size:.82em;font-weight:700;color:#bbb;letter-spacing:.1em;margin:20px 0 10px;text-transform:uppercase}
+
+.all-types-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.type-chip{background:#f8f8f8;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;border:2px solid transparent;transition:all .2s}
+.type-chip.me{border-color:#FF7043;background:#fff8f0}
+.type-chip .tc-icon{font-size:1.6em}
+.type-chip .tc-name{font-size:.8em;font-weight:700;color:#333}
+.type-chip .tc-me{font-size:.7em;color:#FF7043;font-weight:700}
+
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.share-btn{padding:14px;border:none;border-radius:14px;font-family:inherit;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.share-btn:hover{transform:translateY(-2px)}
+.btn-x{background:#000;color:#fff}
+.btn-line{background:#06C755;color:#fff}
+.retry-btn{display:block;width:100%;padding:14px;border:2px solid #eee;border-radius:14px;background:#fff;font-family:inherit;font-size:.9em;font-weight:700;color:#999;cursor:pointer;margin-top:10px;transition:all .2s}
+.retry-btn:hover{border-color:#FF7043;color:#FF7043}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="screen active" id="start">
-<div class="start-icon">🐾</div>
-<h1>あなたを動物に例えると診断</h1>
-<p class="subtitle">7つの質問で、あなたの動物キャラがわかる！</p>
-<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+
+<!-- START -->
+<div class="hero-card" id="start">
+  <div style="text-align:center">
+    <span class="badge">🐾 性格診断</span>
+  </div>
+  <img class="char-img" src="https://www.genspark.ai/api/files/s/hfB9FH94?cache_control=3600" alt="動物キャラクター" onerror="this.style.fontSize='4em';this.outerHTML='<div style=\'font-size:4em;text-align:center;margin-bottom:16px\'>🐾🐕🐱🐰🦉</div>'">
+  <h1>あなたを動物に<br>例えると診断</h1>
+  <p class="subtitle">7つの質問で、あなたのキャラを動物タイプで診断！<br>犬・猫・うさぎ・フクロウ、どれかな？</p>
+  <button class="start-btn" onclick="startQuiz()">🔮 診断スタート！</button>
+  <p class="hint">全7問・約1分で完了</p>
 </div>
-<div class="screen" id="quiz">
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<p class="q-number" id="qNumber"></p>
-<p class="question" id="qText"></p>
-<div id="options"></div>
+
+<!-- QUIZ -->
+<div class="quiz-card" id="quiz">
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <span class="q-count" id="qCount">1/7</span>
+  </div>
+  <span class="q-label" id="qLabel">Q1</span>
+  <p class="question" id="qText"></p>
+  <div id="options"></div>
 </div>
-<div class="screen" id="result">
-<div class="result-icon" id="resultIcon"></div>
-<div class="result-center">
-<div class="result-type" id="resultType"></div>
+
+<!-- RESULT -->
+<div class="result-card" id="result">
+  <div class="result-hero" id="resultHero">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <p class="result-label">あなたのタイプは</p>
+    <div class="result-name" id="resultName"></div>
+    <div class="result-tags" id="resultTags"></div>
+  </div>
+  <div class="result-body">
+    <div class="desc-box" id="resultDesc"></div>
+    <p class="section-head">💕 相性のいいタイプ</p>
+    <div class="compat-row" id="compatRow"></div>
+    <p class="section-head">🗺 全タイプ一覧</p>
+    <div class="all-types-grid" id="allTypesGrid"></div>
+    <div class="share-row">
+      <button class="share-btn btn-x" onclick="shareX()">𝕏 シェア</button>
+      <button class="share-btn btn-line" onclick="shareLine()">LINE シェア</button>
+    </div>
+    <button class="retry-btn" onclick="location.reload()">🔄 もう一度診断する</button>
+  </div>
 </div>
-<p class="result-desc" id="resultDesc"></p>
-<div class="compat-box" id="compatBox"></div>
-<div class="result-traits" id="resultTraits"></div>
-<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
-<div class="compat-section"><p class="section-title">動物タイプ相性</p><div id="compatPairs"></div></div>
-<div class="share-buttons">
-<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
-<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
-</div>
-<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
-</div>
+
 </div>
 <script>
 const questions=[
 {q:"パーティーに参加したときのあなたは？",opts:[
-{t:"気づいたら中心にいて盛り上げてる",s:{D:3}},
-{t:"気の合う人を見つけてずっと話してる",s:{C:3}},
-{t:"隅っこで観察しながら楽しんでる",s:{O:3}},
-{t:"気分次第。ノリノリの時もあればすぐ帰る時も",s:{N:3}}
+{t:"気づいたら中心にいて盛り上げてる🎉",s:{D:3}},
+{t:"気の合う人を見つけてずっと話してる💬",s:{C:3}},
+{t:"隅っこで観察しながら楽しんでる👀",s:{O:3}},
+{t:"気分次第。ノリノリの時もあれば帰る時も🌙",s:{N:3}}
 ]},
 {q:"休日の朝、目覚めたら最初にすることは？",opts:[
-{t:"すぐ起きて散歩やランニングに出かける",s:{D:3}},
-{t:"SNSをチェックして友達の動向を確認",s:{C:3}},
-{t:"二度寝して昼まで寝る",s:{O:3}},
-{t:"気まぐれ。その日の気分で決める",s:{N:3}}
+{t:"すぐ起きて散歩やランニングへ🏃",s:{D:3}},
+{t:"SNSをチェックして友達の動向を確認📱",s:{C:3}},
+{t:"二度寝して昼まで寝る😴",s:{O:3}},
+{t:"気まぐれ。その日の気分で決める🌸",s:{N:3}}
 ]},
 {q:"友達との約束の時間、あなたは？",opts:[
-{t:"少し早めに着く。待ってる時間も楽しい",s:{D:3}},
-{t:"ぴったりに着く。時間通りが大事",s:{C:2,O:1}},
-{t:"ちょっと遅れがち。ごめん…",s:{N:3}},
-{t:"場所を間違えたりドタバタする",s:{O:2,N:1}}
+{t:"少し早めに着く。待ち時間も楽しい⏰",s:{D:3}},
+{t:"ぴったりに着く。時間通りが大事！✅",s:{C:2,O:1}},
+{t:"ちょっと遅れがち。ごめん…🙏",s:{N:3}},
+{t:"場所を間違えたりドタバタする💦",s:{O:2,N:1}}
 ]},
 {q:"ストレスを感じたとき、どうやって解消する？",opts:[
-{t:"体を動かして発散！運動最高！",s:{D:3}},
-{t:"誰かと話してスッキリする",s:{C:3}},
-{t:"一人の時間を確保してのんびりする",s:{O:3}},
-{t:"好きなことに没頭して忘れる",s:{N:3}}
+{t:"体を動かして発散！運動最高！💪",s:{D:3}},
+{t:"誰かと話してスッキリする🗣",s:{C:3}},
+{t:"一人の時間を確保してのんびり🛋",s:{O:3}},
+{t:"好きなことに没頭して忘れる🎮",s:{N:3}}
 ]},
 {q:"グループで何かを決めるとき、あなたの役割は？",opts:[
-{t:"「こうしよう！」とリーダーシップを取る",s:{D:3}},
-{t:"みんなの意見を聞いてまとめる調整役",s:{C:3}},
-{t:"「どっちでもいいよ」と周りに合わせる",s:{O:3}},
-{t:"突然いいアイデアを出して驚かせる",s:{N:3}}
+{t:"「こうしよう！」とリーダーシップを取る🙋",s:{D:3}},
+{t:"みんなの意見を聞いてまとめる調整役🤝",s:{C:3}},
+{t:"「どっちでもいいよ」と周りに合わせる😊",s:{O:3}},
+{t:"突然いいアイデアを出して驚かせる💡",s:{N:3}}
 ]},
-{q:"あなたの食事のスタイルは？",opts:[
-{t:"いっぱい食べる！食事はエネルギー補給！",s:{D:3}},
-{t:"みんなでシェアして食べるのが好き",s:{C:3}},
-{t:"少食。好きなものをちょこっと",s:{N:3}},
-{t:"気に入ったものをずっと食べ続ける",s:{O:3}}
+{q:"あなたの食事スタイルは？",opts:[
+{t:"いっぱい食べる！食事はエネルギー補給🍖",s:{D:3}},
+{t:"みんなでシェアして食べるのが好き🍽",s:{C:3}},
+{t:"少食。好きなものをちょこっと🍡",s:{N:3}},
+{t:"気に入ったものをずっと食べ続ける🍣",s:{O:3}}
 ]},
 {q:"自分を一言で表すなら？",opts:[
-{t:"明るくてエネルギッシュ",s:{D:3}},
-{t:"優しくて協調性がある",s:{C:3}},
-{t:"マイペースで穏やか",s:{O:3}},
-{t:"ミステリアスで自由",s:{N:3}}
+{t:"明るくてエネルギッシュ☀️",s:{D:3}},
+{t:"優しくて協調性がある🌼",s:{C:3}},
+{t:"マイペースで穏やか🌿",s:{O:3}},
+{t:"ミステリアスで自由🌙",s:{N:3}}
 ]}
 ];
+
 const results={
-D:{name:"犬タイプ",icon:"🐕",color:"#e8795a",bg:"#fff3e5",desc:"あなたは犬のように明るく、忠実で、エネルギッシュなタイプ！人といるのが大好きで、信頼した人にはとことん尽くします。行動力があり、チームのムードメーカー。素直で裏表がないところも魅力で、周りから愛される存在です。",compat:"<h3>🤝 相性の良い動物</h3><p>猫タイプ（お互いに足りないものを補える最高の組み合わせ）/ うさぎタイプ（一緒にいると癒やし×元気で最強コンビ）</p>",traits:["忠実","エネルギッシュ","素直","社交的","行動力抜群"]},
-C:{name:"うさぎタイプ",icon:"🐰",color:"#e91e63",bg:"#fff0f5",desc:"あなたはうさぎのように優しく、共感力が高く、人間関係を大切にするタイプ！場の空気を読む力に優れ、周りの人を安心させるオーラを持っています。やや繊細な面もありますが、それがあなたの魅力。大切な人を幸せにできる力の持ち主です。",compat:"<h3>🤝 相性の良い動物</h3><p>犬タイプ（元気をもらえる＆守ってくれる安心感）/ フクロウタイプ（知的な会話で深い関係に）</p>",traits:["優しい","共感力","空気を読める","繊細","癒やし系"]},
-O:{name:"猫タイプ",icon:"🐱",color:"#9b59b6",bg:"#f8f0ff",desc:"あなたは猫のようにマイペースで、自分の世界を大切にするタイプ！一人の時間を楽しめる自立心と、気まぐれだけど深い愛情を持ち合わせています。無理に群れないからこそ、一緒にいる時間の価値が高いツンデレな魅力の持ち主です。",compat:"<h3>🤝 相性の良い動物</h3><p>犬タイプ（お互いの違いが心地よいバランスに）/ 猫タイプ同士（適度な距離感で最高の関係）</p>",traits:["マイペース","自立心","ツンデレ","気まぐれ","独自の世界観"]},
-N:{name:"フクロウタイプ",icon:"🦉",color:"#2c3e50",bg:"#f0f2f5",desc:"あなたはフクロウのようにミステリアスで、知的な魅力に溢れるタイプ！深い洞察力と独自の視点で物事を捉え、周りとは一味違う存在感を放っています。夜型で、静かな時間に最も力を発揮するタイプかも。自由を愛する孤高の存在です。",compat:"<h3>🤝 相性の良い動物</h3><p>うさぎタイプ（繊細さを理解し合える関係）/ フクロウタイプ同士（深い話が永遠に続く知的パートナー）</p>",traits:["知的","ミステリアス","夜型","洞察力","自由人"]}
+D:{name:"犬タイプ",emoji:"🐕",color:"#FF7043",bg:"linear-gradient(135deg,#FF7043,#EC407A)",bgLight:"#fff3e5",
+  desc:"あなたは犬のように明るく、忠実で、エネルギッシュなタイプ！人といるのが大好きで、信頼した人にはとことん尽くします。行動力があり、チームのムードメーカー。素直で裏表がないところも魅力で、周りから愛される存在です。",
+  traits:["忠実🐶","エネルギッシュ⚡","素直✨","社交的🎉","行動力抜群🏃"],
+  compat:[{icon:"🐱",name:"猫タイプ",note:"お互いの違いが心地よいバランスに"},{icon:"🐰",name:"うさぎタイプ",note:"癒やし×元気で最強コンビ！"}]},
+C:{name:"うさぎタイプ",emoji:"🐰",color:"#E91E63",bg:"linear-gradient(135deg,#E91E63,#F06292)",bgLight:"#fff0f5",
+  desc:"あなたはうさぎのように優しく、共感力が高く、人間関係を大切にするタイプ！場の空気を読む力に優れ、周りの人を安心させるオーラを持っています。やや繊細な面もありますが、それがあなたの魅力。大切な人を幸せにできる力の持ち主です。",
+  traits:["優しい🌸","共感力💕","空気を読む👂","繊細🌷","癒やし系💆"],
+  compat:[{icon:"🐕",name:"犬タイプ",note:"元気をもらえる安心感のある組み合わせ"},{icon:"🦉",name:"フクロウタイプ",note:"知的な会話で深い関係に"}]},
+O:{name:"猫タイプ",emoji:"🐱",color:"#7E57C2",bg:"linear-gradient(135deg,#7E57C2,#AB47BC)",bgLight:"#f8f0ff",
+  desc:"あなたは猫のようにマイペースで、自分の世界を大切にするタイプ！一人の時間を楽しめる自立心と、気まぐれだけど深い愛情を持ち合わせています。無理に群れないからこそ、一緒にいる時間の価値が高いツンデレな魅力の持ち主です。",
+  traits:["マイペース🌙","自立心💜","ツンデレ😼","気まぐれ🎲","独自の世界観🔮"],
+  compat:[{icon:"🐕",name:"犬タイプ",note:"お互いの違いが心地よいバランスに"},{icon:"🦉",name:"フクロウタイプ",note:"自由を尊重し合える大人の関係"}]},
+N:{name:"フクロウタイプ",emoji:"🦉",color:"#37474F",bg:"linear-gradient(135deg,#37474F,#546E7A)",bgLight:"#f0f4f8",
+  desc:"あなたはフクロウのようにミステリアスで、知的な魅力に溢れるタイプ！深い洞察力と独自の視点で物事を捉え、周りとは一味違う存在感を放っています。夜型で、静かな時間に最も力を発揮するタイプかも。自由を愛する孤高の存在です。",
+  traits:["知的🧠","ミステリアス🌑","夜型🦉","洞察力🔍","自由人🕊"],
+  compat:[{icon:"🐰",name:"うさぎタイプ",note:"繊細さを理解し合える深い関係"},{icon:"🐱",name:"猫タイプ",note:"自由を尊重し合える大人の関係"}]}
 };
+
+const allTypes=[
+{key:'D',emoji:'🐕',name:'犬タイプ'},{key:'C',emoji:'🐰',name:'うさぎタイプ'},
+{key:'O',emoji:'🐱',name:'猫タイプ'},{key:'N',emoji:'🦉',name:'フクロウタイプ'}
+];
+
 let current=0,scores={D:0,C:0,O:0,N:0};
-function startQuiz(){show('quiz');render()}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){let max='D',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('compatBox').innerHTML=r.compat;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});renderAllTypes(max);renderCompat();show('result')}
-const typeList=[
-{key:'D',icon:'🐕',name:'犬タイプ',desc:'明るく忠実でエネルギッシュな愛されキャラ'},
-{key:'C',icon:'🐰',name:'うさぎタイプ',desc:'優しく共感力の高い癒やし系'},
-{key:'O',icon:'🐱',name:'猫タイプ',desc:'マイペースで自分の世界を大切にするツンデレ'},
-{key:'N',icon:'🦉',name:'フクロウタイプ',desc:'ミステリアスで知的な孤高の自由人'}
-];
-const compatList=[
-{a:'🐕 犬',b:'🐱 猫',desc:'王道の組み合わせ！違いが心地よいバランスに'},
-{a:'🐰 うさぎ',b:'🦉 フクロウ',desc:'繊細同士で深く理解し合える知的パートナー'},
-{a:'🐕 犬',b:'🐰 うさぎ',desc:'元気×癒やしで一緒にいるだけで幸せなペア'},
-{a:'🐱 猫',b:'🦉 フクロウ',desc:'お互いの自由を尊重し合える大人の関係'}
-];
-function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
-function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
-function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私を動物に例えると「${r}」でした！🐾\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+
+function startQuiz(){
+  document.getElementById('start').style.display='none';
+  document.getElementById('quiz').classList.add('active');
+  render();
+}
+function render(){
+  const q=questions[current];
+  const pct=(current/questions.length*100);
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
+  document.getElementById('qLabel').textContent='Q'+(current+1);
+  document.getElementById('qText').textContent=q.q;
+  const o=document.getElementById('options');o.innerHTML='';
+  q.opts.forEach(opt=>{
+    const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;
+    b.onclick=()=>answer(opt.s);o.appendChild(b);
+  });
+}
+function answer(s){
+  for(let k in s)scores[k]+=s[k];
+  current++;
+  if(current<questions.length)render();else showResult();
+}
+function showResult(){
+  let max='D',maxVal=0;
+  for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  const r=results[max];
+  document.getElementById('quiz').classList.remove('active');
+  const hero=document.getElementById('resultHero');
+  hero.style.background=r.bg;
+  document.getElementById('resultEmoji').textContent=r.emoji;
+  const rn=document.getElementById('resultName');
+  rn.textContent=r.name;rn.style.color='#fff';
+  document.getElementById('result').querySelector('.result-label').style.color='rgba(255,255,255,.8)';
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.style.background='rgba(255,255,255,.25)';s.style.color='#fff';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc;
+  const cr=document.getElementById('compatRow');cr.innerHTML='';
+  r.compat.forEach(c=>{cr.innerHTML+=`<div class="compat-chip"><span class="c-icon">${c.icon}</span><div class="c-name">${c.name}</div><div class="c-note">${c.note}</div></div>`;});
+  const ag=document.getElementById('allTypesGrid');ag.innerHTML='';
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  document.getElementById('result').classList.add('active');
+}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の動物タイプは「'+n+'」でした！🐾\nあなたも診断してみて👇\n'+location.href)}`,'_blank')}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
 </script>
 </body>

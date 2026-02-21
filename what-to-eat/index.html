@@ -5,134 +5,192 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>今日なに食べる？診断</title>
 <meta name="description" content="気分・体調・シチュエーションから、今日のベスト飯を提案！もう迷わない！">
-<meta property="og:title" content="今日なに食べる？診断">
-<meta property="og:description" content="もう迷わない！今日のベスト飯を診断！">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#f6d365 0%,#fda085 100%);display:flex;justify-content:center;align-items:center;padding:20px}
-.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f6d365,#e8590c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
-.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
-.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
-.btn-primary{background:linear-gradient(135deg,#f6d365,#e8590c);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(246,211,101,.4)}
-.btn-option{background:#fffaf0;color:#333;border:2px solid #fde8c8;text-align:left;padding:14px 18px}
-.btn-option:hover{border-color:#e8590c;background:#fff5e5}
-.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#f6d365,#e8590c);border-radius:3px;transition:width .3s ease}
-.q-number{font-size:.85em;color:#999;margin-bottom:8px}
-.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
-.result-icon{text-align:center;font-size:5em;margin-bottom:10px}
-.result-type{text-align:center;font-size:1.4em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block;background:#fffaf0;color:#e8590c}
-.result-center{text-align:center}
-.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
-.menu-box{background:#fffaf0;border-radius:12px;padding:16px;margin:15px 0}
-.menu-box h3{font-size:.95em;color:#e8590c;margin-bottom:8px}
-.menu-box p{font-size:.9em;color:#555;line-height:1.6}
-.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
-.trait-tag{background:#fffaf0;color:#e8590c;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
-.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
-.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
-.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
-.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#e8590c;background:#fff5e5}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#e8590c}
+body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#fff9f0 0%,#fff3e0 50%,#fce4ec 100%);display:flex;justify-content:center;align-items:flex-start;padding:20px}
+.container{max-width:520px;width:100%;margin:0 auto}
+.hero-card,.quiz-card,.result-card{background:#fff;border-radius:28px;box-shadow:0 8px 40px rgba(230,120,0,.15);margin-bottom:16px;overflow:hidden}
+.hero-card{padding:36px 28px 28px;position:relative}
+.hero-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,#ffe0b2 0%,transparent 70%);border-radius:50%}
+.char-emoji{font-size:4.5em;text-align:center;display:block;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.badge{display:inline-block;background:linear-gradient(135deg,#f6a623,#e8590c);color:#fff;font-size:.7em;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.05em;margin-bottom:12px}
+h1{font-size:1.55em;font-weight:900;color:#2D2D2D;line-height:1.4;margin-bottom:8px}
+.subtitle{color:#888;font-size:.88em;line-height:1.6;margin-bottom:24px}
+.start-btn{display:block;width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#f6a623 0%,#e8590c 100%);color:#fff;font-family:inherit;font-size:1.1em;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(246,166,35,.4);letter-spacing:.05em}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(246,166,35,.5)}
+.hint{text-align:center;font-size:.78em;color:#bbb;margin-top:12px}
+.quiz-card{padding:28px 24px;display:none;animation:slideUp .35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card.active,.result-card.active{display:block}
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.progress-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f6a623,#e8590c);border-radius:4px;transition:width .4s ease}
+.q-count{font-size:.8em;color:#aaa;white-space:nowrap;font-weight:700}
+.q-label{display:inline-block;background:#fff8f0;color:#e8590c;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;border:1.5px solid #ffe0c8}
+.question{font-size:1.18em;font-weight:700;color:#2D2D2D;line-height:1.65;margin-bottom:22px}
+.opt-btn{display:flex;align-items:center;width:100%;padding:14px 18px;border:2px solid #f0f0f0;border-radius:14px;background:#fafafa;color:#333;font-family:inherit;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px;text-align:left;gap:10px}
+.opt-btn::before{content:'';display:block;width:22px;height:22px;min-width:22px;border:2.5px solid #ddd;border-radius:50%;transition:all .2s}
+.opt-btn:hover{border-color:#e8590c;background:#fff8f0;color:#e8590c}
+.opt-btn:hover::before{border-color:#e8590c;background:#e8590c}
+.result-card{display:none;animation:slideUp .35s ease}
+.result-hero{padding:32px 24px 24px;text-align:center}
+.result-emoji{font-size:5em;line-height:1;margin-bottom:8px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.result-label{font-size:.8em;font-weight:700;letter-spacing:.1em;margin-bottom:6px;opacity:.8;color:#fff}
+.result-name{font-size:1.7em;font-weight:900;color:#fff;margin-bottom:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.tag{padding:5px 14px;border-radius:20px;font-size:.78em;font-weight:700;background:rgba(255,255,255,.25);color:#fff}
+.result-body{padding:16px 24px 24px}
+.desc-box{background:#fafafa;border-radius:16px;padding:18px;margin-bottom:16px;font-size:.92em;line-height:1.85;color:#444}
+.info-box{background:linear-gradient(135deg,#fff8f0,#fff3e0);border-radius:16px;padding:18px;margin-bottom:16px;border:1.5px solid #ffe0c8}
+.info-box h3{font-size:.9em;font-weight:700;color:#e8590c;margin-bottom:10px}
+.info-box p{font-size:.88em;color:#555;line-height:1.7}
+.section-head{font-size:.82em;font-weight:700;color:#bbb;letter-spacing:.1em;margin:16px 0 10px}
+.all-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.type-chip{background:#f8f8f8;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;border:2px solid transparent}
+.type-chip.me{border-color:#e8590c;background:#fff8f0}
+.tc-icon{font-size:1.6em}
+.tc-name{font-size:.8em;font-weight:700;color:#333;line-height:1.3}
+.tc-me{font-size:.7em;color:#e8590c;font-weight:700}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.share-btn{padding:14px;border:none;border-radius:14px;font-family:inherit;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.share-btn:hover{transform:translateY(-2px)}
+.btn-x{background:#000;color:#fff}
+.btn-line{background:#06C755;color:#fff}
+.retry-btn{display:block;width:100%;padding:14px;border:2px solid #eee;border-radius:14px;background:#fff;font-family:inherit;font-size:.9em;font-weight:700;color:#999;cursor:pointer;margin-top:10px;transition:all .2s}
+.retry-btn:hover{border-color:#e8590c;color:#e8590c}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="screen active" id="start">
-<div class="start-icon">🍽️</div>
-<h1>今日なに食べる？診断</h1>
-<p class="subtitle">5つの質問で、今日のベスト飯が決まる！もう「なに食べよう…」って迷わない！</p>
-<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+
+<div class="hero-card" id="start">
+  <div style="text-align:center"><span class="badge">🍽️ 食事診断</span></div>
+  <span class="char-emoji">🍜🥩🍝🐟</span>
+  <h1>今日なに食べる？<br>診断</h1>
+  <p class="subtitle">5つの質問で、今日のベスト飯が決まる！<br>「なに食べよう…」って迷わない！</p>
+  <button class="start-btn" onclick="startQuiz()">🔮 診断スタート！</button>
+  <p class="hint">全5問・約1分で完了</p>
 </div>
-<div class="screen" id="quiz">
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<p class="q-number" id="qNumber"></p>
-<p class="question" id="qText"></p>
-<div id="options"></div>
+
+<div class="quiz-card" id="quiz">
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <span class="q-count" id="qCount">1/5</span>
+  </div>
+  <span class="q-label" id="qLabel">Q1</span>
+  <p class="question" id="qText"></p>
+  <div id="options"></div>
 </div>
-<div class="screen" id="result">
-<div class="result-icon" id="resultIcon"></div>
-<div class="result-center">
-<p style="font-size:.9em;color:#999;margin-bottom:5px">今日食べるべきは…</p>
-<div class="result-type" id="resultType"></div>
+
+<div class="result-card" id="result">
+  <div class="result-hero" id="resultHero">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <p class="result-label">今日食べるべきは…</p>
+    <div class="result-name" id="resultName"></div>
+    <div class="tags" id="resultTags"></div>
+  </div>
+  <div class="result-body">
+    <div class="desc-box" id="resultDesc"></div>
+    <div class="info-box" id="menuBox"></div>
+    <p class="section-head">🗺 全タイプ一覧</p>
+    <div class="all-grid" id="allGrid"></div>
+    <div class="share-row">
+      <button class="share-btn btn-x" onclick="shareX()">𝕏 シェア</button>
+      <button class="share-btn btn-line" onclick="shareLine()">LINE シェア</button>
+    </div>
+    <button class="retry-btn" onclick="location.reload()">🔄 もう一度診断する</button>
+  </div>
 </div>
-<p class="result-desc" id="resultDesc"></p>
-<div class="menu-box" id="menuBox"></div>
-<div class="result-traits" id="resultTraits"></div>
-<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
-<div class="compat-section"><p class="section-title">食事の組み合わせ</p><div id="compatPairs"></div></div>
-<div class="share-buttons">
-<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
-<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
-</div>
-<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
-</div>
+
 </div>
 <script>
 const questions=[
 {q:"今の気分を一言で言うと？",opts:[
-{t:"疲れた…元気出したい",s:{G:3}},
-{t:"ちょっとおしゃれな気分",s:{O:3}},
-{t:"がっつりお腹いっぱい食べたい",s:{M:3}},
-{t:"さっぱりヘルシーに行きたい",s:{H:3}}
+{t:"😴 疲れた…元気出したい",s:{G:3}},
+{t:"✨ ちょっとおしゃれな気分",s:{O:3}},
+{t:"💪 がっつりお腹いっぱい食べたい",s:{M:3}},
+{t:"🥗 さっぱりヘルシーに行きたい",s:{H:3}}
 ]},
 {q:"今日の体調は？",opts:[
-{t:"元気いっぱい！何でもイケる",s:{M:3}},
-{t:"ちょっと疲れ気味…",s:{G:3}},
-{t:"普通。特に問題なし",s:{O:3}},
-{t:"胃が重い。軽めがいいかも",s:{H:3}}
+{t:"🔥 元気いっぱい！何でもイケる",s:{M:3}},
+{t:"😔 ちょっと疲れ気味…",s:{G:3}},
+{t:"😊 普通。特に問題なし",s:{O:3}},
+{t:"😶 胃が重い。軽めがいいかも",s:{H:3}}
 ]},
 {q:"今日のシチュエーションは？",opts:[
-{t:"一人でサクッと食べたい",s:{G:2,M:1}},
-{t:"友達・恋人と楽しく",s:{O:3}},
-{t:"自分へのご褒美！",s:{O:2,M:1}},
-{t:"仕事の合間にパパッと",s:{G:3}}
+{t:"🧍 一人でサクッと食べたい",s:{G:2,M:1}},
+{t:"👫 友達・恋人と楽しく",s:{O:3}},
+{t:"🎁 自分へのご褒美！",s:{O:2,M:1}},
+{t:"⏱️ 仕事の合間にパパッと",s:{G:3}}
 ]},
 {q:"味の気分は？",opts:[
-{t:"こってり・濃いめが食べたい",s:{M:3}},
-{t:"ピリ辛でパンチのあるやつ",s:{G:2,M:1}},
-{t:"優しい味・素材の味を楽しみたい",s:{H:3}},
-{t:"いろんな味をちょっとずつ",s:{O:3}}
+{t:"🔥 こってり・濃いめが食べたい",s:{M:3}},
+{t:"🌶️ ピリ辛でパンチのあるやつ",s:{G:2,M:1}},
+{t:"🌿 優しい味・素材の味を楽しみたい",s:{H:3}},
+{t:"🍽️ いろんな味をちょっとずつ",s:{O:3}}
 ]},
 {q:"予算感は？",opts:[
-{t:"ワンコイン（500円以下）",s:{G:3}},
-{t:"1000円くらい",s:{M:2,G:1}},
-{t:"1500-2000円くらい",s:{O:3}},
-{t:"今日は気にしない！",s:{O:2,M:1}}
+{t:"💰 ワンコイン（500円以下）",s:{G:3}},
+{t:"💴 1000円くらい",s:{M:2,G:1}},
+{t:"💳 1500〜2000円くらい",s:{O:3}},
+{t:"🎊 今日は気にしない！",s:{O:2,M:1}}
 ]}
 ];
 const results={
-G:{name:"ラーメン・丼もの",icon:"🍜",desc:"今日のあなたには「ラーメンor丼もの」がベスト！疲れた体にガツンと効くこってりスープ、温かい麺が五臓六腑に染み渡ります。手軽にサクッと食べられて、お財布にも優しい。迷ったらとりあえずラーメン。これ真理。",menu:"<h3>🍜 おすすめメニュー</h3><p>味噌ラーメン（体ポカポカ）/ 豚骨ラーメン（ガッツリ派）/ 親子丼（優しい味）/ カツ丼（勝ちたい日に）/ 牛丼（コスパ最強）</p>",traits:["コスパ最強","サクッと","元気が出る","定番","ソウルフード"]},
-O:{name:"イタリアン・カフェ飯",icon:"🍝",desc:"今日のあなたには「イタリアンorカフェ飯」がベスト！おしゃれな空間でゆったり食事を楽しむ気分。見た目も味も満足できるメニューで、心もお腹も満たされます。友達や恋人とシェアしながら食べると幸福度MAX！",menu:"<h3>🍝 おすすめメニュー</h3><p>カルボナーラ（濃厚クリーミー）/ マルゲリータピザ（みんなでシェア）/ ワンプレートランチ（バランス◎）/ パンケーキ（ご褒美に）/ アサイーボウル（ヘルシーおしゃれ）</p>",traits:["おしゃれ","映える","シェア向き","ご褒美","気分が上がる"]},
-M:{name:"焼肉・ステーキ",icon:"🥩",desc:"今日のあなたには「焼肉orステーキ」がベスト！がっつりお肉を食べてパワーチャージ！タンパク質で体を元気にしつつ、焼ける音と匂いで五感が刺激されます。頑張った自分へのご褒美に最高の選択。明日からまた頑張れる！",menu:"<h3>🥩 おすすめメニュー</h3><p>カルビ＆ハラミ定食（定番最強）/ リブロースステーキ（ご褒美）/ ビビンバ（シメに最高）/ ハンバーグ（気軽にお肉）/ トンテキ（コスパ◎）</p>",traits:["がっつり","パワーチャージ","ご褒美","スタミナ","幸福度MAX"]},
-H:{name:"和食・お魚系",icon:"🐟",desc:"今日のあなたには「和食・お魚系」がベスト！胃に優しく、栄養バランスも抜群。素材の味を活かした料理で体の内側から元気になれます。食後の罪悪感ゼロなのも嬉しいポイント。大人の食事はこうありたい。",menu:"<h3>🐟 おすすめメニュー</h3><p>焼き魚定食（定番ヘルシー）/ お刺身盛り合わせ（新鮮さ命）/ 肉じゃが定食（ほっこり）/ そば・うどん（さっぱり）/ お茶漬け（〆にも最高）</p>",traits:["ヘルシー","胃に優しい","罪悪感ゼロ","栄養バランス","大人の選択"]}
+G:{name:"ラーメン・丼もの",emoji:"🍜",bg:"linear-gradient(135deg,#f6a623,#e8590c)",
+  desc:"今日のあなたには「ラーメンor丼もの」がベスト！疲れた体にガツンと効くこってりスープ、温かい麺が五臓六腑に染み渡ります。手軽にサクッと食べられて、お財布にも優しい。迷ったらとりあえずラーメン。これ真理。",
+  menu:"🍜 おすすめメニュー：味噌ラーメン（体ポカポカ）/ 豚骨ラーメン（ガッツリ派）/ 親子丼（優しい味）/ カツ丼（勝ちたい日）/ 牛丼（コスパ最強）",
+  traits:["コスパ最強💴","サクッと⚡","元気が出る💪","定番🏆","ソウルフード❤️"]},
+O:{name:"イタリアン・カフェ飯",emoji:"🍝",bg:"linear-gradient(135deg,#f093fb,#f5576c)",
+  desc:"今日のあなたには「イタリアンorカフェ飯」がベスト！おしゃれな空間でゆったり食事を楽しむ気分。見た目も味も満足できるメニューで、心もお腹も満たされます。友達や恋人とシェアしながら食べると幸福度MAX！",
+  menu:"🍝 おすすめメニュー：カルボナーラ（濃厚クリーミー）/ マルゲリータ（みんなでシェア）/ ワンプレートランチ（バランス◎）/ パンケーキ（ご褒美に）/ アサイーボウル（ヘルシーおしゃれ）",
+  traits:["おしゃれ✨","映える📸","シェア向き👫","ご褒美🎁","気分が上がる🌟"]},
+M:{name:"焼肉・ステーキ",emoji:"🥩",bg:"linear-gradient(135deg,#c0392b,#e74c3c)",
+  desc:"今日のあなたには「焼肉orステーキ」がベスト！がっつりお肉を食べてパワーチャージ！タンパク質で体を元気にしつつ、焼ける音と匂いで五感が刺激されます。頑張った自分へのご褒美に最高の選択。明日からまた頑張れる！",
+  menu:"🥩 おすすめメニュー：カルビ＆ハラミ定食（定番最強）/ リブロースステーキ（ご褒美）/ ビビンバ（〆に最高）/ ハンバーグ（気軽にお肉）/ トンテキ（コスパ◎）",
+  traits:["がっつり💪","パワーチャージ⚡","ご褒美🏆","スタミナ🔥","幸福度MAX💕"]},
+H:{name:"和食・お魚系",emoji:"🐟",bg:"linear-gradient(135deg,#11998e,#38ef7d)",
+  desc:"今日のあなたには「和食・お魚系」がベスト！胃に優しく、栄養バランスも抜群。素材の味を活かした料理で体の内側から元気になれます。食後の罪悪感ゼロなのも嬉しいポイント。",
+  menu:"🐟 おすすめメニュー：焼き魚定食（定番ヘルシー）/ お刺身盛り合わせ（新鮮さ命）/ 肉じゃが（ほっこり）/ そば・うどん（さっぱり）/ お茶漬け（〆にも最高）",
+  traits:["ヘルシー🥗","胃に優しい💚","罪悪感ゼロ😇","栄養バランス💯","大人の選択🌿"]}
 };
+const allTypes=[
+{key:'G',emoji:'🍜',name:'ラーメン・丼もの'},{key:'O',emoji:'🍝',name:'イタリアン・カフェ飯'},
+{key:'M',emoji:'🥩',name:'焼肉・ステーキ'},{key:'H',emoji:'🐟',name:'和食・お魚系'}
+];
 let current=0,scores={G:0,O:0,M:0,H:0};
-function startQuiz(){show('quiz');render()}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){let max='G',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('menuBox').innerHTML=r.menu;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});renderAllTypes(max);renderCompat();show('result')}
-const typeList=[
-{key:'G',icon:'🍜',name:'ラーメン・丼もの',desc:'手軽にガツンと元気になれるソウルフード'},
-{key:'O',icon:'🍝',name:'イタリアン・カフェ飯',desc:'おしゃれで映えるご褒美ランチ'},
-{key:'M',icon:'🥩',name:'焼肉・ステーキ',desc:'がっつりお肉でスタミナチャージ'},
-{key:'H',icon:'🐟',name:'和食・お魚系',desc:'胃に優しくヘルシーな大人の食事'}
-];
-const compatList=[
-{a:'🍜 ラーメン',b:'🥩 焼肉',desc:'ガッツリ×ガッツリで最強のチートデイコンビ'},
-{a:'🍝 イタリアン',b:'🐟 和食',desc:'おしゃれ×ヘルシーでバランス最高のコース'},
-{a:'🍜 ラーメン',b:'🐟 和食',desc:'こってり→さっぱりの黄金リレー'},
-{a:'🍝 イタリアン',b:'🥩 焼肉',desc:'ランチはイタリアン、夜は焼肉で最高の1日'}
-];
-function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← 今日のおすすめ':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
-function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
-function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`今日食べるべきは「${r}」だって！🍽️\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+function render(){
+  const q=questions[current];
+  document.getElementById('progress').style.width=(current/questions.length*100)+'%';
+  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
+  document.getElementById('qLabel').textContent='Q'+(current+1);
+  document.getElementById('qText').textContent=q.q;
+  const o=document.getElementById('options');o.innerHTML='';
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+function showResult(){
+  let max='G',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  const r=results[max];
+  document.getElementById('quiz').classList.remove('active');
+  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  document.getElementById('resultEmoji').textContent=r.emoji;
+  document.getElementById('resultName').textContent=r.name;
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc;
+  document.getElementById('menuBox').innerHTML='<h3>🍴 おすすめメニュー</h3><p>'+r.menu+'</p>';
+  const ag=document.getElementById('allGrid');ag.innerHTML='';
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← 今日のおすすめ！</div>':''}</div></div>`;});
+  document.getElementById('result').classList.add('active');
+}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('今日食べるべきは「'+n+'」だって！🍽️\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
 </script>
 </body>
 </html>
