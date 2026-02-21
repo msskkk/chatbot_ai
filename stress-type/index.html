@@ -38,6 +38,15 @@ h1{font-size:1.6em;text-align:center;background:linear-gradient(135deg,#11998e,#
 .btn-x{background:#000;color:#fff}
 .btn-line{background:#06C755;color:#fff}
 .btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}
+.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}
+.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}
+.type-card.current{border-color:#11998e;background:#e8f8f0}
+.type-card-name{font-weight:700;font-size:.85em;color:#333}
+.type-card-desc{font-size:.78em;color:#999;margin-top:2px}
+.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}
+.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}
+.compat-pair strong{color:#11998e}
 </style>
 </head>
 <body>
@@ -62,6 +71,8 @@ h1{font-size:1.6em;text-align:center;background:linear-gradient(135deg,#11998e,#
 <p class="result-desc" id="resultDesc"></p>
 <div class="refresh-box" id="refreshBox"></div>
 <div class="result-traits" id="resultTraits"></div>
+<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
+<div class="compat-section"><p class="section-title">タイプ相性</p><div id="compatPairs"></div></div>
 <div class="share-buttons">
 <button class="btn btn-x" onclick="shareX()">Xでシェア</button>
 <button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
@@ -144,8 +155,24 @@ document.getElementById('resultDesc').textContent=r.desc;
 document.getElementById('refreshBox').innerHTML=r.refresh;
 const t=document.getElementById('resultTraits');t.innerHTML='';
 r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});
+renderAllTypes(max);renderCompat();
 show('result');
 }
+
+const typeList=[
+{key:'S',icon:'🏔️',name:'鉄壁メンタルタイプ',desc:'感情に振り回されない最強のメンタルの持ち主'},
+{key:'F',icon:'🌊',name:'しなやか適応タイプ',desc:'柔軟にストレスを受け流すバランスの達人'},
+{key:'B',icon:'🌋',name:'溜め込み爆発タイプ',desc:'我慢強いが限界を超えると一気に爆発'},
+{key:'D',icon:'🫧',name:'スルー回避タイプ',desc:'ストレスから距離を取って自分を守る繊細派'}
+];
+const compatList=[
+{a:'🏔️ 鉄壁',b:'🌊 しなやか',desc:'安定感抜群のストレスフリーペア'},
+{a:'🏔️ 鉄壁',b:'🌋 溜め込み',desc:'鉄壁の冷静さが溜め込みタイプの支えになる'},
+{a:'🌊 しなやか',b:'🫧 スルー',desc:'しなやかな柔軟さが回避タイプを上手く引き出す'},
+{a:'🌊 しなやか',b:'🌋 溜め込み',desc:'頼れるしなやかさが溜め込みの安全弁になる'}
+];
+function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
+function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
 function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私のストレス耐性タイプは「${r}」でした！\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
 </script>
