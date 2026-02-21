@@ -37,6 +37,7 @@ h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f5a623,#
 .share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
 .btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
 .btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#f5a623;background:#fff3e5}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#e8795a}
 </style>
 </head>
 <body>
@@ -61,6 +62,8 @@ h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f5a623,#
 <p class="result-desc" id="resultDesc"></p>
 <div class="compat-box" id="compatBox"></div>
 <div class="result-traits" id="resultTraits"></div>
+<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
+<div class="compat-section"><p class="section-title">動物タイプ相性</p><div id="compatPairs"></div></div>
 <div class="share-buttons">
 <button class="btn btn-x" onclick="shareX()">Xでシェア</button>
 <button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
@@ -124,7 +127,21 @@ function startQuiz(){show('quiz');render()}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
 function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){let max='D',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('compatBox').innerHTML=r.compat;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function showResult(){let max='D',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('compatBox').innerHTML=r.compat;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});renderAllTypes(max);renderCompat();show('result')}
+const typeList=[
+{key:'D',icon:'🐕',name:'犬タイプ',desc:'明るく忠実でエネルギッシュな愛されキャラ'},
+{key:'C',icon:'🐰',name:'うさぎタイプ',desc:'優しく共感力の高い癒やし系'},
+{key:'O',icon:'🐱',name:'猫タイプ',desc:'マイペースで自分の世界を大切にするツンデレ'},
+{key:'N',icon:'🦉',name:'フクロウタイプ',desc:'ミステリアスで知的な孤高の自由人'}
+];
+const compatList=[
+{a:'🐕 犬',b:'🐱 猫',desc:'王道の組み合わせ！違いが心地よいバランスに'},
+{a:'🐰 うさぎ',b:'🦉 フクロウ',desc:'繊細同士で深く理解し合える知的パートナー'},
+{a:'🐕 犬',b:'🐰 うさぎ',desc:'元気×癒やしで一緒にいるだけで幸せなペア'},
+{a:'🐱 猫',b:'🦉 フクロウ',desc:'お互いの自由を尊重し合える大人の関係'}
+];
+function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
+function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
 function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私を動物に例えると「${r}」でした！🐾\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
 </script>

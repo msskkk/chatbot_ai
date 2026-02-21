@@ -40,6 +40,7 @@ h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#667eea,#
 .share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
 .btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
 .btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#667eea;background:#eef2ff}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#667eea}
 </style>
 </head>
 <body>
@@ -66,6 +67,8 @@ h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#667eea,#
 <div class="method-box" id="methodBox"></div>
 <div class="tool-box" id="toolBox"></div>
 <div class="result-traits" id="resultTraits"></div>
+<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
+<div class="compat-section"><p class="section-title">学習バディ相性</p><div id="compatPairs"></div></div>
 <div class="share-buttons">
 <button class="btn btn-x" onclick="shareX()">Xでシェア</button>
 <button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
@@ -141,7 +144,21 @@ function startQuiz(){show('quiz');render()}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
 function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){let max='V',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('methodBox').innerHTML=r.method;document.getElementById('toolBox').innerHTML=r.tool;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function showResult(){let max='V',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('methodBox').innerHTML=r.method;document.getElementById('toolBox').innerHTML=r.tool;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});renderAllTypes(max);renderCompat();show('result')}
+const typeList=[
+{key:'V',icon:'👁️',name:'視覚型（ビジュアルラーナー）',desc:'図解・動画・マインドマップで覚える'},
+{key:'A',icon:'👂',name:'聴覚型（オーディオラーナー）',desc:'聞いて・話して・議論して覚える'},
+{key:'R',icon:'📖',name:'読み書き型（リーディングラーナー）',desc:'読んで・書いて・まとめて覚える'},
+{key:'K',icon:'🤸',name:'体感型（キネスティックラーナー）',desc:'やって・触って・体験して覚える'}
+];
+const compatList=[
+{a:'👁️ 視覚型',b:'🤸 体感型',desc:'見る×やるで最速マスター。実演付き学習が最強'},
+{a:'👂 聴覚型',b:'📖 読み書き型',desc:'聞く×読むでインプット量が最大化するペア'},
+{a:'👁️ 視覚型',b:'👂 聴覚型',desc:'動画学習の最適コンビ。一緒に見て議論して定着'},
+{a:'📖 読み書き型',b:'🤸 体感型',desc:'理論×実践で深い理解に到達する学習パートナー'}
+];
+function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
+function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
 function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の最適な学習法は「${r}」でした！📚\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
 </script>
