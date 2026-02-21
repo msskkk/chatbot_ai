@@ -14,7 +14,7 @@ body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear
 .hero-card,.quiz-card,.result-card{background:#fff;border-radius:28px;box-shadow:0 8px 40px rgba(230,120,0,.15);margin-bottom:16px;overflow:hidden}
 .hero-card{padding:36px 28px 28px;position:relative}
 .hero-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,#ffe0b2 0%,transparent 70%);border-radius:50%}
-.char-emoji{font-size:4.5em;text-align:center;display:block;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+.char-img{display:block;width:220px;height:140px;object-fit:contain;margin:0 auto 12px;animation:float 3s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .badge{display:inline-block;background:linear-gradient(135deg,#f6a623,#e8590c);color:#fff;font-size:.7em;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.05em;margin-bottom:12px}
 h1{font-size:1.55em;font-weight:900;color:#2D2D2D;line-height:1.4;margin-bottom:8px}
@@ -69,7 +69,7 @@ h1{font-size:1.55em;font-weight:900;color:#2D2D2D;line-height:1.4;margin-bottom:
 
 <div class="hero-card" id="start">
   <div style="text-align:center"><span class="badge">🍽️ 食事診断</span></div>
-  <span class="char-emoji">🍜🥩🍝🐟</span>
+  <img class="char-img" src="https://www.genspark.ai/api/files/s/JZc3h63a?cache_control=3600" alt="キャラクター" onerror="this.outerHTML='<div style=\"font-size:3.5em;text-align:center;margin-bottom:12px\">🎯</div>'">
   <h1>今日なに食べる？<br>診断</h1>
   <p class="subtitle">5つの質問で、今日のベスト飯が決まる！<br>「なに食べよう…」って迷わない！</p>
   <button class="start-btn" onclick="startQuiz()">🔮 診断スタート！</button>
