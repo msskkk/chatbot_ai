@@ -5,148 +5,206 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>恋愛キラーフレーズ診断</title>
 <meta name="description" content="あなたが無意識に使ってる恋愛のキラーフレーズ（or地雷ワード）を診断！">
-<meta property="og:title" content="恋愛キラーフレーズ診断">
-<meta property="og:description" content="あなたの恋愛キラーフレーズを診断！">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#ee9ca7 0%,#ffdde1 100%);display:flex;justify-content:center;align-items:center;padding:20px}
-.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#ee9ca7,#d4577a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
-.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
-.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
-.btn-primary{background:linear-gradient(135deg,#ee9ca7,#d4577a);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(238,156,167,.4)}
-.btn-option{background:#fff5f7;color:#333;border:2px solid #fde0e5;text-align:left;padding:14px 18px}
-.btn-option:hover{border-color:#ee9ca7;background:#fff0f3}
-.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#ee9ca7,#d4577a);border-radius:3px;transition:width .3s ease}
-.q-number{font-size:.85em;color:#999;margin-bottom:8px}
-.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
-.result-center{text-align:center}
-.phrase-box{background:linear-gradient(135deg,#fff5f7,#ffe8ec);border-radius:16px;padding:25px 20px;margin:20px 0;text-align:center}
-.phrase-text{font-size:1.5em;font-weight:900;color:#d4577a;line-height:1.4;margin-bottom:10px}
-.phrase-sub{font-size:.85em;color:#999}
-.result-type{font-size:1.1em;font-weight:700;color:#d4577a;text-align:center;margin:15px 0}
-.result-desc{color:#555;line-height:1.8;margin:15px 0;font-size:.95em}
-.danger-box{background:#fff8f0;border-radius:12px;padding:16px;margin:15px 0}
-.danger-box h3{font-size:.95em;color:#e67e22;margin-bottom:8px}
-.danger-box p{font-size:.9em;color:#555;line-height:1.6}
-.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
-.trait-tag{background:#fff5f7;color:#d4577a;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
-.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
-.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
-.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
-.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#d4577a;background:#fff0f3}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#d4577a}
+body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#fff0f5 0%,#fce4ec 50%,#fff8e1 100%);display:flex;justify-content:center;align-items:flex-start;padding:20px}
+.container{max-width:520px;width:100%;margin:0 auto}
+.hero-card,.quiz-card,.result-card{background:#fff;border-radius:28px;box-shadow:0 8px 40px rgba(212,87,122,.18);margin-bottom:16px;overflow:hidden}
+.hero-card{padding:36px 28px 28px;position:relative}
+.char-emoji{font-size:4.5em;text-align:center;display:block;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.badge{display:inline-block;background:linear-gradient(135deg,#ee9ca7,#d4577a);color:#fff;font-size:.7em;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:12px}
+h1{font-size:1.55em;font-weight:900;color:#2D1020;line-height:1.4;margin-bottom:8px}
+.subtitle{color:#888;font-size:.88em;line-height:1.6;margin-bottom:24px}
+.start-btn{display:block;width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#ee9ca7 0%,#d4577a 100%);color:#fff;font-family:inherit;font-size:1.1em;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(212,87,122,.4)}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(212,87,122,.5)}
+.hint{text-align:center;font-size:.78em;color:#bbb;margin-top:12px}
+.quiz-card{padding:28px 24px;display:none;animation:slideUp .35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card.active,.result-card.active{display:block}
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.progress-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ee9ca7,#d4577a);border-radius:4px;transition:width .4s ease}
+.q-count{font-size:.8em;color:#aaa;white-space:nowrap;font-weight:700}
+.q-label{display:inline-block;background:#fff5f7;color:#d4577a;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;border:1.5px solid #fde0e5}
+.question{font-size:1.18em;font-weight:700;color:#2D1020;line-height:1.65;margin-bottom:22px}
+.opt-btn{display:flex;align-items:center;width:100%;padding:14px 18px;border:2px solid #f0f0f0;border-radius:14px;background:#fafafa;color:#333;font-family:inherit;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px;text-align:left;gap:10px}
+.opt-btn::before{content:'';display:block;width:22px;height:22px;min-width:22px;border:2.5px solid #ddd;border-radius:50%;transition:all .2s}
+.opt-btn:hover{border-color:#d4577a;background:#fff5f7;color:#d4577a}
+.opt-btn:hover::before{border-color:#d4577a;background:#d4577a}
+.result-card{display:none;animation:slideUp .35s ease}
+.result-hero{padding:32px 24px 24px;text-align:center}
+.phrase-box{background:rgba(255,255,255,.2);border-radius:20px;padding:20px;margin-top:16px;border:2px solid rgba(255,255,255,.4)}
+.phrase-text{font-size:1.5em;font-weight:900;color:#fff;line-height:1.5;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.phrase-note{font-size:.8em;color:rgba(255,255,255,.8)}
+.result-label{font-size:.8em;font-weight:700;letter-spacing:.1em;margin-bottom:6px;color:rgba(255,255,255,.8)}
+.result-name{font-size:1.2em;font-weight:900;color:#fff;margin-bottom:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.tag{padding:5px 14px;border-radius:20px;font-size:.78em;font-weight:700;background:rgba(255,255,255,.25);color:#fff}
+.result-body{padding:16px 24px 24px}
+.desc-box{background:#fafafa;border-radius:16px;padding:18px;margin-bottom:16px;font-size:.92em;line-height:1.85;color:#444}
+.info-box{background:linear-gradient(135deg,#fff8f0,#fff3e0);border-radius:16px;padding:18px;margin-bottom:16px;border:1.5px solid #fde8d0}
+.info-box h3{font-size:.9em;font-weight:700;color:#e67e22;margin-bottom:10px}
+.info-box p{font-size:.88em;color:#555;line-height:1.7}
+.section-head{font-size:.82em;font-weight:700;color:#bbb;letter-spacing:.1em;margin:16px 0 10px}
+.all-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.type-chip{background:#f8f8f8;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;border:2px solid transparent}
+.type-chip.me{border-color:#d4577a;background:#fff5f7}
+.tc-icon{font-size:1.6em}
+.tc-name{font-size:.78em;font-weight:700;color:#333;line-height:1.3}
+.tc-me{font-size:.7em;color:#d4577a;font-weight:700}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.share-btn{padding:14px;border:none;border-radius:14px;font-family:inherit;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.share-btn:hover{transform:translateY(-2px)}
+.btn-x{background:#000;color:#fff}
+.btn-line{background:#06C755;color:#fff}
+.retry-btn{display:block;width:100%;padding:14px;border:2px solid #eee;border-radius:14px;background:#fff;font-family:inherit;font-size:.9em;font-weight:700;color:#999;cursor:pointer;margin-top:10px;transition:all .2s}
+.retry-btn:hover{border-color:#d4577a;color:#d4577a}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="screen active" id="start">
-<div class="start-icon">💋</div>
-<h1>恋愛キラーフレーズ診断</h1>
-<p class="subtitle">あなたが無意識に放ってるモテフレーズ＆地雷ワードを診断！</p>
-<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+
+<div class="hero-card" id="start">
+  <div style="text-align:center"><span class="badge">💕 恋愛診断</span></div>
+  <span class="char-emoji">💋💌🌹💫</span>
+  <h1>恋愛キラーフレーズ<br>診断</h1>
+  <p class="subtitle">あなたが無意識に放ってる<br>モテフレーズ＆地雷ワードを診断！</p>
+  <button class="start-btn" onclick="startQuiz()">💘 診断スタート！</button>
+  <p class="hint">全7問・約1分で完了</p>
 </div>
-<div class="screen" id="quiz">
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<p class="q-number" id="qNumber"></p>
-<p class="question" id="qText"></p>
-<div id="options"></div>
+
+<div class="quiz-card" id="quiz">
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <span class="q-count" id="qCount">1/7</span>
+  </div>
+  <span class="q-label" id="qLabel">Q1</span>
+  <p class="question" id="qText"></p>
+  <div id="options"></div>
 </div>
-<div class="screen" id="result">
-<div class="phrase-box">
-<p class="phrase-sub">あなたのキラーフレーズ</p>
-<p class="phrase-text" id="phraseText"></p>
+
+<div class="result-card" id="result">
+  <div class="result-hero" id="resultHero">
+    <p class="result-label">あなたのキラーフレーズは…</p>
+    <div class="phrase-box">
+      <div class="phrase-text" id="phraseText"></div>
+      <div class="phrase-note" id="resultName"></div>
+    </div>
+    <div class="tags" id="resultTags"></div>
+  </div>
+  <div class="result-body">
+    <div class="desc-box" id="resultDesc"></div>
+    <div class="info-box" id="dangerBox"></div>
+    <p class="section-head">🗺 全タイプ一覧</p>
+    <div class="all-grid" id="allGrid"></div>
+    <div class="share-row">
+      <button class="share-btn btn-x" onclick="shareX()">𝕏 シェア</button>
+      <button class="share-btn btn-line" onclick="shareLine()">LINE シェア</button>
+    </div>
+    <button class="retry-btn" onclick="location.reload()">🔄 もう一度診断する</button>
+  </div>
 </div>
-<p class="result-type" id="resultType"></p>
-<p class="result-desc" id="resultDesc"></p>
-<div class="danger-box" id="dangerBox"></div>
-<div class="result-traits" id="resultTraits"></div>
-<div class="all-types"><p class="section-title">全タイプ一覧</p><div id="allTypes"></div></div>
-<div class="compat-section"><p class="section-title">恋愛タイプ相性</p><div id="compatPairs"></div></div>
-<div class="share-buttons">
-<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
-<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
-</div>
-<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
-</div>
+
 </div>
 <script>
 const questions=[
 {q:"気になる人とのLINE、あなたのスタイルは？",opts:[
-{t:"相手のペースに合わせて返信する",s:{C:3}},
-{t:"面白いスタンプや画像を送りまくる",s:{H:3}},
-{t:"さりげなく褒め言葉を入れる",s:{S:3}},
-{t:"既読つけてちょっと焦らす",s:{M:3}}
+{t:"💬 相手のペースに合わせて返信する",s:{C:3}},
+{t:"😂 面白いスタンプや画像を送りまくる",s:{H:3}},
+{t:"✨ さりげなく褒め言葉を入れる",s:{S:3}},
+{t:"😏 既読つけてちょっと焦らす",s:{M:3}}
 ]},
 {q:"デート中、沈黙が訪れたら？",opts:[
-{t:"「一緒にいると落ち着くね」と伝える",s:{C:3}},
-{t:"面白いエピソードで場を盛り上げる",s:{H:3}},
-{t:"「今日の服、すごく似合ってるね」と褒める",s:{S:3}},
-{t:"「何考えてるの？」と意味深に聞く",s:{M:3}}
+{t:"😊「一緒にいると落ち着くね」と伝える",s:{C:3}},
+{t:"😄 面白いエピソードで場を盛り上げる",s:{H:3}},
+{t:"💕「今日の服、すごく似合ってるね」と褒める",s:{S:3}},
+{t:"🌙「何考えてるの？」と意味深に聞く",s:{M:3}}
 ]},
 {q:"好きな人に告白するなら、どんな言い方？",opts:[
-{t:"「ずっと一緒にいたいと思ってる」",s:{C:3}},
-{t:"「一緒にいると毎日楽しすぎるんだけど」",s:{H:3}},
-{t:"「こんなに素敵な人に出会えて幸せ」",s:{S:3}},
-{t:"「あなたのこと、気になってるんだけど」",s:{M:3}}
+{t:"🏠「ずっと一緒にいたいと思ってる」",s:{C:3}},
+{t:"🎉「一緒にいると毎日楽しすぎるんだけど」",s:{H:3}},
+{t:"🌟「こんなに素敵な人に出会えて幸せ」",s:{S:3}},
+{t:"🔮「あなたのこと、気になってるんだけど」",s:{M:3}}
 ]},
 {q:"友達の恋愛相談に乗るとき、あなたは？",opts:[
-{t:"「気持ちわかるよ」と寄り添う",s:{C:3}},
-{t:"「こうすれば絶対うまくいく！」と盛り上げる",s:{H:3}},
-{t:"「あなたには魅力があるから大丈夫」と励ます",s:{S:3}},
-{t:"「駆け引きも大事だよ」とアドバイスする",s:{M:3}}
+{t:"🤗「気持ちわかるよ」と寄り添う",s:{C:3}},
+{t:"💪「こうすれば絶対うまくいく！」と盛り上げる",s:{H:3}},
+{t:"👑「あなたには魅力があるから大丈夫」と励ます",s:{S:3}},
+{t:"🎯「駆け引きも大事だよ」とアドバイスする",s:{M:3}}
 ]},
 {q:"相手の好きなところを聞かれたら？",opts:[
-{t:"「一緒にいると安心する」",s:{C:3}},
-{t:"「一緒にいると楽しい」",s:{H:3}},
-{t:"「尊敬できるところがたくさんある」",s:{S:3}},
-{t:"「なんか目が離せないんだよね」",s:{M:3}}
+{t:"🛋️「一緒にいると安心する」",s:{C:3}},
+{t:"😄「一緒にいると楽しい」",s:{H:3}},
+{t:"🙏「尊敬できるところがたくさんある」",s:{S:3}},
+{t:"👀「なんか目が離せないんだよね」",s:{M:3}}
 ]},
 {q:"恋愛で一番大事にしていることは？",opts:[
-{t:"お互いの居心地の良さ",s:{C:3}},
-{t:"一緒にいる時間の楽しさ",s:{H:3}},
-{t:"相手への尊敬と信頼",s:{S:3}},
-{t:"ドキドキ感やときめき",s:{M:3}}
+{t:"🏠 お互いの居心地の良さ",s:{C:3}},
+{t:"🎊 一緒にいる時間の楽しさ",s:{H:3}},
+{t:"🤝 相手への尊敬と信頼",s:{S:3}},
+{t:"💓 ドキドキ感やときめき",s:{M:3}}
 ]},
 {q:"別れ際、最後にかける言葉は？",opts:[
-{t:"「気をつけてね。また会えるの楽しみにしてる」",s:{C:3}},
-{t:"「今日めっちゃ楽しかった！次はどこ行く？」",s:{H:3}},
-{t:"「今日は本当にありがとう。幸せだった」",s:{S:3}},
-{t:"「帰りたくないな…」とポツリ",s:{M:3}}
+{t:"🌸「気をつけてね。また会えるの楽しみにしてる」",s:{C:3}},
+{t:"🎉「今日めっちゃ楽しかった！次はどこ行く？」",s:{H:3}},
+{t:"💖「今日は本当にありがとう。幸せだった」",s:{S:3}},
+{t:"😔「帰りたくないな…」とポツリ",s:{M:3}}
 ]}
 ];
 const results={
-C:{phrase:"「一緒にいると安心する」",type:"癒やし系キラーフレーズタイプ",desc:"あなたのキラーフレーズは相手に「安心感」を与える言葉。自然体で相手を包み込むような温かさがあり、一緒にいるとホッとする存在です。派手さはないけれど、じわじわと相手の心に染み込んでいくタイプ。長期的な関係に強い！",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「誰でもいいわけじゃないんだけど…」→ 安心感を与えるはずが、逆に不安にさせるかも。自信を持って気持ちを伝えよう！</p>",traits:["安心感","包容力","自然体","聞き上手","長続きする恋愛"]},
-H:{phrase:"「一緒にいると楽しすぎる！」",type:"ムードメーカー系キラーフレーズタイプ",desc:"あなたのキラーフレーズは「楽しさ」を共有する言葉！テンションが高くポジティブなエネルギーで相手を惹きつけます。一緒にいると笑顔が絶えず、「この人といると元気になれる」と思わせる力があります。出会いからの初速が最強！",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「俺（私）といれば絶対楽しいって！」→ 自信は魅力だけど、押しが強すぎると引かれるかも。相手のペースも大事に！</p>",traits:["ムードメーカー","ポジティブ","モテオーラ","社交的","初速が速い"]},
-S:{phrase:"「こんな人、他にいない」",type:"褒め上手キラーフレーズタイプ",desc:"あなたのキラーフレーズは相手を「特別」に感じさせる言葉！さりげない褒め言葉で相手の自己肯定感を高め、「この人は自分を見てくれている」と思わせる天才です。誠実さが伝わるので、真剣な恋愛に発展しやすいタイプ。",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「前の恋人とは全然違う」→ 褒めてるつもりが比較に聞こえるかも。相手だけを見つめる言葉選びを心がけて！</p>",traits:["褒め上手","誠実","特別感を演出","観察力","真剣な恋愛向き"]},
-M:{phrase:"「…気になってるんだけど」",type:"ミステリアス駆け引きタイプ",desc:"あなたのキラーフレーズは相手を「ドキッ」とさせる意味深な言葉！全てを言わないからこそ想像力を掻き立て、相手の頭の中をあなたでいっぱいにする小悪魔的な魅力があります。押して引く駆け引きの天才。ただし、やりすぎ注意！",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「別にどっちでもいいけど」→ 駆け引きのつもりが「興味ない」と受け取られるかも。好意は時にはストレートに伝えて！</p>",traits:["小悪魔","ミステリアス","駆け引き上手","ドキドキさせる","恋愛巧者"]}
+C:{phrase:"「一緒にいると安心する」",name:"癒やし系キラーフレーズタイプ",bg:"linear-gradient(135deg,#ee9ca7,#d4577a)",
+  desc:"あなたのキラーフレーズは相手に「安心感」を与える言葉。自然体で相手を包み込むような温かさがあり、一緒にいるとホッとする存在です。派手さはないけれど、じわじわと相手の心に染み込んでいくタイプ。長期的な関係に強い！",
+  danger:"⚠️ 注意ワード：「誰でもいいわけじゃないんだけど…」→ 安心感を与えるはずが逆に不安にさせるかも。自信を持って気持ちを伝えよう！",
+  traits:["安心感💆","包容力🤗","自然体🌿","聞き上手👂","長続き❤️"]},
+H:{phrase:"「一緒にいると楽しすぎる！」",name:"ムードメーカー系キラーフレーズタイプ",bg:"linear-gradient(135deg,#f093fb,#f5576c)",
+  desc:"あなたのキラーフレーズは「楽しさ」を共有する言葉！テンションが高くポジティブなエネルギーで相手を惹きつけます。一緒にいると笑顔が絶えず、「この人といると元気になれる」と思わせる力があります。出会いからの初速が最強！",
+  danger:"⚠️ 注意ワード：「俺（私）といれば絶対楽しいって！」→ 自信は魅力だけど押しが強すぎると引かれるかも。相手のペースも大事に！",
+  traits:["ムードメーカー🎉","ポジティブ☀️","モテオーラ✨","社交的💬","初速が速い🚀"]},
+S:{phrase:"「こんな人、他にいない」",name:"褒め上手キラーフレーズタイプ",bg:"linear-gradient(135deg,#f6d365,#fda085)",
+  desc:"あなたのキラーフレーズは相手を「特別」に感じさせる言葉！さりげない褒め言葉で相手の自己肯定感を高め、「この人は自分を見てくれている」と思わせる天才です。誠実さが伝わるので、真剣な恋愛に発展しやすいタイプ。",
+  danger:"⚠️ 注意ワード：「前の恋人とは全然違う」→ 褒めてるつもりが比較に聞こえるかも。相手だけを見つめる言葉選びを！",
+  traits:["褒め上手👑","誠実🙏","特別感を演出✨","観察力🔍","真剣な恋愛向き💒"]},
+M:{phrase:"「…気になってるんだけど」",name:"ミステリアス駆け引きタイプ",bg:"linear-gradient(135deg,#667eea,#764ba2)",
+  desc:"あなたのキラーフレーズは相手を「ドキッ」とさせる意味深な言葉！全てを言わないからこそ想像力を掻き立て、相手の頭の中をあなたでいっぱいにする小悪魔的な魅力があります。押して引く駆け引きの天才。ただし、やりすぎ注意！",
+  danger:"⚠️ 注意ワード：「別にどっちでもいいけど」→ 駆け引きのつもりが「興味ない」と受け取られるかも。好意は時にはストレートに！",
+  traits:["小悪魔😈","ミステリアス🌙","駆け引き上手🎲","ドキドキさせる💓","恋愛巧者🏆"]}
 };
+const allTypes=[
+{key:'C',emoji:'💆',name:'癒やし系キラーフレーズ'},{key:'H',emoji:'🎉',name:'ムードメーカー系'},
+{key:'S',emoji:'👑',name:'褒め上手キラーフレーズ'},{key:'M',emoji:'🌙',name:'ミステリアス駆け引き'}
+];
 let current=0,scores={C:0,H:0,S:0,M:0};
-function startQuiz(){show('quiz');render()}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){let max='C',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('phraseText').textContent=r.phrase;document.getElementById('resultType').textContent=r.type;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('dangerBox').innerHTML=r.danger;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});renderAllTypes(max);renderCompat();show('result')}
-const typeList=[
-{key:'C',icon:'💆',name:'癒やし系キラーフレーズタイプ',desc:'「一緒にいると安心する」で相手を包み込む'},
-{key:'H',icon:'🎉',name:'ムードメーカー系タイプ',desc:'「一緒にいると楽しすぎる！」でテンション爆上げ'},
-{key:'S',icon:'👑',name:'褒め上手キラーフレーズタイプ',desc:'「こんな人、他にいない」で相手を特別にする'},
-{key:'M',icon:'🌙',name:'ミステリアス駆け引きタイプ',desc:'「…気になってるんだけど」でドキッとさせる'}
-];
-const compatList=[
-{a:'💆 癒やし系',b:'🌙 ミステリアス',desc:'安心感×ドキドキの絶妙バランスで飽きない関係'},
-{a:'🎉 ムードメーカー',b:'👑 褒め上手',desc:'楽しさ×特別感でお互いモテ度がさらにUP'},
-{a:'💆 癒やし系',b:'👑 褒め上手',desc:'安心×尊敬の理想的カップル。長続きしやすい'},
-{a:'🎉 ムードメーカー',b:'🌙 ミステリアス',desc:'楽しさ×ミステリアスで周りが羨むドラマチックな関係'}
-];
-function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
-function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
-function shareX(){const p=document.getElementById('phraseText').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の恋愛キラーフレーズは\n${p}\nでした！💋\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+function render(){
+  const q=questions[current];
+  document.getElementById('progress').style.width=(current/questions.length*100)+'%';
+  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
+  document.getElementById('qLabel').textContent='Q'+(current+1);
+  document.getElementById('qText').textContent=q.q;
+  const o=document.getElementById('options');o.innerHTML='';
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+function showResult(){
+  let max='C',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  const r=results[max];
+  document.getElementById('quiz').classList.remove('active');
+  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  document.getElementById('phraseText').textContent=r.phrase;
+  document.getElementById('resultName').textContent=r.name;
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc;
+  document.getElementById('dangerBox').innerHTML='<h3>⚠️ 注意すべき地雷ワード</h3><p>'+r.danger+'</p>';
+  const ag=document.getElementById('allGrid');ag.innerHTML='';
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  document.getElementById('result').classList.add('active');
+}
+function shareX(){const p=document.getElementById('phraseText').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の恋愛キラーフレーズは\n「'+p+'」\nでした！💋\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
 </script>
 </body>
 </html>

@@ -4,181 +4,256 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>異世界転生スキル診断</title>
-<meta name="description" content="もし異世界転生したら…あなたが持つスキルとステータスを診断！">
-<meta property="og:title" content="異世界転生スキル診断">
-<meta property="og:description" content="異世界でのあなたのスキルとステータスを診断！">
+<meta name="description" content="もし異世界転生したら…あなたのジョブ＆スキルを診断！">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#0c0c2c 0%,#1a1a4e 50%,#2d1b69 100%);display:flex;justify-content:center;align-items:center;padding:20px}
-.container{background:rgba(255,255,255,.95);border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#6c3baa,#c850c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
-.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
-.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
-.btn-primary{background:linear-gradient(135deg,#6c3baa,#c850c0);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(108,59,170,.4)}
-.btn-option{background:#f5f0ff;color:#333;border:2px solid #e0d0f0;text-align:left;padding:14px 18px}
-.btn-option:hover{border-color:#6c3baa;background:#ede0ff}
-.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#6c3baa,#c850c0);border-radius:3px;transition:width .3s ease}
-.q-number{font-size:.85em;color:#999;margin-bottom:8px}
-.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
-.result-icon{text-align:center;font-size:4em;margin-bottom:10px}
-.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
-.result-center{text-align:center}
-.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
-.status-box{background:#f5f0ff;border-radius:12px;padding:16px;margin:15px 0}
-.status-box h3{font-size:.95em;color:#6c3baa;margin-bottom:12px}
-.stat-bar{display:flex;align-items:center;margin-bottom:8px;font-size:.85em}
-.stat-name{width:50px;font-weight:700;color:#555}
-.stat-track{flex:1;height:10px;background:#eee;border-radius:5px;margin:0 8px;overflow:hidden}
-.stat-fill{height:100%;border-radius:5px;transition:width .5s ease}
-.stat-val{width:30px;text-align:right;color:#6c3baa;font-weight:700}
-.skill-box{background:#f0f5ff;border-radius:12px;padding:16px;margin:15px 0}
-.skill-box h3{font-size:.95em;color:#4a5ac7;margin-bottom:8px}
-.skill-box p{font-size:.9em;color:#555;line-height:1.6}
-.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
-.trait-tag{background:#f5f0ff;color:#6c3baa;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
-.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
-.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
-.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
-.all-types{margin:25px 0;border-top:1px solid #eee;padding-top:20px}.section-title{font-size:.95em;color:#888;font-weight:700;text-align:center;margin-bottom:12px}.type-card{display:flex;align-items:flex-start;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#f8f8f8;border:2px solid transparent}.type-card.current{border-color:#6c3baa;background:#ede0ff}.type-card-name{font-weight:700;font-size:.85em;color:#333}.type-card-desc{font-size:.78em;color:#999;margin-top:2px}.compat-section{margin:20px 0;border-top:1px solid #eee;padding-top:20px}.compat-pair{padding:8px 14px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;font-size:.82em;color:#555;line-height:1.5}.compat-pair strong{color:#6c3baa}
+body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#0d0d2b 0%,#1a0533 50%,#0a1628 100%);display:flex;justify-content:center;align-items:flex-start;padding:20px}
+.container{max-width:520px;width:100%;margin:0 auto}
+
+/* Stars bg */
+body::before{content:'✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';position:fixed;top:0;left:0;right:0;font-size:.6em;color:rgba(255,255,255,.15);letter-spacing:2em;line-height:3em;word-wrap:break-word;pointer-events:none;z-index:0}
+
+.hero-card{background:rgba(255,255,255,.96);border-radius:28px;padding:36px 28px 28px;box-shadow:0 8px 60px rgba(108,59,170,.4);margin-bottom:16px;position:relative;overflow:hidden;z-index:1}
+.hero-card::before{content:'';position:absolute;top:-80px;right:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(108,59,170,.2) 0%,transparent 70%);border-radius:50%}
+.hero-card::after{content:'';position:absolute;bottom:-50px;left:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(200,80,192,.2) 0%,transparent 70%);border-radius:50%}
+
+.char-img{display:block;width:210px;height:150px;object-fit:contain;margin:0 auto 16px;position:relative;z-index:1;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.badge{display:inline-block;background:linear-gradient(135deg,#6c3baa,#c850c0);color:#fff;font-size:.7em;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.05em;margin-bottom:12px}
+h1{font-size:1.55em;font-weight:900;color:#1a0533;line-height:1.4;margin-bottom:8px;position:relative;z-index:1}
+.subtitle{color:#888;font-size:.88em;line-height:1.6;margin-bottom:24px}
+.start-btn{display:block;width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#6c3baa 0%,#c850c0 100%);color:#fff;font-family:inherit;font-size:1.1em;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(108,59,170,.45);letter-spacing:.05em}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(108,59,170,.6)}
+.hint{text-align:center;font-size:.78em;color:#bbb;margin-top:12px}
+
+.quiz-card,.result-card{background:rgba(255,255,255,.97);border-radius:28px;padding:28px 24px;box-shadow:0 8px 40px rgba(108,59,170,.3);display:none;animation:slideUp .35s ease;position:relative;z-index:1}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card.active,.result-card.active{display:block}
+
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.progress-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6c3baa,#c850c0);border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.q-count{font-size:.8em;color:#aaa;white-space:nowrap;font-weight:700}
+.q-label{display:inline-block;background:#f5f0ff;color:#6c3baa;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;border:1.5px solid #e0d0f0}
+.question{font-size:1.18em;font-weight:700;color:#1a0533;line-height:1.65;margin-bottom:22px}
+.opt-btn{display:flex;align-items:center;width:100%;padding:14px 18px;border:2px solid #f0f0f0;border-radius:14px;background:#fafafa;color:#333;font-family:inherit;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px;text-align:left;gap:10px}
+.opt-btn::before{content:'';display:block;width:22px;height:22px;min-width:22px;border:2.5px solid #ddd;border-radius:50%;transition:all .2s}
+.opt-btn:hover{border-color:#6c3baa;background:#f5f0ff;color:#6c3baa}
+.opt-btn:hover::before{border-color:#6c3baa;background:#6c3baa}
+
+/* Result */
+.result-hero{padding:32px 24px 24px;text-align:center;position:relative;border-radius:28px 28px 0 0}
+.result-emoji{font-size:4em;line-height:1;margin-bottom:8px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.result-label{font-size:.8em;font-weight:700;letter-spacing:.1em;margin-bottom:6px;opacity:.8}
+.result-name{font-size:1.6em;font-weight:900;margin-bottom:12px;color:#fff}
+.result-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.tag{padding:5px 14px;border-radius:20px;font-size:.78em;font-weight:700;background:rgba(255,255,255,.25);color:#fff}
+
+.result-body{padding:0 24px 0}
+.desc-box{background:#fafafa;border-radius:16px;padding:18px;margin:16px 0;font-size:.92em;line-height:1.85;color:#444}
+
+/* Status bars */
+.status-section{margin:16px 0}
+.section-head{font-size:.82em;font-weight:700;color:#bbb;letter-spacing:.1em;margin:20px 0 10px;display:flex;align-items:center;gap:6px}
+.stat-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.stat-name{width:38px;font-size:.78em;font-weight:700;color:#555}
+.stat-track{flex:1;height:10px;background:#eee;border-radius:5px;overflow:hidden}
+.stat-fill{height:100%;border-radius:5px;transition:width .6s ease}
+.stat-val{width:28px;font-size:.78em;font-weight:700;color:#555;text-align:right}
+
+.skill-box{background:linear-gradient(135deg,#f5f0ff,#fce4ec);border-radius:16px;padding:18px;margin:16px 0;border:1.5px solid #e0d0f0}
+.skill-box h3{font-size:.9em;font-weight:700;color:#6c3baa;margin-bottom:10px}
+.skill-item{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:.85em;color:#444;line-height:1.5}
+.skill-item:last-child{margin-bottom:0}
+.skill-name{font-weight:700;color:#6c3baa}
+
+.all-types-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.type-chip{background:#f8f8f8;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;border:2px solid transparent;transition:all .2s}
+.type-chip.me{border-color:#6c3baa;background:#f5f0ff}
+.type-chip .tc-icon{font-size:1.6em}
+.type-chip .tc-name{font-size:.78em;font-weight:700;color:#333;line-height:1.3}
+.type-chip .tc-me{font-size:.7em;color:#6c3baa;font-weight:700}
+
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.share-btn{padding:14px;border:none;border-radius:14px;font-family:inherit;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.share-btn:hover{transform:translateY(-2px)}
+.btn-x{background:#000;color:#fff}
+.btn-line{background:#06C755;color:#fff}
+.retry-btn{display:block;width:100%;padding:14px;border:2px solid #eee;border-radius:14px;background:#fff;font-family:inherit;font-size:.9em;font-weight:700;color:#999;cursor:pointer;margin-top:10px;transition:all .2s}
+.retry-btn:hover{border-color:#6c3baa;color:#6c3baa}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="screen active" id="start">
-<div class="start-icon">⚔️</div>
-<h1>異世界転生スキル診断</h1>
-<p class="subtitle">もし異世界に転生したら…あなたのジョブ＆スキルを診断！</p>
-<button class="btn btn-primary" onclick="startQuiz()">転生する</button>
+
+<!-- START -->
+<div class="hero-card" id="start">
+  <div style="text-align:center">
+    <span class="badge">⚔️ 異世界診断</span>
+  </div>
+  <img class="char-img" src="https://www.genspark.ai/api/files/s/DdiemzYj?cache_control=3600" alt="異世界キャラ" onerror="this.style.fontSize='4em';this.outerHTML='<div style=\'font-size:4em;text-align:center;margin-bottom:16px\'>⚔️🧙⚗️✨</div>'">
+  <h1>異世界転生<br>スキル診断</h1>
+  <p class="subtitle">もし異世界に転生したら…あなたのジョブとスキルを7問で診断！</p>
+  <button class="start-btn" onclick="startQuiz()">⚡ 転生する！</button>
+  <p class="hint">全7問・約1分で転生完了</p>
 </div>
-<div class="screen" id="quiz">
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<p class="q-number" id="qNumber"></p>
-<p class="question" id="qText"></p>
-<div id="options"></div>
+
+<!-- QUIZ -->
+<div class="quiz-card" id="quiz">
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <span class="q-count" id="qCount">1/7</span>
+  </div>
+  <span class="q-label" id="qLabel">Q1</span>
+  <p class="question" id="qText"></p>
+  <div id="options"></div>
 </div>
-<div class="screen" id="result">
-<div class="result-icon" id="resultIcon"></div>
-<div class="result-center">
-<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたの異世界ジョブは…</p>
-<div class="result-type" id="resultType"></div>
+
+<!-- RESULT -->
+<div class="result-card" id="result">
+  <div class="result-hero" id="resultHero">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <p class="result-label" style="color:rgba(255,255,255,.8)">あなたの異世界ジョブは…</p>
+    <div class="result-name" id="resultName"></div>
+    <div class="result-tags" id="resultTags"></div>
+  </div>
+  <div class="result-body">
+    <div class="desc-box" id="resultDesc"></div>
+    <p class="section-head">📊 ステータス</p>
+    <div id="statusBars"></div>
+    <div class="skill-box" id="skillBox"></div>
+    <p class="section-head">🗺 全ジョブ一覧</p>
+    <div class="all-types-grid" id="allTypesGrid"></div>
+    <div class="share-row">
+      <button class="share-btn btn-x" onclick="shareX()">𝕏 シェア</button>
+      <button class="share-btn btn-line" onclick="shareLine()">LINE シェア</button>
+    </div>
+    <button class="retry-btn" onclick="location.reload()">🔄 もう一度転生する</button>
+  </div>
 </div>
-<p class="result-desc" id="resultDesc"></p>
-<div class="status-box" id="statusBox"></div>
-<div class="skill-box" id="skillBox"></div>
-<div class="result-traits" id="resultTraits"></div>
-<div class="all-types"><p class="section-title">全ジョブ一覧</p><div id="allTypes"></div></div>
-<div class="compat-section"><p class="section-title">パーティー相性</p><div id="compatPairs"></div></div>
-<div class="share-buttons">
-<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
-<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
-</div>
-<button class="btn btn-retry" onclick="location.reload()">もう一度転生する</button>
-</div>
+
 </div>
 <script>
 const questions=[
 {q:"異世界で最初に欲しいものは？",opts:[
-{t:"最強の武器",s:{W:3}},
-{t:"禁断の魔導書",s:{M:3}},
-{t:"万能な素材と道具",s:{A:3}},
-{t:"仲間になってくれる人",s:{P:3}}
+{t:"⚔️ 最強の武器",s:{W:3}},
+{t:"📖 禁断の魔導書",s:{M:3}},
+{t:"🔧 万能な素材と道具",s:{A:3}},
+{t:"🤝 仲間になってくれる人",s:{P:3}}
 ]},
 {q:"危険なダンジョンで一番大事なのは？",opts:[
-{t:"力でねじ伏せる突破力",s:{W:3}},
-{t:"罠を見抜く知識と魔法",s:{M:3}},
-{t:"ピッキングやトラップ解除の技術",s:{A:3}},
-{t:"仲間を守り回復させるサポート力",s:{P:3}}
+{t:"💪 力でねじ伏せる突破力",s:{W:3}},
+{t:"🧠 罠を見抜く知識と魔法",s:{M:3}},
+{t:"🔓 ピッキングやトラップ解除の技術",s:{A:3}},
+{t:"💚 仲間を守り回復させるサポート力",s:{P:3}}
 ]},
 {q:"現実世界での得意科目は？",opts:[
-{t:"体育・スポーツ",s:{W:3}},
-{t:"理科・数学（理論系）",s:{M:3}},
-{t:"技術・美術（ものづくり系）",s:{A:3}},
-{t:"国語・倫理（人文系）",s:{P:3}}
+{t:"🏃 体育・スポーツ",s:{W:3}},
+{t:"🔬 理科・数学（理論系）",s:{M:3}},
+{t:"🎨 技術・美術（ものづくり系）",s:{A:3}},
+{t:"📚 国語・倫理（人文系）",s:{P:3}}
 ]},
 {q:"チームでの自分のポジションは？",opts:[
-{t:"先頭に立って道を切り開くエース",s:{W:3}},
-{t:"作戦を考える参謀・ブレイン",s:{M:3}},
-{t:"裏方で仕組みを整える縁の下の力持ち",s:{A:3}},
-{t:"みんなを支え鼓舞するサポーター",s:{P:3}}
+{t:"🦅 先頭に立って道を切り開くエース",s:{W:3}},
+{t:"📋 作戦を考える参謀・ブレイン",s:{M:3}},
+{t:"🔧 裏方で仕組みを整える縁の下の力持ち",s:{A:3}},
+{t:"🌟 みんなを支え鼓舞するサポーター",s:{P:3}}
 ]},
 {q:"異世界での理想の生活は？",opts:[
-{t:"強敵を求めて世界を旅する冒険者",s:{W:3}},
-{t:"塔に籠もって魔法の研究に没頭",s:{M:3}},
-{t:"工房を開いて伝説のアイテムを作る",s:{A:3}},
-{t:"街で人々を癒やし感謝される日々",s:{P:3}}
+{t:"🗺 強敵を求めて世界を旅する冒険者",s:{W:3}},
+{t:"🏰 塔に籠もって魔法の研究に没頭",s:{M:3}},
+{t:"⚒️ 工房を開いて伝説のアイテムを作る",s:{A:3}},
+{t:"🌸 街で人々を癒やし感謝される日々",s:{P:3}}
 ]},
-{q:"ピンチの時、あなたはどうする？",opts:[
-{t:"覚悟を決めて正面から立ち向かう",s:{W:3}},
-{t:"冷静に分析して最適な対処法を見つける",s:{M:3}},
-{t:"機転を利かせて状況をひっくり返す",s:{A:3}},
-{t:"仲間を信じて協力して乗り越える",s:{P:3}}
+{q:"ピンチのとき、あなたはどうする？",opts:[
+{t:"🔥 覚悟を決めて正面から立ち向かう",s:{W:3}},
+{t:"🧩 冷静に分析して最適な対処法を見つける",s:{M:3}},
+{t:"⚡ 機転を利かせて状況をひっくり返す",s:{A:3}},
+{t:"🤜 仲間を信じて協力して乗り越える",s:{P:3}}
 ]},
 {q:"異世界の神様に一つだけお願いできるなら？",opts:[
-{t:"「無限の体力と最強の身体能力をくれ」",s:{W:3}},
-{t:"「全属性の魔法を使えるようにしてくれ」",s:{M:3}},
-{t:"「どんな素材でも加工できる技術をくれ」",s:{A:3}},
-{t:"「全ての生命を癒やせる力をくれ」",s:{P:3}}
+{t:"💪「無限の体力と最強の身体能力をくれ」",s:{W:3}},
+{t:"✨「全属性の魔法を使えるようにしてくれ」",s:{M:3}},
+{t:"🔨「どんな素材でも加工できる技術をくれ」",s:{A:3}},
+{t:"💖「全ての生命を癒やせる力をくれ」",s:{P:3}}
 ]}
 ];
-const results={
-W:{name:"剣聖（ソードマスター）",icon:"⚔️",color:"#c0392b",bg:"#fff0f0",desc:"あなたは剣聖として異世界に転生！圧倒的な身体能力と剣技で、どんな敵も一刀両断。仲間の先頭に立って戦う頼れるエース。その勇姿は多くの人の希望の光となり、伝説の英雄として語り継がれることでしょう。",
-stats:{HP:95,MP:30,ATK:98,DEF:75,SPD:85,INT:40},
-skills:"<h3>🗡️ 固有スキル</h3><p>【天閃・無双剣】一瞬で敵を斬り伏せる究極剣技<br>【覇気】周囲の敵を威圧し、戦意を削ぐ<br>【不屈の精神】HPが10%以下で攻撃力2倍</p>",traits:["最強アタッカー","前衛特化","カリスマ","根性","正義感"]},
-M:{name:"大魔導士（アークメイジ）",icon:"🧙",color:"#8e44ad",bg:"#f8f0ff",desc:"あなたは大魔導士として異世界に転生！全属性の魔法を操り、戦略的に戦場を支配する知の覇者。その知識量と魔力は計り知れず、一人で軍隊に匹敵する力を持ちます。ただしMPが切れると戦えないのが玉に瑕。",
-stats:{HP:45,MP:99,ATK:30,DEF:35,SPD:50,INT:99},
-skills:"<h3>📖 固有スキル</h3><p>【メテオストライク】天から隕石を降らせる超火力魔法<br>【次元転送】空間を歪めて瞬間移動<br>【魔力暴走】MP消費2倍で威力5倍の賭け魔法</p>",traits:["最強魔法","頭脳派","戦略家","研究者気質","圧倒的火力"]},
-A:{name:"錬金術師（アルケミスト）",icon:"⚗️",color:"#e67e22",bg:"#fff8f0",desc:"あなたは錬金術師として異世界に転生！あらゆる素材を加工し、伝説級のアイテムを生み出す天才職人。戦闘力は高くないものの、準備さえあれば最強。経済力も高く、冒険者ギルドでは引っ張りだこの存在です。",
-stats:{HP:55,MP:65,ATK:40,DEF:50,SPD:45,INT:90},
-skills:"<h3>⚗️ 固有スキル</h3><p>【万物錬成】あらゆる素材を別の物質に変換<br>【エリクサー調合】どんな状態異常も治す万能薬を作成<br>【自動人形】戦闘用ゴーレムを錬成して戦わせる</p>",traits:["ものづくり天才","サポート特化","金策最強","器用","発明家"]},
-P:{name:"聖職者（ハイプリースト）",icon:"✨",color:"#27ae60",bg:"#f0fef5",desc:"あなたは聖職者として異世界に転生！圧倒的な回復・支援魔法で仲間を守り、パーティーの生命線となる存在。あなたがいるだけでパーティーの生存率が劇的に上がります。慈悲の心を持ちながらも、聖なる力で不死者を浄化する力も。",
-stats:{HP:70,MP:90,ATK:25,DEF:60,SPD:55,INT:80},
-skills:"<h3>✨ 固有スキル</h3><p>【大回復魔法・リザレクション】味方全体のHPを全回復<br>【聖域展開】範囲内の味方を守る絶対防御結界<br>【裁きの光】不死者・悪魔に超特効ダメージ</p>",traits:["最強ヒーラー","慈悲の心","不可欠な存在","防御寄り","パーティーの要"]}
-};
-let current=0,scores={W:0,M:0,A:0,P:0};
-function startQuiz(){show('quiz');render()}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
-function showResult(){
-let max='W',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k}
-const r=results[max];
-document.getElementById('resultIcon').textContent=r.icon;
-document.getElementById('resultType').textContent=r.name;
-document.getElementById('resultType').style.background=r.bg;
-document.getElementById('resultType').style.color=r.color;
-document.getElementById('resultDesc').textContent=r.desc;
-const colors={HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'};
-let sh='<h3>📊 ステータス</h3>';
-for(let k in r.stats){sh+=`<div class="stat-bar"><span class="stat-name">${k}</span><div class="stat-track"><div class="stat-fill" style="width:${r.stats[k]}%;background:${colors[k]}"></div></div><span class="stat-val">${r.stats[k]}</span></div>`}
-document.getElementById('statusBox').innerHTML=sh;
-document.getElementById('skillBox').innerHTML=r.skills;
-const t=document.getElementById('resultTraits');t.innerHTML='';
-r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});
-renderAllTypes(max);renderCompat();
-show('result');
-}
 
-const typeList=[
-{key:'W',icon:'⚔️',name:'剣聖（ソードマスター）',desc:'圧倒的な身体能力と剣技で道を切り拓く前衛エース'},
-{key:'M',icon:'🧙',name:'大魔導士（アークメイジ）',desc:'全属性の魔法を操る知の覇者'},
-{key:'A',icon:'⚗️',name:'錬金術師（アルケミスト）',desc:'あらゆる素材から伝説のアイテムを生む天才職人'},
-{key:'P',icon:'✨',name:'聖職者（ハイプリースト）',desc:'圧倒的な回復・支援魔法でパーティーの生命線'}
+const results={
+W:{name:"剣聖（ソードマスター）",emoji:"⚔️",
+  bg:"linear-gradient(135deg,#c0392b,#e74c3c)",
+  traits:["最強アタッカー⚔️","前衛特化💪","カリスマ🔥","根性✊","正義感🦅"],
+  desc:"あなたは剣聖として異世界に転生！圧倒的な身体能力と剣技で、どんな敵も一刀両断。仲間の先頭に立って戦う頼れるエース。その勇姿は多くの人の希望の光となり、伝説の英雄として語り継がれることでしょう。",
+  stats:{HP:95,MP:30,ATK:98,DEF:75,SPD:85,INT:40},
+  statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
+  skills:[{name:"天閃・無双剣",desc:"一瞬で敵を斬り伏せる究極の剣技"},{name:"覇気",desc:"周囲の敵を威圧し、戦意を削ぐオーラ"},{name:"不屈の精神",desc:"HP10%以下で攻撃力2倍になる逆転スキル"}]},
+M:{name:"大魔導士（アークメイジ）",emoji:"🧙",
+  bg:"linear-gradient(135deg,#6c3baa,#c850c0)",
+  traits:["最強魔法🔮","頭脳派🧠","戦略家📋","研究者🔬","圧倒的火力💥"],
+  desc:"あなたは大魔導士として異世界に転生！全属性の魔法を操り、戦略的に戦場を支配する知の覇者。その知識量と魔力は計り知れず、一人で軍隊に匹敵する力を持ちます。",
+  stats:{HP:45,MP:99,ATK:30,DEF:35,SPD:50,INT:99},
+  statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
+  skills:[{name:"メテオストライク",desc:"天から隕石を降らせる超火力魔法"},{name:"次元転送",desc:"空間を歪めて瞬間移動する高速技"},{name:"魔力暴走",desc:"MP消費2倍で威力5倍になる賭けの魔法"}]},
+A:{name:"錬金術師（アルケミスト）",emoji:"⚗️",
+  bg:"linear-gradient(135deg,#e67e22,#f39c12)",
+  traits:["ものづくり天才⚒️","サポート特化💎","金策最強💰","器用🔧","発明家💡"],
+  desc:"あなたは錬金術師として異世界に転生！あらゆる素材を加工し、伝説級のアイテムを生み出す天才職人。戦闘力は高くないものの、準備さえあれば最強。経済力も高く、冒険者ギルドでは引っ張りだこの存在です。",
+  stats:{HP:55,MP:65,ATK:40,DEF:50,SPD:45,INT:90},
+  statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
+  skills:[{name:"万物錬成",desc:"あらゆる素材を別の物質に変換する固有能力"},{name:"エリクサー調合",desc:"どんな状態異常も治す万能薬を作成"},{name:"自動人形",desc:"戦闘用ゴーレムを錬成して戦わせる"}]},
+P:{name:"聖職者（ハイプリースト）",emoji:"✨",
+  bg:"linear-gradient(135deg,#27ae60,#2ecc71)",
+  traits:["最強ヒーラー💚","慈悲の心🌸","不可欠な存在👑","防御寄り🛡","パーティーの要🌟"],
+  desc:"あなたは聖職者として異世界に転生！圧倒的な回復・支援魔法で仲間を守り、パーティーの生命線となる存在。あなたがいるだけでパーティーの生存率が劇的に上がります。",
+  stats:{HP:70,MP:90,ATK:25,DEF:60,SPD:55,INT:80},
+  statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
+  skills:[{name:"リザレクション",desc:"味方全体のHPを全回復する大回復魔法"},{name:"聖域展開",desc:"範囲内の味方を守る絶対防御結界"},{name:"裁きの光",desc:"不死者・悪魔に超特効ダメージを与える"}]}
+};
+const allTypes=[
+{key:'W',emoji:'⚔️',name:'剣聖（ソードマスター）'},
+{key:'M',emoji:'🧙',name:'大魔導士（アークメイジ）'},
+{key:'A',emoji:'⚗️',name:'錬金術師（アルケミスト）'},
+{key:'P',emoji:'✨',name:'聖職者（ハイプリースト）'}
 ];
-const compatList=[
-{a:'⚔️ 剣聖',b:'✨ 聖職者',desc:'前衛×ヒーラーの王道パーティー。どんなボスも倒せる'},
-{a:'🧙 魔導士',b:'⚗️ 錬金術師',desc:'魔法×アイテムの知略コンビ。準備万端で敵なし'},
-{a:'⚔️ 剣聖',b:'🧙 魔導士',desc:'物理×魔法で全局面対応の最強火力ペア'},
-{a:'⚗️ 錬金術師',b:'✨ 聖職者',desc:'サポート×サポートで絶対にパーティーを壊滅させない鉄壁'}
-];
-function renderAllTypes(cur){const c=document.getElementById('allTypes');c.innerHTML='';typeList.forEach(t=>{c.innerHTML+=`<div class="type-card${t.key===cur?' current':''}"><div><span style="font-size:1.2em;margin-right:8px">${t.icon}</span></div><div><div class="type-card-name">${t.name}${t.key===cur?' ← あなた':''}</div><div class="type-card-desc">${t.desc}</div></div></div>`})}
-function renderCompat(){const c=document.getElementById('compatPairs');c.innerHTML='';compatList.forEach(p=>{c.innerHTML+=`<div class="compat-pair"><strong>${p.a}</strong> × <strong>${p.b}</strong>：${p.desc}</div>`})}
-function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`異世界転生したら「${r}」でした！⚔️\nあなたも転生してみて👇\n${location.href}`)}`,'_blank')}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+let current=0,scores={W:0,M:0,A:0,P:0};
+function startQuiz(){
+  document.getElementById('start').style.display='none';
+  document.getElementById('quiz').classList.add('active');render();
+}
+function render(){
+  const q=questions[current];
+  document.getElementById('progress').style.width=(current/questions.length*100)+'%';
+  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
+  document.getElementById('qLabel').textContent='Q'+(current+1);
+  document.getElementById('qText').textContent=q.q;
+  const o=document.getElementById('options');o.innerHTML='';
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+function showResult(){
+  let max='W',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  const r=results[max];
+  document.getElementById('quiz').classList.remove('active');
+  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  document.getElementById('resultEmoji').textContent=r.emoji;
+  document.getElementById('resultName').textContent=r.name;
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc;
+  const sb=document.getElementById('statusBars');sb.innerHTML='';
+  for(let k in r.stats){sb.innerHTML+=`<div class="stat-row"><span class="stat-name">${k}</span><div class="stat-track"><div class="stat-fill" style="width:${r.stats[k]}%;background:${r.statColors[k]}"></div></div><span class="stat-val">${r.stats[k]}</span></div>`;}
+  const skb=document.getElementById('skillBox');
+  skb.innerHTML='<h3>🔮 固有スキル</h3>'+r.skills.map(s=>`<div class="skill-item"><span class="skill-name">【${s.name}】</span> ${s.desc}</div>`).join('');
+  const ag=document.getElementById('allTypesGrid');ag.innerHTML='';
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  document.getElementById('result').classList.add('active');
+}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('異世界転生したら「'+n+'」でした！⚔️\nあなたも転生してみて👇\n'+location.href)}`,'_blank');}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
 </script>
 </body>
 </html>
