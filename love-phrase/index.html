@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恋愛キラーフレーズ診断</title>
+<meta name="description" content="あなたが無意識に使ってる恋愛のキラーフレーズ（or地雷ワード）を診断！">
+<meta property="og:title" content="恋愛キラーフレーズ診断">
+<meta property="og:description" content="あなたの恋愛キラーフレーズを診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#ee9ca7 0%,#ffdde1 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#ee9ca7,#d4577a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#ee9ca7,#d4577a);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(238,156,167,.4)}
+.btn-option{background:#fff5f7;color:#333;border:2px solid #fde0e5;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#ee9ca7;background:#fff0f3}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ee9ca7,#d4577a);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-center{text-align:center}
+.phrase-box{background:linear-gradient(135deg,#fff5f7,#ffe8ec);border-radius:16px;padding:25px 20px;margin:20px 0;text-align:center}
+.phrase-text{font-size:1.5em;font-weight:900;color:#d4577a;line-height:1.4;margin-bottom:10px}
+.phrase-sub{font-size:.85em;color:#999}
+.result-type{font-size:1.1em;font-weight:700;color:#d4577a;text-align:center;margin:15px 0}
+.result-desc{color:#555;line-height:1.8;margin:15px 0;font-size:.95em}
+.danger-box{background:#fff8f0;border-radius:12px;padding:16px;margin:15px 0}
+.danger-box h3{font-size:.95em;color:#e67e22;margin-bottom:8px}
+.danger-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#fff5f7;color:#d4577a;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">💋</div>
+<h1>恋愛キラーフレーズ診断</h1>
+<p class="subtitle">あなたが無意識に放ってるモテフレーズ＆地雷ワードを診断！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="phrase-box">
+<p class="phrase-sub">あなたのキラーフレーズ</p>
+<p class="phrase-text" id="phraseText"></p>
+</div>
+<p class="result-type" id="resultType"></p>
+<p class="result-desc" id="resultDesc"></p>
+<div class="danger-box" id="dangerBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"気になる人とのLINE、あなたのスタイルは？",opts:[
+{t:"相手のペースに合わせて返信する",s:{C:3}},
+{t:"面白いスタンプや画像を送りまくる",s:{H:3}},
+{t:"さりげなく褒め言葉を入れる",s:{S:3}},
+{t:"既読つけてちょっと焦らす",s:{M:3}}
+]},
+{q:"デート中、沈黙が訪れたら？",opts:[
+{t:"「一緒にいると落ち着くね」と伝える",s:{C:3}},
+{t:"面白いエピソードで場を盛り上げる",s:{H:3}},
+{t:"「今日の服、すごく似合ってるね」と褒める",s:{S:3}},
+{t:"「何考えてるの？」と意味深に聞く",s:{M:3}}
+]},
+{q:"好きな人に告白するなら、どんな言い方？",opts:[
+{t:"「ずっと一緒にいたいと思ってる」",s:{C:3}},
+{t:"「一緒にいると毎日楽しすぎるんだけど」",s:{H:3}},
+{t:"「こんなに素敵な人に出会えて幸せ」",s:{S:3}},
+{t:"「あなたのこと、気になってるんだけど」",s:{M:3}}
+]},
+{q:"友達の恋愛相談に乗るとき、あなたは？",opts:[
+{t:"「気持ちわかるよ」と寄り添う",s:{C:3}},
+{t:"「こうすれば絶対うまくいく！」と盛り上げる",s:{H:3}},
+{t:"「あなたには魅力があるから大丈夫」と励ます",s:{S:3}},
+{t:"「駆け引きも大事だよ」とアドバイスする",s:{M:3}}
+]},
+{q:"相手の好きなところを聞かれたら？",opts:[
+{t:"「一緒にいると安心する」",s:{C:3}},
+{t:"「一緒にいると楽しい」",s:{H:3}},
+{t:"「尊敬できるところがたくさんある」",s:{S:3}},
+{t:"「なんか目が離せないんだよね」",s:{M:3}}
+]},
+{q:"恋愛で一番大事にしていることは？",opts:[
+{t:"お互いの居心地の良さ",s:{C:3}},
+{t:"一緒にいる時間の楽しさ",s:{H:3}},
+{t:"相手への尊敬と信頼",s:{S:3}},
+{t:"ドキドキ感やときめき",s:{M:3}}
+]},
+{q:"別れ際、最後にかける言葉は？",opts:[
+{t:"「気をつけてね。また会えるの楽しみにしてる」",s:{C:3}},
+{t:"「今日めっちゃ楽しかった！次はどこ行く？」",s:{H:3}},
+{t:"「今日は本当にありがとう。幸せだった」",s:{S:3}},
+{t:"「帰りたくないな…」とポツリ",s:{M:3}}
+]}
+];
+const results={
+C:{phrase:"「一緒にいると安心する」",type:"癒やし系キラーフレーズタイプ",desc:"あなたのキラーフレーズは相手に「安心感」を与える言葉。自然体で相手を包み込むような温かさがあり、一緒にいるとホッとする存在です。派手さはないけれど、じわじわと相手の心に染み込んでいくタイプ。長期的な関係に強い！",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「誰でもいいわけじゃないんだけど…」→ 安心感を与えるはずが、逆に不安にさせるかも。自信を持って気持ちを伝えよう！</p>",traits:["安心感","包容力","自然体","聞き上手","長続きする恋愛"]},
+H:{phrase:"「一緒にいると楽しすぎる！」",type:"ムードメーカー系キラーフレーズタイプ",desc:"あなたのキラーフレーズは「楽しさ」を共有する言葉！テンションが高くポジティブなエネルギーで相手を惹きつけます。一緒にいると笑顔が絶えず、「この人といると元気になれる」と思わせる力があります。出会いからの初速が最強！",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「俺（私）といれば絶対楽しいって！」→ 自信は魅力だけど、押しが強すぎると引かれるかも。相手のペースも大事に！</p>",traits:["ムードメーカー","ポジティブ","モテオーラ","社交的","初速が速い"]},
+S:{phrase:"「こんな人、他にいない」",type:"褒め上手キラーフレーズタイプ",desc:"あなたのキラーフレーズは相手を「特別」に感じさせる言葉！さりげない褒め言葉で相手の自己肯定感を高め、「この人は自分を見てくれている」と思わせる天才です。誠実さが伝わるので、真剣な恋愛に発展しやすいタイプ。",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「前の恋人とは全然違う」→ 褒めてるつもりが比較に聞こえるかも。相手だけを見つめる言葉選びを心がけて！</p>",traits:["褒め上手","誠実","特別感を演出","観察力","真剣な恋愛向き"]},
+M:{phrase:"「…気になってるんだけど」",type:"ミステリアス駆け引きタイプ",desc:"あなたのキラーフレーズは相手を「ドキッ」とさせる意味深な言葉！全てを言わないからこそ想像力を掻き立て、相手の頭の中をあなたでいっぱいにする小悪魔的な魅力があります。押して引く駆け引きの天才。ただし、やりすぎ注意！",danger:"<h3>⚠️ 注意すべき地雷ワード</h3><p>「別にどっちでもいいけど」→ 駆け引きのつもりが「興味ない」と受け取られるかも。好意は時にはストレートに伝えて！</p>",traits:["小悪魔","ミステリアス","駆け引き上手","ドキドキさせる","恋愛巧者"]}
+};
+let current=0,scores={C:0,H:0,S:0,M:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='C',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('phraseText').textContent=r.phrase;document.getElementById('resultType').textContent=r.type;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('dangerBox').innerHTML=r.danger;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const p=document.getElementById('phraseText').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の恋愛キラーフレーズは\n${p}\nでした！💋\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

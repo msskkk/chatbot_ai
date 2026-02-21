@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたに向いてる副業診断</title>
+<meta name="description" content="スキル・性格・ライフスタイルから、あなたにピッタリの副業タイプを診断！">
+<meta property="og:title" content="あなたに向いてる副業診断">
+<meta property="og:description" content="あなたにピッタリの副業タイプを診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(245,87,108,.4)}
+.btn-option{background:#fff5f7;color:#333;border:2px solid #fde;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#f5576c;background:#fff0f3}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f093fb,#f5576c);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.example-box{background:#fff5f7;border-radius:12px;padding:16px;margin:15px 0}
+.example-box h3{font-size:.95em;color:#f5576c;margin-bottom:8px}
+.example-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#fff5f7;color:#f5576c;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">💼</div>
+<h1>あなたに向いてる副業診断</h1>
+<p class="subtitle">7つの質問で、あなたにピッタリの副業タイプがわかる！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたに向いてる副業は…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="example-box" id="exampleBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"平日の仕事終わり、自由時間は何に使うことが多い？",opts:[
+{t:"動画やブログを見て情報収集する",s:{C:3}},
+{t:"人と会って話すのが好き",s:{K:3}},
+{t:"投資やお金の勉強をしている",s:{I:3}},
+{t:"スキルアップの勉強や資格取得",s:{S:3}}
+]},
+{q:"得意なこと、好きなことは？",opts:[
+{t:"文章を書く・デザイン・動画編集などの制作",s:{C:3}},
+{t:"人にアドバイスしたり教えたりすること",s:{K:3}},
+{t:"数字を見て分析したり戦略を考えること",s:{I:3}},
+{t:"プログラミングや専門的な技術を磨くこと",s:{S:3}}
+]},
+{q:"副業で一番重視したいポイントは？",opts:[
+{t:"自分のペースでクリエイティブにやりたい",s:{C:3}},
+{t:"人と関わりながら働きたい",s:{K:3}},
+{t:"不労所得や資産になるものがいい",s:{I:3}},
+{t:"確実にスキルが身につくものがいい",s:{S:3}}
+]},
+{q:"理想の副業スタイルは？",opts:[
+{t:"在宅で自分のペースでコツコツ",s:{C:2,S:1}},
+{t:"人に会って対面でやりとりしたい",s:{K:3}},
+{t:"基本放置でも収益が入る仕組みを作りたい",s:{I:3}},
+{t:"プロジェクト単位で集中して稼ぎたい",s:{S:3}}
+]},
+{q:"SNSのフォロワーを増やすとしたら、どうやる？",opts:[
+{t:"面白い・役立つコンテンツを作って発信する",s:{C:3}},
+{t:"積極的にコメントやDMで交流する",s:{K:3}},
+{t:"データ分析してアルゴリズムを攻略する",s:{I:3}},
+{t:"専門知識を活かした有益な情報を発信する",s:{S:3}}
+]},
+{q:"月にどのくらい副業に時間を使えそう？",opts:[
+{t:"毎日1-2時間コツコツできる",s:{C:3}},
+{t:"週末にまとめて使える",s:{K:2,S:1}},
+{t:"最初だけ頑張ってあとは自動化したい",s:{I:3}},
+{t:"忙しいけど隙間時間を活用したい",s:{S:2,C:1}}
+]},
+{q:"失敗に対するスタンスは？",opts:[
+{t:"失敗してもコンテンツのネタになる",s:{C:3}},
+{t:"人からフィードバックをもらって改善する",s:{K:3}},
+{t:"データで検証して次の判断材料にする",s:{I:3}},
+{t:"技術を磨いて確実に成功率を上げたい",s:{S:3}}
+]}
+];
+const results={
+C:{name:"🎨 クリエイター型副業",color:"#f5576c",bg:"#fff0f3",desc:"あなたは自分のセンスやアイデアを活かしてコンテンツを作るのが向いています！自分のペースで取り組め、続けるほどに資産になっていくのが魅力。最初は収益化に時間がかかりますが、ファンがつけば安定した収入源に。",example:"<h3>📌 おすすめ副業</h3><p>YouTube / ブログ・アフィリエイト / Instagram運用 / デザイン受託 / ハンドメイド販売 / 写真販売（ストックフォト）</p>",traits:["クリエイティブ","コツコツ型","自分のペース","発信力","オリジナリティ"]},
+K:{name:"🤝 コンサル・サポート型副業",color:"#e17055",bg:"#fef5f0",desc:"あなたは人と関わりながら価値を提供するのが得意なタイプ。誰かの悩みを解決したり、成長を手助けしたりすることでやりがいを感じられます。信頼関係が収入に直結するので、口コミで広がりやすいのも特徴。",example:"<h3>📌 おすすめ副業</h3><p>コーチング / オンライン家庭教師 / キャリア相談 / SNS運用代行 / コミュニティ運営 / セミナー講師</p>",traits:["コミュ力が高い","共感力","信頼されやすい","教え上手","人脈が広い"]},
+I:{name:"📈 投資・仕組み化型副業",color:"#6c5ce7",bg:"#f5f0ff",desc:"あなたはデータ分析や戦略立案が得意で、お金に働いてもらう仕組みを作るのが向いています。最初に時間と労力を投資して、あとは自動で回る仕組みを目指すタイプ。長期視点で資産を築いていけるのが最大の強みです。",example:"<h3>📌 おすすめ副業</h3><p>株式投資・FX / 不動産投資 / 自動化ビジネス / デジタルコンテンツ販売 / アプリ開発 / 物販・せどり</p>",traits:["分析力","戦略的思考","長期視点","効率重視","数字に強い"]},
+S:{name:"🛠️ スキル販売型副業",color:"#00b894",bg:"#f0fef5",desc:"あなたは専門スキルを活かして確実に稼ぐのが向いているタイプ。案件ごとに報酬が発生するため、収入の見通しが立てやすいのが魅力。スキルが上がるほど単価も上がり、本業にも活きる好循環が生まれます。",example:"<h3>📌 おすすめ副業</h3><p>プログラミング受託 / Webデザイン / ライティング / 動画編集 / 翻訳 / データ分析</p>",traits:["専門性が高い","学習意欲","確実性重視","プロ意識","スキルアップ志向"]}
+};
+let current=0,scores={C:0,K:0,I:0,S:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='C',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('exampleBox').innerHTML=r.example;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私に向いてる副業は「${r}」でした！\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

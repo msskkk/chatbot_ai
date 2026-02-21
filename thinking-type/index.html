@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたの思考タイプ診断</title>
+<meta name="description" content="質問に答えるだけで、あなたの思考パターンがわかる！論理型？直感型？感情型？行動型？">
+<meta property="og:title" content="あなたの思考タイプ診断">
+<meta property="og:description" content="質問に答えるだけで、あなたの思考パターンがわかる！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15);position:relative;overflow:hidden}
+.screen{display:none;animation:fadeIn .4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.6em;text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,.4)}
+.btn-option{background:#f5f5ff;color:#333;border:2px solid #e8e8f5;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#667eea;background:#f0f0ff}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-type{text-align:center;font-size:1.4em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#f0f0ff;color:#667eea;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}
+.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}
+.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}
+.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<!-- Start Screen -->
+<div class="screen active" id="start">
+<div class="start-icon">🧠</div>
+<h1>あなたの思考タイプ診断</h1>
+<p class="subtitle">7つの質問であなたの「考え方のクセ」が丸わかり！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+
+<!-- Question Screen -->
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+
+<!-- Result Screen -->
+<div class="screen" id="result">
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたの思考タイプは…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+
+<script>
+const questions=[
+{q:"友達と旅行の計画を立てるとき、あなたはどうする？",opts:[
+{t:"予算・移動時間・口コミを調べて最適ルートを作成する",s:{L:3}},
+{t:"「なんかここ良さそう！」とピンときた場所を推す",s:{I:3}},
+{t:"みんなが楽しめるかどうかを一番大事にする",s:{E:3}},
+{t:"とりあえず行ってみよう！現地で考える派",s:{A:3}}
+]},
+{q:"仕事で難しい問題にぶつかったとき、最初にすることは？",opts:[
+{t:"原因を分析してデータや情報を集める",s:{L:3}},
+{t:"全体像をざっくり捉えて閃きを待つ",s:{I:3}},
+{t:"信頼できる人にまず相談する",s:{E:3}},
+{t:"とにかく手を動かして試してみる",s:{A:3}}
+]},
+{q:"買い物で迷ったとき、最終的な決め手は？",opts:[
+{t:"スペック比較やレビューの評価",s:{L:3}},
+{t:"「これだ！」というフィーリング",s:{I:3}},
+{t:"友達や店員さんのおすすめ",s:{E:3}},
+{t:"早く決めたいので直感でサッと選ぶ",s:{A:2,I:1}}
+]},
+{q:"もし1日だけ好きなことに没頭できるなら？",opts:[
+{t:"気になるテーマについて徹底的にリサーチする",s:{L:3}},
+{t:"アートや音楽など創造的なことをする",s:{I:3}},
+{t:"大切な人とゆっくり過ごす",s:{E:3}},
+{t:"新しいスポーツやアクティビティに挑戦する",s:{A:3}}
+]},
+{q:"チームで意見が割れたとき、あなたの立ち位置は？",opts:[
+{t:"データや根拠を示して論理的に説得する",s:{L:3}},
+{t:"新しい第3案をひらめいて提案する",s:{I:3}},
+{t:"全員の気持ちを聞いて調整役に回る",s:{E:3}},
+{t:"「まずやってみて判断しよう」と提案する",s:{A:3}}
+]},
+{q:"あなたが一番ストレスを感じる状況は？",opts:[
+{t:"理屈が通らないことを押し付けられるとき",s:{L:3}},
+{t:"自由がなくルーティンばかりのとき",s:{I:3}},
+{t:"人間関係がギスギスしているとき",s:{E:3}},
+{t:"何も進まず停滞しているとき",s:{A:3}}
+]},
+{q:"自分を一言で表すなら？",opts:[
+{t:"冷静沈着な分析家",s:{L:3}},
+{t:"ひらめきのアイデアマン",s:{I:3}},
+{t:"思いやりの共感マスター",s:{E:3}},
+{t:"走りながら考える実行者",s:{A:3}}
+]}
+];
+
+const results={
+L:{name:"🔍 ロジカル思考タイプ",color:"#667eea",bg:"#f0f0ff",desc:"あなたは物事を論理的に分析するのが得意なタイプ。データや根拠に基づいた判断を好み、感情に流されにくい冷静さを持っています。問題解決力が高く、複雑な課題も筋道を立てて解決できる強みがあります。ただし、時には直感や感情も大事にすると、もっとバランスの取れた判断ができるかも。",traits:["分析力が高い","データ重視","冷静沈着","問題解決が得意","計画的"]},
+I:{name:"✨ 直感・クリエイティブタイプ",color:"#f093fb",bg:"#fef0ff",desc:"あなたはひらめきと創造力に溢れるタイプ。既存の枠にとらわれず、ユニークなアイデアを生み出せる天才肌です。パターン認識力が高く、少ない情報から本質を見抜く力があります。自由な環境で最大限の力を発揮しますが、細かい計画を立てるのが苦手なこともあるかも。",traits:["ひらめき力","創造性豊か","柔軟な発想","自由人","本質を見抜く"]},
+E:{name:"💖 エモーショナル思考タイプ",color:"#ff6b6b",bg:"#fff0f0",desc:"あなたは感情や人間関係を大切にするタイプ。共感力が高く、相手の気持ちを自然と理解できる能力の持ち主です。チームの雰囲気を良くするムードメーカーでもあり、信頼されやすい人柄。判断するときも「人」を軸に考えるため、周りから頼られる存在です。",traits:["共感力が高い","聞き上手","人間関係重視","ムードメーカー","信頼される"]},
+A:{name:"⚡ アクション思考タイプ",color:"#ffa502",bg:"#fff8f0",desc:"あなたは「考えるより先に動く」行動派タイプ。スピード感と実行力が最大の武器で、周りがまだ迷っている間に一歩踏み出せる決断力があります。経験から学ぶタイプなので、失敗を恐れずどんどんチャレンジできます。ただし、立ち止まって計画を練る時間も時には大切に。",traits:["行動力抜群","決断が早い","チャレンジ精神","スピード重視","経験で学ぶ"]}
+};
+
+let current=0,scores={L:0,I:0,E:0,A:0};
+
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+
+function render(){
+const q=questions[current];
+document.getElementById('progress').style.width=((current)/questions.length*100)+'%';
+document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;
+document.getElementById('qText').textContent=q.q;
+const o=document.getElementById('options');o.innerHTML='';
+q.opts.forEach((opt,i)=>{
+const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;
+b.onclick=()=>answer(opt.s);o.appendChild(b);
+})
+}
+
+function answer(s){
+for(let k in s)scores[k]+=s[k];
+current++;
+if(current<questions.length){render()}else{showResult()}
+}
+
+function showResult(){
+let max='L',maxVal=0;
+for(let k in scores){if(scores[k]>maxVal){maxVal=scores[k];max=k}}
+const r=results[max];
+document.getElementById('resultType').textContent=r.name;
+document.getElementById('resultType').style.background=r.bg;
+document.getElementById('resultType').style.color=r.color;
+document.getElementById('resultDesc').textContent=r.desc;
+const t=document.getElementById('resultTraits');t.innerHTML='';
+r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});
+show('result');
+}
+
+function shareX(){
+const r=document.getElementById('resultType').textContent;
+const t=encodeURIComponent(`私の思考タイプは「${r}」でした！\nあなたも診断してみて👇\n${location.href}`);
+window.open(`https://x.com/intent/tweet?text=${t}`,'_blank');
+}
+function shareLine(){
+const r=document.getElementById('resultType').textContent;
+const t=encodeURIComponent(`私の思考タイプは「${r}」でした！\nあなたも診断してみて👇\n${location.href}`);
+window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}&text=${t}`,'_blank');
+}
+</script>
+</body>
+</html>

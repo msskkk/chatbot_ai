@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたに合う学習法診断</title>
+<meta name="description" content="視覚型？聴覚型？読書型？体感型？あなたに最適な学習スタイルを診断！">
+<meta property="og:title" content="あなたに合う学習法診断">
+<meta property="og:description" content="あなたに最適な学習スタイルを診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#43e97b 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#667eea,#2ecc71);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#667eea,#2ecc71);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,.4)}
+.btn-option{background:#f5f8ff;color:#333;border:2px solid #dde8f5;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#667eea;background:#eef2ff}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#667eea,#2ecc71);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-icon{text-align:center;font-size:4em;margin-bottom:10px}
+.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.method-box{background:#f5f8ff;border-radius:12px;padding:16px;margin:15px 0}
+.method-box h3{font-size:.95em;color:#667eea;margin-bottom:8px}
+.method-box p{font-size:.9em;color:#555;line-height:1.6}
+.tool-box{background:#f0faf5;border-radius:12px;padding:16px;margin:15px 0}
+.tool-box h3{font-size:.95em;color:#2ecc71;margin-bottom:8px}
+.tool-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#f5f8ff;color:#667eea;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">📚</div>
+<h1>あなたに合う学習法診断</h1>
+<p class="subtitle">7つの質問で、あなたに最適な勉強スタイルがわかる！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-icon" id="resultIcon"></div>
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたの最適学習スタイルは…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="method-box" id="methodBox"></div>
+<div class="tool-box" id="toolBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"道を覚えるとき、あなたはどうする？",opts:[
+{t:"地図やマップアプリを見て覚える",s:{V:3}},
+{t:"「コンビニを右に曲がって…」と言葉で覚える",s:{A:3}},
+{t:"道順をメモに書いて確認する",s:{R:3}},
+{t:"実際に歩いて体で覚える",s:{K:3}}
+]},
+{q:"新しい料理のレシピを覚えるなら？",opts:[
+{t:"料理動画を見て真似する",s:{V:3}},
+{t:"誰かに口頭で教えてもらう",s:{A:3}},
+{t:"レシピ本やサイトを読んで理解する",s:{R:3}},
+{t:"とりあえず作ってみて体で覚える",s:{K:3}}
+]},
+{q:"プレゼン資料を作るとき、重視するのは？",opts:[
+{t:"グラフ・図解・ビジュアルを多用する",s:{V:3}},
+{t:"話し方・伝え方のリハーサルを重視",s:{A:3}},
+{t:"ロジカルな文章構成を丁寧に作る",s:{R:3}},
+{t:"デモやハンズオンで体験してもらう",s:{K:3}}
+]},
+{q:"暇な時間があったら何をする？",opts:[
+{t:"YouTube・Instagram・TikTokを見る",s:{V:3}},
+{t:"ポッドキャストや音楽を聴く",s:{A:3}},
+{t:"本や記事を読む",s:{R:3}},
+{t:"散歩したり手を動かしたりする",s:{K:3}}
+]},
+{q:"何かを思い出すとき、最初に浮かぶのは？",opts:[
+{t:"映像やイメージ",s:{V:3}},
+{t:"音や声、会話の内容",s:{A:3}},
+{t:"文字やテキスト",s:{R:3}},
+{t:"体の感覚や感触",s:{K:3}}
+]},
+{q:"学校の授業で一番頭に入ったのは？",opts:[
+{t:"板書やスライドを見たとき",s:{V:3}},
+{t:"先生の説明を聞いたとき",s:{A:3}},
+{t:"教科書を自分で読んだとき",s:{R:3}},
+{t:"実験や実習で手を動かしたとき",s:{K:3}}
+]},
+{q:"新しいアプリの使い方、どう覚える？",opts:[
+{t:"チュートリアル動画を見る",s:{V:3}},
+{t:"誰かに使い方を教えてもらう",s:{A:3}},
+{t:"ヘルプやマニュアルを読む",s:{R:3}},
+{t:"とりあえず触ってみて覚える",s:{K:3}}
+]}
+];
+const results={
+V:{name:"👁️ 視覚型（ビジュアルラーナー）",icon:"👁️",color:"#667eea",bg:"#f0f0ff",desc:"あなたは「見て覚える」のが最も効率的なタイプ！図解、チャート、マインドマップ、動画など、ビジュアルで情報を整理すると記憶に残りやすくなります。ノートをカラフルにするのも効果的。「百聞は一見にしかず」を体現する学習者です。",
+method:"<h3>📝 おすすめ学習法</h3><p>マインドマップで知識を整理する / 図解やフローチャートを自分で描く / カラーペンでノートを色分け / YouTube等の解説動画を活用 / フラッシュカードで暗記</p>",
+tool:"<h3>🛠️ おすすめツール</h3><p>Notion（ビジュアルノート）/ Miro（マインドマップ）/ Canva（図解作成）/ YouTube / Anki（フラッシュカード）</p>",
+traits:["図解が好き","映像記憶","ノートが綺麗","色分け大好き","動画学習派"]},
+A:{name:"👂 聴覚型（オーディオラーナー）",icon:"👂",color:"#e74c3c",bg:"#fff0f0",desc:"あなたは「聞いて覚える」のが最も効率的なタイプ！講義、ポッドキャスト、音声教材が最強の武器です。誰かと議論したり、声に出して読み上げたりすることで記憶が定着しやすくなります。移動中もイヤホンで学習できるのが強み。",
+method:"<h3>📝 おすすめ学習法</h3><p>ポッドキャストや音声教材を活用 / 勉強内容を声に出して読む / 誰かに教える（説明する）ことで定着 / 講義を録音して繰り返し聴く / ディスカッション形式で学ぶ</p>",
+tool:"<h3>🛠️ おすすめツール</h3><p>Audible（オーディオブック）/ Voicy・Podcast / ボイスメモ（自分の声で録音）/ Clubhouse / スタディグループ</p>",
+traits:["聞いて覚える","議論好き","音声学習派","リスニング力","声に出す"]},
+R:{name:"📖 読み書き型（リーディングラーナー）",icon:"📖",color:"#2ecc71",bg:"#f0fef5",desc:"あなたは「読んで書いて覚える」のが最も効率的なタイプ！テキストベースの学習が一番しっくりきます。ノートにまとめ直したり、要約を書いたりすることで理解が深まります。参考書や記事を読み込むことで知識がどんどん積み上がるタイプ。",
+method:"<h3>📝 おすすめ学習法</h3><p>教科書・参考書を精読する / ノートにまとめ直す / 要約を自分の言葉で書く / ブログやメモにアウトプット / リスト化して整理する</p>",
+tool:"<h3>🛠️ おすすめツール</h3><p>Kindle（電子書籍）/ Notion・Obsidian（ノートアプリ）/ Qiita・Zenn（技術記事）/ はてなブログ（アウトプット）/ GoodNotes</p>",
+traits:["読書好き","まとめ上手","文章力がある","テキスト派","書いて覚える"]},
+K:{name:"🤸 体感型（キネスティックラーナー）",icon:"🤸",color:"#f39c12",bg:"#fffbf0",desc:"あなたは「やって覚える」のが最も効率的なタイプ！座学よりも実践、理論よりも体験で学ぶのが得意です。手を動かしたり、実際に試してみたりすることで記憶が定着します。ハンズオンやワークショップ形式の学習が最強のスタイル。",
+method:"<h3>📝 おすすめ学習法</h3><p>ハンズオン・実践形式で学ぶ / プロジェクトベースの学習 / 模型や実物を使って理解 / 体を動かしながらの暗記 / ロールプレイングで体験する</p>",
+tool:"<h3>🛠️ おすすめツール</h3><p>Progate・Codecademy（ハンズオン）/ Arduino・Raspberry Pi（ものづくり）/ Figma（デザイン実践）/ ワークショップ・勉強会 / 実験キット</p>",
+traits:["実践派","手を動かす","体験重視","じっとしてられない","プロジェクト型"]}
+};
+let current=0,scores={V:0,A:0,R:0,K:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='V',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('methodBox').innerHTML=r.method;document.getElementById('toolBox').innerHTML=r.tool;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の最適な学習法は「${r}」でした！📚\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今日なに食べる？診断</title>
+<meta name="description" content="気分・体調・シチュエーションから、今日のベスト飯を提案！もう迷わない！">
+<meta property="og:title" content="今日なに食べる？診断">
+<meta property="og:description" content="もう迷わない！今日のベスト飯を診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#f6d365 0%,#fda085 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f6d365,#e8590c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#f6d365,#e8590c);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(246,211,101,.4)}
+.btn-option{background:#fffaf0;color:#333;border:2px solid #fde8c8;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#e8590c;background:#fff5e5}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f6d365,#e8590c);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-icon{text-align:center;font-size:5em;margin-bottom:10px}
+.result-type{text-align:center;font-size:1.4em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block;background:#fffaf0;color:#e8590c}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.menu-box{background:#fffaf0;border-radius:12px;padding:16px;margin:15px 0}
+.menu-box h3{font-size:.95em;color:#e8590c;margin-bottom:8px}
+.menu-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#fffaf0;color:#e8590c;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">🍽️</div>
+<h1>今日なに食べる？診断</h1>
+<p class="subtitle">5つの質問で、今日のベスト飯が決まる！もう「なに食べよう…」って迷わない！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-icon" id="resultIcon"></div>
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">今日食べるべきは…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="menu-box" id="menuBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"今の気分を一言で言うと？",opts:[
+{t:"疲れた…元気出したい",s:{G:3}},
+{t:"ちょっとおしゃれな気分",s:{O:3}},
+{t:"がっつりお腹いっぱい食べたい",s:{M:3}},
+{t:"さっぱりヘルシーに行きたい",s:{H:3}}
+]},
+{q:"今日の体調は？",opts:[
+{t:"元気いっぱい！何でもイケる",s:{M:3}},
+{t:"ちょっと疲れ気味…",s:{G:3}},
+{t:"普通。特に問題なし",s:{O:3}},
+{t:"胃が重い。軽めがいいかも",s:{H:3}}
+]},
+{q:"今日のシチュエーションは？",opts:[
+{t:"一人でサクッと食べたい",s:{G:2,M:1}},
+{t:"友達・恋人と楽しく",s:{O:3}},
+{t:"自分へのご褒美！",s:{O:2,M:1}},
+{t:"仕事の合間にパパッと",s:{G:3}}
+]},
+{q:"味の気分は？",opts:[
+{t:"こってり・濃いめが食べたい",s:{M:3}},
+{t:"ピリ辛でパンチのあるやつ",s:{G:2,M:1}},
+{t:"優しい味・素材の味を楽しみたい",s:{H:3}},
+{t:"いろんな味をちょっとずつ",s:{O:3}}
+]},
+{q:"予算感は？",opts:[
+{t:"ワンコイン（500円以下）",s:{G:3}},
+{t:"1000円くらい",s:{M:2,G:1}},
+{t:"1500-2000円くらい",s:{O:3}},
+{t:"今日は気にしない！",s:{O:2,M:1}}
+]}
+];
+const results={
+G:{name:"ラーメン・丼もの",icon:"🍜",desc:"今日のあなたには「ラーメンor丼もの」がベスト！疲れた体にガツンと効くこってりスープ、温かい麺が五臓六腑に染み渡ります。手軽にサクッと食べられて、お財布にも優しい。迷ったらとりあえずラーメン。これ真理。",menu:"<h3>🍜 おすすめメニュー</h3><p>味噌ラーメン（体ポカポカ）/ 豚骨ラーメン（ガッツリ派）/ 親子丼（優しい味）/ カツ丼（勝ちたい日に）/ 牛丼（コスパ最強）</p>",traits:["コスパ最強","サクッと","元気が出る","定番","ソウルフード"]},
+O:{name:"イタリアン・カフェ飯",icon:"🍝",desc:"今日のあなたには「イタリアンorカフェ飯」がベスト！おしゃれな空間でゆったり食事を楽しむ気分。見た目も味も満足できるメニューで、心もお腹も満たされます。友達や恋人とシェアしながら食べると幸福度MAX！",menu:"<h3>🍝 おすすめメニュー</h3><p>カルボナーラ（濃厚クリーミー）/ マルゲリータピザ（みんなでシェア）/ ワンプレートランチ（バランス◎）/ パンケーキ（ご褒美に）/ アサイーボウル（ヘルシーおしゃれ）</p>",traits:["おしゃれ","映える","シェア向き","ご褒美","気分が上がる"]},
+M:{name:"焼肉・ステーキ",icon:"🥩",desc:"今日のあなたには「焼肉orステーキ」がベスト！がっつりお肉を食べてパワーチャージ！タンパク質で体を元気にしつつ、焼ける音と匂いで五感が刺激されます。頑張った自分へのご褒美に最高の選択。明日からまた頑張れる！",menu:"<h3>🥩 おすすめメニュー</h3><p>カルビ＆ハラミ定食（定番最強）/ リブロースステーキ（ご褒美）/ ビビンバ（シメに最高）/ ハンバーグ（気軽にお肉）/ トンテキ（コスパ◎）</p>",traits:["がっつり","パワーチャージ","ご褒美","スタミナ","幸福度MAX"]},
+H:{name:"和食・お魚系",icon:"🐟",desc:"今日のあなたには「和食・お魚系」がベスト！胃に優しく、栄養バランスも抜群。素材の味を活かした料理で体の内側から元気になれます。食後の罪悪感ゼロなのも嬉しいポイント。大人の食事はこうありたい。",menu:"<h3>🐟 おすすめメニュー</h3><p>焼き魚定食（定番ヘルシー）/ お刺身盛り合わせ（新鮮さ命）/ 肉じゃが定食（ほっこり）/ そば・うどん（さっぱり）/ お茶漬け（〆にも最高）</p>",traits:["ヘルシー","胃に優しい","罪悪感ゼロ","栄養バランス","大人の選択"]}
+};
+let current=0,scores={G:0,O:0,M:0,H:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='G',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('menuBox').innerHTML=r.menu;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`今日食べるべきは「${r}」だって！🍽️\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

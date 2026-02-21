@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>相性チェッカー</title>
+<meta name="description" content="2人で回答して相性スコアを診断！友達・恋人・同僚との相性がわかる！">
+<meta property="og:title" content="相性チェッカー">
+<meta property="og:description" content="2人で回答して相性スコアを診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#ff9a9e 0%,#fecfef 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#ff6b6b,#ee5a24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#ff6b6b,#ee5a24);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(255,107,107,.4)}
+.btn-option{background:#fff5f5;color:#333;border:2px solid #fde;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#ff6b6b;background:#fff0f0}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ff6b6b,#ee5a24);border-radius:3px;transition:width .3s ease}
+.person-label{text-align:center;font-size:1.1em;font-weight:700;color:#ff6b6b;margin-bottom:15px;padding:8px;background:#fff5f5;border-radius:8px}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.name-input{width:100%;padding:14px 18px;border:2px solid #fde;border-radius:12px;font-size:1em;margin-bottom:15px;outline:none;transition:border-color .2s}
+.name-input:focus{border-color:#ff6b6b}
+.result-center{text-align:center}
+.score-circle{width:150px;height:150px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:20px auto;position:relative}
+.score-num{font-size:3em;font-weight:900;line-height:1}
+.score-pct{font-size:1em;font-weight:600}
+.result-names{text-align:center;font-size:1.1em;font-weight:700;color:#555;margin:10px 0}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.advice-box{background:#fff5f5;border-radius:12px;padding:16px;margin:15px 0}
+.advice-box h3{font-size:.95em;color:#ff6b6b;margin-bottom:8px}
+.advice-box p{font-size:.9em;color:#555;line-height:1.6}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">💕</div>
+<h1>相性チェッカー</h1>
+<p class="subtitle">2人で順番に回答して、相性スコアを診断！<br>友達・恋人・同僚、誰とでもOK！</p>
+<input class="name-input" id="name1" placeholder="1人目の名前（ニックネームOK）">
+<input class="name-input" id="name2" placeholder="2人目の名前（ニックネームOK）">
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<div class="person-label" id="personLabel"></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">2人の相性は…</p>
+<div class="score-circle" id="scoreCircle">
+<span class="score-num" id="scoreNum"></span>
+<span class="score-pct">%</span>
+</div>
+<p class="result-names" id="resultNames"></p>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="advice-box" id="adviceBox"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"休日に何もする予定がないとき、理想の過ごし方は？",opts:["家でダラダラ","アクティブに外出","カフェでまったり","新しいことに挑戦"]},
+{q:"ケンカしたとき、あなたはどうする？",opts:["すぐ話し合いたい","少し時間を置いてから","相手から来るのを待つ","とりあえず謝る"]},
+{q:"連絡の頻度、理想はどのくらい？",opts:["常にLINEしてたい","1日数回でOK","用事があるときだけ","電話派"]},
+{q:"サプライズを仕掛けるのは？",opts:["大好き！よくやる","たまにやりたい","苦手だけどされるのは好き","サプライズ不要派"]},
+{q:"2人でご飯に行くなら？",opts:["話題の新しいお店","いつものお気に入り","お家でごはん","食べ歩き・はしご"]},
+{q:"一番大事にしたい価値観は？",opts:["信頼・誠実さ","楽しさ・ワクワク","安心感・居心地","成長・刺激"]},
+{q:"相手に一番求めることは？",opts:["自分を理解してくれること","一緒に笑えること","自由を尊重してくれること","頼りになること"]}
+];
+let n1='',n2='',person=1,current=0,answers1=[],answers2=[];
+function startQuiz(){
+n1=document.getElementById('name1').value||'1人目';
+n2=document.getElementById('name2').value||'2人目';
+show('quiz');render();
+}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){
+const total=questions.length*2;
+const done=(person===1?current:questions.length+current);
+document.getElementById('progress').style.width=(done/total*100)+'%';
+document.getElementById('personLabel').textContent=person===1?`${n1} さんの番`:`${n2} さんの番`;
+document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;
+document.getElementById('qText').textContent=questions[current].q;
+const o=document.getElementById('options');o.innerHTML='';
+questions[current].opts.forEach((opt,i)=>{
+const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt;
+b.onclick=()=>answer(i);o.appendChild(b);
+});
+}
+function answer(i){
+if(person===1){answers1.push(i)}else{answers2.push(i)}
+current++;
+if(current<questions.length){render()}
+else if(person===1){
+person=2;current=0;
+alert(`${n1}さんの回答完了！\n次は${n2}さんの番です。\n（画面を交代してください）`);
+render();
+}else{showResult()}
+}
+function showResult(){
+let match=0;
+for(let i=0;i<answers1.length;i++){if(answers1[i]===answers2[i])match++}
+const base=Math.round((match/questions.length)*60+40);
+const score=Math.min(base+Math.floor(Math.random()*5),100);
+let color,bg,desc,advice;
+if(score>=90){color='#ff6b6b';bg='linear-gradient(135deg,#fff0f0,#ffe0e0)';desc=`${n1}さんと${n2}さんは驚異的な相性！価値観や感覚がとても近く、一緒にいると自然体でいられる最高の関係です。お互いを理解し合える稀有な存在。`;advice='<h3>💡 アドバイス</h3><p>相性が良すぎて「当たり前」になりがち。時々お互いへの感謝を言葉にすると、さらに素敵な関係に！</p>'}
+else if(score>=75){color='#e8795a';bg='linear-gradient(135deg,#fff8f0,#ffe8d5)';desc=`${n1}さんと${n2}さんはかなり良い相性！共通点が多く、一緒にいて心地よい関係です。多少の違いもお互いの魅力として楽しめるバランスの取れたペア。`;advice='<h3>💡 アドバイス</h3><p>違う部分こそが新しい発見のチャンス。相手の「自分にない部分」を楽しむ姿勢がさらに仲を深めます！</p>'}
+else if(score>=55){color='#f39c12';bg='linear-gradient(135deg,#fffbf0,#fff3d5)';desc=`${n1}さんと${n2}さんは良い意味で「違うタイプ」。お互いに新しい視点をもたらし合える関係です。最初は戸惑うこともあるかもしれませんが、理解が深まるほど強い絆になります。`;advice='<h3>💡 アドバイス</h3><p>「違って当然」と受け入れることが大事。相手の価値観を否定せず、「なるほど、そういう考え方もあるんだ」と楽しんで！</p>'}
+else{color='#3498db';bg='linear-gradient(135deg,#f0f5ff,#dde8ff)';desc=`${n1}さんと${n2}さんは正反対タイプ！一見合わないように見えて、実はお互いに足りないものを補い合える組み合わせ。「違い」を楽しめれば最強のコンビになれるポテンシャルを秘めています。`;advice='<h3>💡 アドバイス</h3><p>正反対だからこそ学べることがたくさん。無理に合わせようとせず、お互いのペースを尊重することが仲良くなる秘訣！</p>'}
+document.getElementById('scoreCircle').style.background=bg;
+document.getElementById('scoreNum').textContent=score;
+document.getElementById('scoreNum').style.color=color;
+document.querySelector('.score-pct').style.color=color;
+document.getElementById('resultNames').textContent=`${n1} × ${n2}`;
+document.getElementById('resultDesc').textContent=desc;
+document.getElementById('adviceBox').innerHTML=advice;
+show('result');
+}
+function shareX(){const s=document.getElementById('scoreNum').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`${n1}と${n2}の相性は${s}%でした！💕\nあなたも相性チェックしてみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

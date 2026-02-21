@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>理想の住む街診断</title>
+<meta name="description" content="あなたの価値観やライフスタイルから、日本で一番合う街を診断！">
+<meta property="og:title" content="理想の住む街診断">
+<meta property="og:description" content="あなたにピッタリの街を診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#43e97b,#38f9d7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(67,233,123,.4)}
+.btn-option{background:#f0faf5;color:#333;border:2px solid #d5f0e5;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#43e97b;background:#e5f8ee}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#43e97b,#38f9d7);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.spot-box{background:#f0faf5;border-radius:12px;padding:16px;margin:15px 0}
+.spot-box h3{font-size:.95em;color:#2d9a5e;margin-bottom:8px}
+.spot-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#f0faf5;color:#2d9a5e;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">🏙️</div>
+<h1>理想の住む街診断</h1>
+<p class="subtitle">7つの質問で、あなたにピッタリの街がわかる！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたが住むべき街は…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="spot-box" id="spotBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"休日の理想的な過ごし方は？",opts:[
+{t:"最新のカフェやイベントに行く",s:{T:3}},
+{t:"お寺や美術館を巡ってゆっくり過ごす",s:{K:3}},
+{t:"美味しいご飯を食べに街を散策する",s:{F:3}},
+{t:"海や山で自然を満喫する",s:{O:3}}
+]},
+{q:"食事で一番大事にするのは？",opts:[
+{t:"トレンドの店や話題のグルメ",s:{T:3}},
+{t:"和食の繊細さや季節感",s:{K:3}},
+{t:"コスパ最強のうまい飯",s:{F:3}},
+{t:"地元の新鮮な食材を使った料理",s:{O:3}}
+]},
+{q:"人付き合いのスタイルは？",opts:[
+{t:"広く浅く、いろんな人と繋がりたい",s:{T:3}},
+{t:"礼儀を大切にした適度な距離感がいい",s:{K:3}},
+{t:"フレンドリーで温かい関係が好き",s:{F:3}},
+{t:"少人数の深い繋がりを大事にしたい",s:{O:3}}
+]},
+{q:"仕事に対する考え方は？",opts:[
+{t:"キャリアアップ重視。チャンスが多い方がいい",s:{T:3}},
+{t:"伝統やクラフトマンシップのある仕事に惹かれる",s:{K:3}},
+{t:"仕事も大事だけどプライベートも充実させたい",s:{F:3}},
+{t:"ストレスフリーで自分らしく働きたい",s:{O:3}}
+]},
+{q:"住む場所で一番重視するのは？",opts:[
+{t:"交通アクセスと利便性",s:{T:3}},
+{t:"歴史や文化的な雰囲気",s:{K:3}},
+{t:"家賃と生活コストのバランス",s:{F:3}},
+{t:"自然環境の豊かさ",s:{O:3}}
+]},
+{q:"どんな気候が好き？",opts:[
+{t:"四季がはっきりしていてメリハリのある気候",s:{T:2,K:1}},
+{t:"夏は蒸し暑くても冬は底冷え…それも風情",s:{K:3}},
+{t:"温暖で過ごしやすい気候がいい",s:{F:3}},
+{t:"亜熱帯か涼しい北国がいい",s:{O:3}}
+]},
+{q:"引っ越すなら何を基準にする？",opts:[
+{t:"仕事やビジネスの機会が多い場所",s:{T:3}},
+{t:"歴史的な街並みや独自の文化がある場所",s:{K:3}},
+{t:"ご飯が美味しくて人が温かい場所",s:{F:3}},
+{t:"のんびり暮らせて自然が近い場所",s:{O:3}}
+]}
+];
+const results={
+T:{name:"🗼 東京（都心エリア）",color:"#e74c3c",bg:"#fff0f0",desc:"あなたにピッタリなのは東京！最先端のトレンド、ビジネスチャンス、エンタメ、グルメ…すべてが集まる日本の中心地。刺激的な毎日を送りたいあなたには最高の環境です。多様な人との出会いも大きな魅力。",spot:"<h3>📍 おすすめエリア</h3><p>渋谷・恵比寿（トレンド＆グルメ）/ 下北沢（カルチャー）/ 中目黒（おしゃれ＆落ち着き）/ 吉祥寺（住みやすさ抜群）</p>",traits:["刺激的","キャリア志向","トレンド好き","アクティブ","多様性"]},
+K:{name:"⛩️ 京都",color:"#8e44ad",bg:"#f8f0ff",desc:"あなたにピッタリなのは京都！千年の歴史と伝統が息づく街で、日常の中に文化や美を感じられます。落ち着いた雰囲気の中でも、実は学生が多く活気もある独特のバランス。知的好奇心の高いあなたに最適です。",spot:"<h3>📍 おすすめエリア</h3><p>出町柳（学生街＆鴨川）/ 嵐山（自然＆風情）/ 河原町（利便性）/ 北白川（静かな住宅街）</p>",traits:["文化的","知的好奇心","和の美意識","落ち着いている","独自の世界観"]},
+F:{name:"🍜 福岡",color:"#e67e22",bg:"#fff8f0",desc:"あなたにピッタリなのは福岡！食の美味しさは全国トップクラス、人は温かく、都市と自然のバランスが絶妙。生活コストも東京に比べてリーズナブルで、QOLの高さは折り紙付き。「住みやすさ」を求めるならベストチョイス。",spot:"<h3>📍 おすすめエリア</h3><p>天神・大名（都心＆グルメ）/ 薬院（おしゃれ住宅街）/ 百道（海沿い＆ファミリー向け）/ 糸島（自然＆カフェ）</p>",traits:["グルメ好き","コスパ重視","温かい人柄","バランス型","QOL重視"]},
+O:{name:"🌺 沖縄",color:"#00b894",bg:"#f0fef5",desc:"あなたにピッタリなのは沖縄！美しい海と温暖な気候、ゆったりとした「うちなータイム」の中で、自分らしいペースで暮らせます。都会の喧騒から離れ、自然と共に生きたいあなたにとって最高の選択。リモートワーク拠点としても人気急上昇中。",spot:"<h3>📍 おすすめエリア</h3><p>那覇（利便性＆文化）/ 北谷（海＆異国情緒）/ 読谷（のんびり＆クラフト）/ 宮古島（最高のビーチ）</p>",traits:["自然派","のんびり","癒やし重視","自分らしさ","ストレスフリー"]}
+};
+let current=0,scores={T:0,K:0,F:0,O:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='T',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('spotBox').innerHTML=r.spot;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私が住むべき街は「${r}」でした！\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたの推し活タイプ診断</title>
+<meta name="description" content="布教型？箱推し型？ガチ恋型？あなたの推し活スタイルを診断！">
+<meta property="og:title" content="あなたの推し活タイプ診断">
+<meta property="og:description" content="あなたの推し活スタイルを診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#a18cd1 0%,#fbc2eb 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#a18cd1,#fbc2eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(161,140,209,.4)}
+.btn-option{background:#f8f0ff;color:#333;border:2px solid #eedeff;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#a18cd1;background:#f3e8ff}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#a18cd1,#fbc2eb);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.advice-box{background:#f8f0ff;border-radius:12px;padding:16px;margin:15px 0}
+.advice-box h3{font-size:.95em;color:#9b59b6;margin-bottom:8px}
+.advice-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#f8f0ff;color:#9b59b6;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">💜</div>
+<h1>あなたの推し活タイプ診断</h1>
+<p class="subtitle">7つの質問で、あなたの推し活スタイルが丸わかり！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたの推し活タイプは…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="advice-box" id="adviceBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"推しの新情報が出たとき、最初にすることは？",opts:[
+{t:"すぐSNSでシェアして布教する",s:{B:3}},
+{t:"グループ全体の情報もチェックする",s:{H:3}},
+{t:"ドキドキしながら一人で噛みしめる",s:{G:3}},
+{t:"詳細を調べて考察を始める",s:{R:3}}
+]},
+{q:"推し活での出費、一番多いのは？",opts:[
+{t:"友達へのプレゼン用布教グッズ",s:{B:3}},
+{t:"グループ全員分のグッズ・チケット",s:{H:3}},
+{t:"推し一人に全振りしたグッズ・チケット",s:{G:3}},
+{t:"資料集・パンフレット・設定集など",s:{R:3}}
+]},
+{q:"ライブやイベントでの楽しみ方は？",opts:[
+{t:"隣の人にも推しの魅力をプレゼンしちゃう",s:{B:3}},
+{t:"メンバー全員のパフォーマンスを見届ける",s:{H:3}},
+{t:"推ししか見えない。目が離せない",s:{G:3}},
+{t:"演出・構成・セトリを分析しながら楽しむ",s:{R:3}}
+]},
+{q:"SNSでの推し活スタイルは？",opts:[
+{t:"積極的に推しの魅力を発信・布教",s:{B:3}},
+{t:"グループ全体のファンアートやまとめをRT",s:{H:3}},
+{t:"推しの投稿は全いいね＆保存。でも発信は控えめ",s:{G:3}},
+{t:"考察スレッドや分析を長文で投稿する",s:{R:3}}
+]},
+{q:"もし推しに会えたら何をする？",opts:[
+{t:"「あなたの魅力はここが最高です！」と熱弁する",s:{B:3}},
+{t:"「みんなのことも応援してます！」と伝える",s:{H:3}},
+{t:"緊張で固まるけど幸せすぎて泣きそう",s:{G:3}},
+{t:"「あの作品のあのシーン、どう解釈してますか？」と聞く",s:{R:3}}
+]},
+{q:"友達に推しを紹介するときの方法は？",opts:[
+{t:"プレゼン資料レベルの布教スライドを用意",s:{B:3}},
+{t:"「このグループまるごと良いから見て」と全体推し",s:{H:3}},
+{t:"「この人だけは見て…」と一人を推しまくる",s:{G:3}},
+{t:"時系列や関係性をまとめた相関図を見せる",s:{R:3}}
+]},
+{q:"推しのスキャンダルが出たときの反応は？",opts:[
+{t:"「推しは推し！変わらず布教する」と揺るがない",s:{B:3}},
+{t:"「グループへの影響が心配…」と全体を気にする",s:{H:3}},
+{t:"「嘘でしょ…」と心が大打撃を受ける",s:{G:3}},
+{t:"情報の信憑性を冷静に検証する",s:{R:3}}
+]}
+];
+const results={
+B:{name:"📢 布教マスタータイプ",color:"#e74c3c",bg:"#fff0f0",desc:"あなたは推しの魅力を世界に広めることに命を懸けるタイプ！推しの良さを語り出すと止まらず、気づけば周りの人も推しのファンに。布教力の高さはピカイチで、推しの最強の広報担当とも言える存在です。",advice:"<h3>💡 推し活アドバイス</h3><p>布教する相手のペースも大事にしよう。押しすぎると逆効果になることも。「興味あったら教えてね」くらいの余裕を持つと、もっと自然に沼に引きずり込める（？）はず！</p>",traits:["布教力MAX","プレゼン上手","情熱的","コミュ力おばけ","推し愛が溢れる"]},
+H:{name:"🌈 箱推しハーモニータイプ",color:"#3498db",bg:"#f0f5ff",desc:"あなたはグループ全体を愛する博愛タイプ！メンバーそれぞれの良さを理解し、グループの関係性やケミストリーにときめきます。「みんな違ってみんないい」がモットーで、ファン同士の争いを仲裁することも。",advice:"<h3>💡 推し活アドバイス</h3><p>全員を推すことで出費がかさみがちなので、予算管理はしっかりと。全体を見渡せるからこそ、新規ファンにグループの魅力を教える最適な存在です！</p>",traits:["博愛主義","全体を見渡せる","平和主義","関係性萌え","バランス感覚"]},
+G:{name:"💘 ガチ恋一途タイプ",color:"#e91e63",bg:"#fff0f5",desc:"あなたは推し一人に全力で愛を注ぐ一途タイプ！推しの一挙一動にドキドキし、推しの幸せが自分の幸せ。感情の振れ幅が大きく、推しの活動に一喜一憂しますが、その純粋な愛の深さこそがあなたの推し活の魅力です。",advice:"<h3>💡 推し活アドバイス</h3><p>推しとの「距離感」を大切にしよう。推しが自分のものじゃないことを受け入れた上で応援できると、もっと楽しく推し活できます。推しの幸せ＝あなたの幸せ！</p>",traits:["一途","純粋","感情豊か","献身的","推しの幸せ第一"]},
+R:{name:"🔬 研究者・考察オタクタイプ",color:"#2ecc71",bg:"#f0fef5",desc:"あなたは推しや作品を深く分析・考察するのが大好きなタイプ！裏設定、伏線、演出意図…表面だけでは満足できず、その奥にある意味を読み解くことに快感を覚えます。あなたの考察はファンコミュニティの知識の宝庫になっています。",advice:"<h3>💡 推し活アドバイス</h3><p>考察にのめり込みすぎて「公式より詳しい」状態になることも。時には感情のままに楽しむことも忘れずに。あなたの分析力はブログやYouTubeで発信すると反響があるかも！</p>",traits:["分析力","知識量がヤバい","考察好き","冷静","探究心旺盛"]}
+};
+let current=0,scores={B:0,H:0,G:0,R:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='B',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('adviceBox').innerHTML=r.advice;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の推し活タイプは「${r}」でした！\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

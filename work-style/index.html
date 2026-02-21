@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>理想の働き方診断</title>
+<meta name="description" content="リモート？出社？フリーランス？あなたにベストな働き方を診断！">
+<meta property="og:title" content="理想の働き方診断">
+<meta property="og:description" content="あなたにベストな働き方を診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#4facfe,#00f2fe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(79,172,254,.4)}
+.btn-option{background:#f0f8ff;color:#333;border:2px solid #d5eeff;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#4facfe;background:#e8f4ff}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#4facfe,#00f2fe);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-type{text-align:center;font-size:1.3em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.tip-box{background:#f0f8ff;border-radius:12px;padding:16px;margin:15px 0}
+.tip-box h3{font-size:.95em;color:#4facfe;margin-bottom:8px}
+.tip-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#f0f8ff;color:#4facfe;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">🏢</div>
+<h1>理想の働き方診断</h1>
+<p class="subtitle">7つの質問で、あなたにベストな働き方がわかる！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-center">
+<p style="font-size:.9em;color:#999;margin-bottom:5px">あなたの理想の働き方は…</p>
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="tip-box" id="tipBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"朝起きるのは得意？",opts:[
+{t:"全然起きれない。昼まで寝たい",s:{R:3}},
+{t:"決まった時間なら起きれる",s:{H:3}},
+{t:"朝型。朝から活動するのが好き",s:{O:3}},
+{t:"場所が変われば早起きもできる",s:{N:3}}
+]},
+{q:"仕事中、一番生産性が上がるのはどんな環境？",opts:[
+{t:"静かな自分だけの空間",s:{R:3}},
+{t:"家と会社の両方をうまく使い分ける",s:{H:3}},
+{t:"周りに人がいて適度に雑談できる環境",s:{O:3}},
+{t:"カフェや旅先など刺激のある場所",s:{N:3}}
+]},
+{q:"チームワークと個人作業、どちらが好き？",opts:[
+{t:"断然個人作業。一人の方が集中できる",s:{R:3}},
+{t:"場面によって使い分けたい",s:{H:3}},
+{t:"チームワーク。みんなで作る方が楽しい",s:{O:3}},
+{t:"色んな人とプロジェクト単位で組みたい",s:{N:3}}
+]},
+{q:"通勤時間に対する考え方は？",opts:[
+{t:"通勤は無駄。ゼロにしたい",s:{R:3}},
+{t:"週に数回なら許容できる",s:{H:3}},
+{t:"通勤は切り替えの時間として必要",s:{O:3}},
+{t:"そもそも住む場所を固定したくない",s:{N:3}}
+]},
+{q:"プライベートと仕事の境界線は？",opts:[
+{t:"自分のリズムで働ければ境界は曖昧でもOK",s:{R:3}},
+{t:"ある程度のメリハリは必要",s:{H:3}},
+{t:"しっかり分けたい。退勤後は仕事のこと考えたくない",s:{O:3}},
+{t:"仕事が楽しければ境界線は気にしない",s:{N:3}}
+]},
+{q:"キャリアで一番大事にしたいことは？",opts:[
+{t:"時間と場所の自由",s:{R:3}},
+{t:"安定した収入とワークライフバランス",s:{H:3}},
+{t:"チームでの成長や社内でのポジション",s:{O:3}},
+{t:"色んな経験と出会い",s:{N:3}}
+]},
+{q:"5年後の理想の生活は？",opts:[
+{t:"自宅で好きな時間に働いている",s:{R:3}},
+{t:"安定した企業で効率よく働いている",s:{H:3}},
+{t:"チームを率いてプロジェクトを回している",s:{O:3}},
+{t:"世界中を旅しながら働いている",s:{N:3}}
+]}
+];
+const results={
+R:{name:"🏠 フルリモート自由人タイプ",color:"#4facfe",bg:"#e8f4ff",desc:"あなたは時間と場所に縛られない働き方が理想。自分のペースで集中して成果を出すのが得意で、通勤時間を自分の時間に使いたいタイプ。テクノロジーを活用してどこからでも仕事ができる環境が最大のパフォーマンスを引き出します。",tip:"<h3>💡 実現のヒント</h3><p>フルリモート可の企業を探す / フリーランスとして独立する / 自己管理ツール（Notion, Todoist等）を活用する / 定期的に外に出てリフレッシュする時間を確保</p>",traits:["自己管理力","集中力が高い","マイペース","テック活用","自由重視"]},
+H:{name:"⚖️ ハイブリッド効率派タイプ",color:"#00b4d8",bg:"#e8f6fa",desc:"あなたはリモートと出社のいいとこ取りをしたいバランス型。集中作業は自宅で、ミーティングや交流は出社でと使い分ける効率の良さが光ります。安定と柔軟性の両方を求める、現代的な働き方の理想形です。",tip:"<h3>💡 実現のヒント</h3><p>ハイブリッド勤務を導入している企業を選ぶ / 出社日を「対面が必要な仕事」に集中させる / 自宅の作業環境を整える / スケジュール管理を徹底する</p>",traits:["バランス感覚","効率重視","適応力が高い","安定志向","計画的"]},
+O:{name:"🏢 オフィス充実派タイプ",color:"#6366f1",bg:"#f0f0ff",desc:"あなたはチームの中で力を発揮するタイプ。同僚との何気ない雑談からアイデアが生まれたり、対面のコミュニケーションでモチベーションが上がったりと、人との繋がりが仕事の原動力になっています。",tip:"<h3>💡 実現のヒント</h3><p>チームワークを重視する企業文化を選ぶ / オフィス環境が整った企業を探す / 社内コミュニティやイベントに積極参加 / リーダーシップの機会を活かす</p>",traits:["チームプレイヤー","コミュ力が高い","対面重視","リーダーシップ","社交的"]},
+N:{name:"✈️ ノマド冒険家タイプ",color:"#f59e0b",bg:"#fffbf0",desc:"あなたは場所に縛られず世界中を移動しながら働くのが理想。新しい環境や出会いが刺激となり、クリエイティビティを高めてくれます。既存の「働き方」の枠にとらわれない、自由な発想の持ち主です。",tip:"<h3>💡 実現のヒント</h3><p>場所を問わないスキル（プログラミング, デザイン, ライティング等）を磨く / 海外でも使えるWi-Fi環境を確保 / コワーキングスペースを活用 / ビザや税金の知識も身につける</p>",traits:["冒険心","好奇心旺盛","柔軟性","自由人","グローバル思考"]}
+};
+let current=0,scores={R:0,H:0,O:0,N:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='R',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('tipBox').innerHTML=r.tip;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私の理想の働き方は「${r}」でした！\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>

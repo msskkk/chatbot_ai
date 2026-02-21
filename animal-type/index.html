@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたを動物に例えると診断</title>
+<meta name="description" content="性格や行動パターンから、あなたにピッタリの動物を診断！">
+<meta property="og:title" content="あなたを動物に例えると診断">
+<meta property="og:description" content="あなたにピッタリの動物キャラを診断！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;min-height:100vh;background:linear-gradient(135deg,#ffecd2 0%,#fcb69f 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+.container{background:#fff;border-radius:20px;padding:40px 30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.screen{display:none;animation:fadeIn .4s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5em;text-align:center;background:linear-gradient(135deg,#f5a623,#e8795a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.subtitle{text-align:center;color:#888;font-size:.9em;margin-bottom:30px}
+.start-icon{text-align:center;font-size:4em;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-size:1.05em;cursor:pointer;transition:all .2s;margin-bottom:10px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#f5a623,#e8795a);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(245,166,35,.4)}
+.btn-option{background:#fff8f0;color:#333;border:2px solid #fde8d0;text-align:left;padding:14px 18px}
+.btn-option:hover{border-color:#f5a623;background:#fff3e5}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin-bottom:25px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f5a623,#e8795a);border-radius:3px;transition:width .3s ease}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.question{font-size:1.15em;font-weight:700;color:#333;margin-bottom:20px;line-height:1.6}
+.result-icon{text-align:center;font-size:5em;margin-bottom:10px}
+.result-type{text-align:center;font-size:1.4em;font-weight:800;margin:10px 0;padding:12px 20px;border-radius:12px;display:inline-block}
+.result-center{text-align:center}
+.result-desc{color:#555;line-height:1.8;margin:20px 0;font-size:.95em}
+.compat-box{background:#fff8f0;border-radius:12px;padding:16px;margin:15px 0}
+.compat-box h3{font-size:.95em;color:#e8795a;margin-bottom:8px}
+.compat-box p{font-size:.9em;color:#555;line-height:1.6}
+.result-traits{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0;justify-content:center}
+.trait-tag{background:#fff8f0;color:#e8795a;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:600}
+.share-buttons{display:flex;gap:10px;margin-top:20px}.share-buttons .btn{flex:1;font-size:.9em;padding:12px}
+.btn-x{background:#000;color:#fff}.btn-line{background:#06C755;color:#fff}
+.btn-retry{background:#f5f5f5;color:#333;margin-top:10px}.btn-retry:hover{background:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="screen active" id="start">
+<div class="start-icon">🐾</div>
+<h1>あなたを動物に例えると診断</h1>
+<p class="subtitle">7つの質問で、あなたの動物キャラがわかる！</p>
+<button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+</div>
+<div class="screen" id="quiz">
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<p class="q-number" id="qNumber"></p>
+<p class="question" id="qText"></p>
+<div id="options"></div>
+</div>
+<div class="screen" id="result">
+<div class="result-icon" id="resultIcon"></div>
+<div class="result-center">
+<div class="result-type" id="resultType"></div>
+</div>
+<p class="result-desc" id="resultDesc"></p>
+<div class="compat-box" id="compatBox"></div>
+<div class="result-traits" id="resultTraits"></div>
+<div class="share-buttons">
+<button class="btn btn-x" onclick="shareX()">Xでシェア</button>
+<button class="btn btn-line" onclick="shareLine()">LINEでシェア</button>
+</div>
+<button class="btn btn-retry" onclick="location.reload()">もう一度診断する</button>
+</div>
+</div>
+<script>
+const questions=[
+{q:"パーティーに参加したときのあなたは？",opts:[
+{t:"気づいたら中心にいて盛り上げてる",s:{D:3}},
+{t:"気の合う人を見つけてずっと話してる",s:{C:3}},
+{t:"隅っこで観察しながら楽しんでる",s:{O:3}},
+{t:"気分次第。ノリノリの時もあればすぐ帰る時も",s:{N:3}}
+]},
+{q:"休日の朝、目覚めたら最初にすることは？",opts:[
+{t:"すぐ起きて散歩やランニングに出かける",s:{D:3}},
+{t:"SNSをチェックして友達の動向を確認",s:{C:3}},
+{t:"二度寝して昼まで寝る",s:{O:3}},
+{t:"気まぐれ。その日の気分で決める",s:{N:3}}
+]},
+{q:"友達との約束の時間、あなたは？",opts:[
+{t:"少し早めに着く。待ってる時間も楽しい",s:{D:3}},
+{t:"ぴったりに着く。時間通りが大事",s:{C:2,O:1}},
+{t:"ちょっと遅れがち。ごめん…",s:{N:3}},
+{t:"場所を間違えたりドタバタする",s:{O:2,N:1}}
+]},
+{q:"ストレスを感じたとき、どうやって解消する？",opts:[
+{t:"体を動かして発散！運動最高！",s:{D:3}},
+{t:"誰かと話してスッキリする",s:{C:3}},
+{t:"一人の時間を確保してのんびりする",s:{O:3}},
+{t:"好きなことに没頭して忘れる",s:{N:3}}
+]},
+{q:"グループで何かを決めるとき、あなたの役割は？",opts:[
+{t:"「こうしよう！」とリーダーシップを取る",s:{D:3}},
+{t:"みんなの意見を聞いてまとめる調整役",s:{C:3}},
+{t:"「どっちでもいいよ」と周りに合わせる",s:{O:3}},
+{t:"突然いいアイデアを出して驚かせる",s:{N:3}}
+]},
+{q:"あなたの食事のスタイルは？",opts:[
+{t:"いっぱい食べる！食事はエネルギー補給！",s:{D:3}},
+{t:"みんなでシェアして食べるのが好き",s:{C:3}},
+{t:"少食。好きなものをちょこっと",s:{N:3}},
+{t:"気に入ったものをずっと食べ続ける",s:{O:3}}
+]},
+{q:"自分を一言で表すなら？",opts:[
+{t:"明るくてエネルギッシュ",s:{D:3}},
+{t:"優しくて協調性がある",s:{C:3}},
+{t:"マイペースで穏やか",s:{O:3}},
+{t:"ミステリアスで自由",s:{N:3}}
+]}
+];
+const results={
+D:{name:"犬タイプ",icon:"🐕",color:"#e8795a",bg:"#fff3e5",desc:"あなたは犬のように明るく、忠実で、エネルギッシュなタイプ！人といるのが大好きで、信頼した人にはとことん尽くします。行動力があり、チームのムードメーカー。素直で裏表がないところも魅力で、周りから愛される存在です。",compat:"<h3>🤝 相性の良い動物</h3><p>猫タイプ（お互いに足りないものを補える最高の組み合わせ）/ うさぎタイプ（一緒にいると癒やし×元気で最強コンビ）</p>",traits:["忠実","エネルギッシュ","素直","社交的","行動力抜群"]},
+C:{name:"うさぎタイプ",icon:"🐰",color:"#e91e63",bg:"#fff0f5",desc:"あなたはうさぎのように優しく、共感力が高く、人間関係を大切にするタイプ！場の空気を読む力に優れ、周りの人を安心させるオーラを持っています。やや繊細な面もありますが、それがあなたの魅力。大切な人を幸せにできる力の持ち主です。",compat:"<h3>🤝 相性の良い動物</h3><p>犬タイプ（元気をもらえる＆守ってくれる安心感）/ フクロウタイプ（知的な会話で深い関係に）</p>",traits:["優しい","共感力","空気を読める","繊細","癒やし系"]},
+O:{name:"猫タイプ",icon:"🐱",color:"#9b59b6",bg:"#f8f0ff",desc:"あなたは猫のようにマイペースで、自分の世界を大切にするタイプ！一人の時間を楽しめる自立心と、気まぐれだけど深い愛情を持ち合わせています。無理に群れないからこそ、一緒にいる時間の価値が高いツンデレな魅力の持ち主です。",compat:"<h3>🤝 相性の良い動物</h3><p>犬タイプ（お互いの違いが心地よいバランスに）/ 猫タイプ同士（適度な距離感で最高の関係）</p>",traits:["マイペース","自立心","ツンデレ","気まぐれ","独自の世界観"]},
+N:{name:"フクロウタイプ",icon:"🦉",color:"#2c3e50",bg:"#f0f2f5",desc:"あなたはフクロウのようにミステリアスで、知的な魅力に溢れるタイプ！深い洞察力と独自の視点で物事を捉え、周りとは一味違う存在感を放っています。夜型で、静かな時間に最も力を発揮するタイプかも。自由を愛する孤高の存在です。",compat:"<h3>🤝 相性の良い動物</h3><p>うさぎタイプ（繊細さを理解し合える関係）/ フクロウタイプ同士（深い話が永遠に続く知的パートナー）</p>",traits:["知的","ミステリアス","夜型","洞察力","自由人"]}
+};
+let current=0,scores={D:0,C:0,O:0,N:0};
+function startQuiz(){show('quiz');render()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function render(){const q=questions[current];document.getElementById('progress').style.width=((current)/questions.length*100)+'%';document.getElementById('qNumber').textContent=`Q${current+1} / ${questions.length}`;document.getElementById('qText').textContent=q.q;const o=document.getElementById('options');o.innerHTML='';q.opts.forEach(opt=>{const b=document.createElement('button');b.className='btn btn-option';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b)})}
+function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult()}
+function showResult(){let max='D',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k};const r=results[max];document.getElementById('resultIcon').textContent=r.icon;document.getElementById('resultType').textContent=r.name;document.getElementById('resultType').style.background=r.bg;document.getElementById('resultType').style.color=r.color;document.getElementById('resultDesc').textContent=r.desc;document.getElementById('compatBox').innerHTML=r.compat;const t=document.getElementById('resultTraits');t.innerHTML='';r.traits.forEach(tr=>{const s=document.createElement('span');s.className='trait-tag';s.textContent=tr;t.appendChild(s)});show('result')}
+function shareX(){const r=document.getElementById('resultType').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(`私を動物に例えると「${r}」でした！🐾\nあなたも診断してみて👇\n${location.href}`)}`,'_blank')}
+function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+</script>
+</body>
+</html>
