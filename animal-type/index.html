@@ -148,7 +148,74 @@ h1{font-size:1.55em;font-weight:900;color:var(--dark);line-height:1.4;margin-bot
 
 </div>
 <script>
-const questions=[
+let lang = localStorage.getItem('quizLang') || navigator.language.slice(0,2) || 'ja';
+if (!['ja','en','zh','ko'].includes(lang)) lang = 'ja';
+
+const T = {
+  ja: {
+    title: 'あなたを動物に<br>例えると診断',
+    badge: '🐾 性格診断',
+    subtitle: '10の質問で、あなたのキャラを動物タイプで診断！<br>犬・猫・うさぎ・フクロウ・イルカ・オオカミ・ペンギン・キツネ、どれかな？',
+    startBtn: '🔮 診断スタート！',
+    hint: '全10問・約2分で完了',
+    resultLabel: 'あなたのタイプは',
+    compatHead: '💕 相性のいいタイプ',
+    allTypesHead: '🗺 全タイプ一覧',
+    shareX: '𝕏 シェア',
+    shareLine: 'LINE シェア',
+    retry: '🔄 もう一度診断する',
+    youLabel: '← あなた！',
+    shareText: function(name){ return '私の動物タイプは「'+name+'」でした！🐾\nあなたも診断してみて👇\n'; }
+  },
+  en: {
+    title: 'What Animal<br>Are You?',
+    badge: '🐾 Personality Quiz',
+    subtitle: '10 questions to find your animal type!<br>Dog, Cat, Rabbit, Owl, Dolphin, Wolf, Penguin, or Fox?',
+    startBtn: '🔮 Start Quiz!',
+    hint: '10 questions · about 2 min',
+    resultLabel: 'Your type is',
+    compatHead: '💕 Best Matches',
+    allTypesHead: '🗺 All Types',
+    shareX: '𝕏 Share',
+    shareLine: 'LINE Share',
+    retry: '🔄 Try Again',
+    youLabel: '← You!',
+    shareText: function(name){ return 'My animal type is "'+name+'"! 🐾\nTry it yourself 👇\n'; }
+  },
+  zh: {
+    title: '你是什么<br>动物类型？',
+    badge: '🐾 性格测试',
+    subtitle: '通过10个问题测出你的动物类型！<br>狗・猫・兔子・猫头鹰・海豚・狼・企鹅・狐狸，你是哪个？',
+    startBtn: '🔮 开始测试！',
+    hint: '共10题・约2分钟完成',
+    resultLabel: '你的类型是',
+    compatHead: '💕 最佳搭配',
+    allTypesHead: '🗺 所有类型',
+    shareX: '𝕏 分享',
+    shareLine: 'LINE 分享',
+    retry: '🔄 再测一次',
+    youLabel: '← 你！',
+    shareText: function(name){ return '我的动物类型是「'+name+'」！🐾\n你也来测测吧👇\n'; }
+  },
+  ko: {
+    title: '당신은 어떤<br>동물 타입?',
+    badge: '🐾 성격 테스트',
+    subtitle: '10개의 질문으로 당신의 동물 타입을 진단!<br>강아지・고양이・토끼・부엉이・돌고래・늑대・펭귄・여우, 어떤 타입일까?',
+    startBtn: '🔮 테스트 시작!',
+    hint: '총 10문항・약 2분 소요',
+    resultLabel: '당신의 타입은',
+    compatHead: '💕 잘 맞는 타입',
+    allTypesHead: '🗺 모든 타입',
+    shareX: '𝕏 공유',
+    shareLine: 'LINE 공유',
+    retry: '🔄 다시 테스트',
+    youLabel: '← 당신!',
+    shareText: function(name){ return '나의 동물 타입은 「'+name+'」이었어! 🐾\n너도 해봐 👇\n'; }
+  }
+};
+
+/* ===== QUESTIONS ===== */
+const questions_ja = [
 {q:"パーティーに参加したとき、あなたはどうする？",opts:[
 {t:"気づいたら中心にいて盛り上げてる🎉",s:{D:2,H:1}},
 {t:"気の合う人を見つけてずっと話してる💬",s:{C:2,P:1}},
@@ -211,7 +278,199 @@ const questions=[
 ]}
 ];
 
-const results={
+const questions_en = [
+{q:"When you arrive at a party, what do you do?",opts:[
+{t:"Before I know it, I'm the life of the party 🎉",s:{D:2,H:1}},
+{t:"Find someone I click with and chat the whole time 💬",s:{C:2,P:1}},
+{t:"Hang back in a corner and people-watch 👀",s:{O:2,N:1}},
+{t:"Read the room and strategically network 🦊",s:{F:2,W:1}}
+]},
+{q:"It's a day off. What's the first thing you do when you wake up?",opts:[
+{t:"Jump out of bed and go for a walk or run! 🏃",s:{D:2,W:1}},
+{t:"Check social media and like my friends' posts 📱",s:{C:2,H:1}},
+{t:"Go back to sleep and stay cozy till noon 😴",s:{O:3}},
+{t:"Make a to-do list and plan out the day 📝",s:{F:2,P:1}}
+]},
+{q:"When planning a group trip, what role do you play?",opts:[
+{t:"Take the lead and say 'Let's do this!' 🙋",s:{W:3}},
+{t:"Listen to everyone's ideas and coordinate 🤝",s:{P:2,C:1}},
+{t:"Find cool spots and pitch creative ideas 💡",s:{H:2,F:1}},
+{t:"Go with the flow and find my own fun along the way 😊",s:{O:2,N:1}}
+]},
+{q:"How do you deal with stress?",opts:[
+{t:"Get moving — exercise and sweat it out 💪",s:{D:2,W:1}},
+{t:"Talk it out with someone I trust 🗣",s:{C:2,P:1}},
+{t:"Take some alone time and recharge quietly 🛋",s:{O:1,N:2}},
+{t:"Dive into a hobby to take my mind off things 🎮",s:{F:2,H:1}}
+]},
+{q:"A friend suddenly texts: 'Wanna hang out right now!'",opts:[
+{t:"Instant yes! I'm always ready to go 🚀",s:{D:2,H:1}},
+{t:"Check my schedule and get back to them 📋",s:{F:2,P:1}},
+{t:"Depends on my mood — maybe yes, maybe no 🐱",s:{O:2,N:1}},
+{t:"Suggest a place and time and take the lead 📍",s:{W:2,C:1}}
+]},
+{q:"If you could bring only one thing to a desert island?",opts:[
+{t:"A survival knife — I'll make it no matter what 🔪",s:{W:2,F:1}},
+{t:"Photos of friends — my bonds keep me going 📷",s:{C:2,P:1}},
+{t:"A stack of books — I'll never be bored 📚",s:{N:2,O:1}},
+{t:"A musical instrument — I'll enjoy myself with music 🎸",s:{H:2,D:1}}
+]},
+{q:"When the team can't agree, what do you do?",opts:[
+{t:"Look for a compromise everyone can accept 🕊",s:{P:3}},
+{t:"State my opinion clearly and persuade others 🗯",s:{W:2,D:1}},
+{t:"Analyze the situation and propose the most logical plan 🧠",s:{F:2,N:1}},
+{t:"Use humor to lighten the mood, then discuss 😄",s:{H:2,C:1}}
+]},
+{q:"What do people usually say about their first impression of you?",opts:[
+{t:"'Bright and easy to talk to' ☀️",s:{D:2,H:1}},
+{t:"'Calm and kind-hearted' 🌼",s:{C:2,P:1}},
+{t:"'Cool and mysterious' 🌙",s:{N:2,O:1}},
+{t:"'Dependable and put-together' 🏔",s:{W:2,F:1}}
+]},
+{q:"What genre of movie would you pick?",opts:[
+{t:"Action! I love thrilling twists and turns 🎬",s:{D:2,W:1}},
+{t:"Comedy! Nothing beats a good laugh 😂",s:{H:2,P:1}},
+{t:"Mystery! I love solving puzzles 🔍",s:{F:1,N:2}},
+{t:"Drama! I love stories that touch the heart 🥲",s:{C:2,O:1}}
+]},
+{q:"Which phrase describes you best in one line?",opts:[
+{t:"Bright and energetic, like the sun ☀️",s:{D:2,H:1}},
+{t:"The quiet backbone who supports everyone 🌱",s:{P:2,C:1}},
+{t:"Free-spirited, living at my own pace 🌿",s:{O:2,N:1}},
+{t:"A go-getter charging toward my goals 🔥",s:{W:2,F:1}}
+]}
+];
+
+const questions_zh = [
+{q:"参加派对时，你会怎么做？",opts:[
+{t:"不知不觉就成了全场焦点，带动气氛🎉",s:{D:2,H:1}},
+{t:"找到聊得来的人，一直聊到结束💬",s:{C:2,P:1}},
+{t:"在角落里默默观察，享受氛围👀",s:{O:2,N:1}},
+{t:"察言观色，有策略地拓展人脉🦊",s:{F:2,W:1}}
+]},
+{q:"休息日早上醒来，你第一件事做什么？",opts:[
+{t:"立刻起床，出门散步或跑步！🏃",s:{D:2,W:1}},
+{t:"刷社交媒体，给朋友的动态点赞📱",s:{C:2,H:1}},
+{t:"继续赖床，在被窝里窝到中午😴",s:{O:3}},
+{t:"列一个待办清单，安排好今天的计划📝",s:{F:2,P:1}}
+]},
+{q:"和朋友们一起计划旅行时，你通常扮演什么角色？",opts:[
+{t:"主动站出来当领队，带领大家🙋",s:{W:3}},
+{t:"倾听大家的意见，做好协调工作🤝",s:{P:2,C:1}},
+{t:"发现有趣的景点，提出创意方案💡",s:{H:2,F:1}},
+{t:"随大流，同时悄悄找到自己的乐趣😊",s:{O:2,N:1}}
+]},
+{q:"感到压力时，你会怎么缓解？",opts:[
+{t:"运动出汗，把压力都释放出来💪",s:{D:2,W:1}},
+{t:"找信任的人倾诉，聊聊心事🗣",s:{C:2,P:1}},
+{t:"给自己独处的时间，安静地放松🛋",s:{O:1,N:2}},
+{t:"沉浸在兴趣爱好中，转换心情🎮",s:{F:2,H:1}}
+]},
+{q:"朋友突然说'现在出来玩吧！'你会？",opts:[
+{t:"秒回'走起！'说走就走🚀",s:{D:2,H:1}},
+{t:"先确认一下日程再回复📋",s:{F:2,P:1}},
+{t:"看心情，想去就去，不想去就算了🐱",s:{O:2,N:1}},
+{t:"自己提议地点和时间，主导安排📍",s:{W:2,C:1}}
+]},
+{q:"如果只能带一样东西去无人岛？",opts:[
+{t:"求生刀——无论如何都要活下来🔪",s:{W:2,F:1}},
+{t:"朋友的照片——伙伴是心灵的支柱📷",s:{C:2,P:1}},
+{t:"一堆书——有知识和想象就不会无聊📚",s:{N:2,O:1}},
+{t:"乐器——用音乐让生活充满快乐🎸",s:{H:2,D:1}}
+]},
+{q:"团队意见分歧时，你会怎么做？",opts:[
+{t:"寻找大家都能接受的折中方案🕊",s:{P:3}},
+{t:"明确表达自己的观点并说服他人🗯",s:{W:2,D:1}},
+{t:"分析形势，提出最合理的方案🧠",s:{F:2,N:1}},
+{t:"用幽默化解紧张气氛，再好好讨论😄",s:{H:2,C:1}}
+]},
+{q:"别人对你的第一印象通常是？",opts:[
+{t:"'开朗，很容易聊起来' ☀️",s:{D:2,H:1}},
+{t:"'温柔沉稳，很亲切' 🌼",s:{C:2,P:1}},
+{t:"'很酷，有神秘感' 🌙",s:{N:2,O:1}},
+{t:"'很靠谱，值得信赖' 🏔",s:{W:2,F:1}}
+]},
+{q:"看电影的话，你会选哪种类型？",opts:[
+{t:"动作片！紧张刺激的剧情最棒🎬",s:{D:2,W:1}},
+{t:"喜剧片！能笑的才是最好的😂",s:{H:2,P:1}},
+{t:"悬疑片！解谜的感觉超兴奋🔍",s:{F:1,N:2}},
+{t:"剧情片！触动心灵的故事最打动人🥲",s:{C:2,O:1}}
+]},
+{q:"用一句话形容自己，你觉得哪个最贴切？",opts:[
+{t:"像太阳一样开朗，充满活力☀️",s:{D:2,H:1}},
+{t:"默默付出的幕后英雄，支撑着大家🌱",s:{P:2,C:1}},
+{t:"随心所欲，按自己的节奏生活🌿",s:{O:2,N:1}},
+{t:"朝着目标勇往直前的挑战者🔥",s:{W:2,F:1}}
+]}
+];
+
+const questions_ko = [
+{q:"파티에 참가했을 때, 당신은 어떻게 하나요?",opts:[
+{t:"어느새 중심에 서서 분위기를 띄우고 있어 🎉",s:{D:2,H:1}},
+{t:"마음이 맞는 사람을 찾아서 계속 이야기해 💬",s:{C:2,P:1}},
+{t:"구석에서 관찰하면서 즐겨 👀",s:{O:2,N:1}},
+{t:"분위기를 읽으며 전략적으로 인맥을 넓혀 🦊",s:{F:2,W:1}}
+]},
+{q:"휴일 아침, 눈을 떠서 가장 먼저 하는 일은?",opts:[
+{t:"바로 일어나서 산책이나 러닝 출발! 🏃",s:{D:2,W:1}},
+{t:"SNS 확인하고 친구 게시물에 좋아요 📱",s:{C:2,H:1}},
+{t:"이불 속에서 뒹굴며 낮까지 늘어져 😴",s:{O:3}},
+{t:"오늘 할 일 리스트를 만들고 계획을 세워 📝",s:{F:2,P:1}}
+]},
+{q:"친구들과 여행 계획을 세울 때, 당신의 역할은?",opts:[
+{t:"'이렇게 하자!'하고 리더십을 발휘해 🙋",s:{W:3}},
+{t:"다들 의견을 듣고 조율하는 역할 🤝",s:{P:2,C:1}},
+{t:"재미있는 장소를 찾아서 제안하는 아이디어맨 💡",s:{H:2,F:1}},
+{t:"'아무데나 좋아~'하면서 나만의 재미를 찾아 😊",s:{O:2,N:1}}
+]},
+{q:"스트레스를 받으면, 어떻게 해소하나요?",opts:[
+{t:"운동으로 땀 흘리며 스트레스 날려 💪",s:{D:2,W:1}},
+{t:"믿을 수 있는 사람에게 이야기를 들어달라고 해 🗣",s:{C:2,P:1}},
+{t:"혼자만의 시간을 확보하고 조용히 쉬어 🛋",s:{O:1,N:2}},
+{t:"취미나 좋아하는 일에 빠져서 기분 전환 🎮",s:{F:2,H:1}}
+]},
+{q:"친구가 갑자기 '지금 놀자!'라고 하면?",opts:[
+{t:"바로 '가자!' 즉답. 행동력이 생명 🚀",s:{D:2,H:1}},
+{t:"일정 확인하고 조정한 뒤 답장해 📋",s:{F:2,P:1}},
+{t:"기분 나면 가고, 아니면 거절해 🐱",s:{O:2,N:1}},
+{t:"내가 먼저 장소와 시간을 제안하며 리드해 📍",s:{W:2,C:1}}
+]},
+{q:"무인도에 하나만 가져갈 수 있다면?",opts:[
+{t:"서바이벌 나이프 — 무슨 일이 있어도 살아남겠어 🔪",s:{W:2,F:1}},
+{t:"친구들 사진 — 동료의 존재가 마음의 버팀목 📷",s:{C:2,P:1}},
+{t:"책을 잔뜩 — 지식과 상상의 세계가 있으면 지루하지 않아 📚",s:{N:2,O:1}},
+{t:"악기 — 음악으로 즐겁게 보내고 싶어 🎸",s:{H:2,D:1}}
+]},
+{q:"팀에서 의견이 나뉠 때, 어떻게 하나요?",opts:[
+{t:"모두가 납득할 수 있는 타협점을 찾아 🕊",s:{P:3}},
+{t:"내 의견을 확실히 주장하고 설득해 🗯",s:{W:2,D:1}},
+{t:"상황을 분석해서 가장 합리적인 안을 제안해 🧠",s:{F:2,N:1}},
+{t:"유머로 긴장을 풀고 나서 이야기해 😄",s:{H:2,C:1}}
+]},
+{q:"첫인상에 대해 주변에서 자주 듣는 말은?",opts:[
+{t:"'밝고 말 걸기 쉽다'는 말을 자주 들어 ☀️",s:{D:2,H:1}},
+{t:"'차분하고 다정하다'는 말을 자주 들어 🌼",s:{C:2,P:1}},
+{t:"'쿨하고 미스터리하다'는 말을 자주 들어 🌙",s:{N:2,O:1}},
+{t:"'듬직하고 믿음직하다'는 말을 자주 들어 🏔",s:{W:2,F:1}}
+]},
+{q:"영화를 본다면, 어떤 장르를 고르겠어?",opts:[
+{t:"액션 영화! 긴장감 넘치는 전개가 최고 🎬",s:{D:2,W:1}},
+{t:"코미디 영화! 웃을 수 있는 게 제일 😂",s:{H:2,P:1}},
+{t:"미스터리 영화! 수수께끼 풀기에 설레 🔍",s:{F:1,N:2}},
+{t:"휴먼 드라마! 마음에 와닿는 이야기가 좋아 🥲",s:{C:2,O:1}}
+]},
+{q:"자신을 한마디로 표현한다면?",opts:[
+{t:"태양처럼 밝고 에너지 넘치는 사람 ☀️",s:{D:2,H:1}},
+{t:"묵묵히 모두를 지탱하는 든든한 존재 🌱",s:{P:2,C:1}},
+{t:"자유롭게 내 페이스로 사는 타입 🌿",s:{O:2,N:1}},
+{t:"목표를 향해 똑바로 나아가는 도전자 🔥",s:{W:2,F:1}}
+]}
+];
+
+const questionsAll = { ja: questions_ja, en: questions_en, zh: questions_zh, ko: questions_ko };
+
+/* ===== RESULTS ===== */
+const results_ja = {
 D:{name:"犬タイプ",emoji:"🐕",color:"#FF7043",bg:"linear-gradient(135deg,#FF7043,#EC407A)",bgLight:"#fff3e5",
   desc:"あなたは犬のように明るく、忠実で、エネルギッシュなタイプ！人といるのが大好きで、信頼した人にはとことん尽くす愛情深さが最大の魅力です。行動力があり、チームのムードメーカーとして周囲を自然と笑顔にする力を持っています。素直で裏表がなく、嘘がつけない正直な性格は周りから深く愛されています。何事にも全力で取り組むあなたの姿は、多くの人に勇気と元気を与えています。",
   traits:["忠実🐶","エネルギッシュ⚡","素直✨","社交的🎉","行動力抜群🏃"],
@@ -246,60 +505,234 @@ F:{name:"キツネタイプ",emoji:"🦊",color:"#E65100",bg:"linear-gradient(13
   compat:[{icon:"🐺",name:"オオカミタイプ",note:"戦略×行動力で無敵のコンビ"},{icon:"🦉",name:"フクロウタイプ",note:"知的な会話が尽きない最高の関係"}]}
 };
 
-const allTypes=[
+const results_en = {
+D:{name:"Dog",emoji:"🐕",color:"#FF7043",bg:"linear-gradient(135deg,#FF7043,#EC407A)",bgLight:"#fff3e5",
+  desc:"You're the Dog type — cheerful, loyal, and full of energy! You love being around people and your greatest charm is the deep devotion you show to those you trust. You're a natural mood-maker who brings smiles to everyone on the team. Honest and straightforward, you can't tell a lie, and that sincerity is deeply loved by everyone around you. The way you give your all to everything inspires courage and energy in others.",
+  traits:["Loyal 🐶","Energetic ⚡","Honest ✨","Social 🎉","Action-oriented 🏃"],
+  compat:[{icon:"🐱",name:"Cat",note:"Your differences create a comfortable balance"},{icon:"🐰",name:"Rabbit",note:"Healing + energy = the ultimate duo!"}]},
+C:{name:"Rabbit",emoji:"🐰",color:"#E91E63",bg:"linear-gradient(135deg,#E91E63,#F06292)",bgLight:"#fff0f5",
+  desc:"You're the Rabbit type — gentle, empathetic, and someone who truly values relationships! You have an amazing ability to read the room and a comforting aura that puts everyone at ease. You can be a bit sensitive, but that very sensitivity is what lets you connect deeply with others' feelings. You have the power to make the people you care about happy, and your presence alone fills any space with warmth.",
+  traits:["Kind 🌸","Empathetic 💕","Perceptive 👂","Sensitive 🌷","Healing 💆"],
+  compat:[{icon:"🐕",name:"Dog",note:"Energy + comfort = a reassuring match"},{icon:"🦉",name:"Owl",note:"Intellectual conversations lead to deep bonds"}]},
+O:{name:"Cat",emoji:"🐱",color:"#7E57C2",bg:"linear-gradient(135deg,#7E57C2,#AB47BC)",bgLight:"#f8f0ff",
+  desc:"You're the Cat type — independent, marching to your own beat, and protective of your personal world! You have the self-reliance to enjoy time alone, and though you can be whimsical, you hold deep affection inside. You don't force yourself into groups, and the way you trust your own instincts is incredibly attractive to those around you. You have a playful hot-and-cold side, and the affection you show only to those you truly trust makes hearts flutter.",
+  traits:["Independent 🌙","Self-reliant 💜","Hot & cold 😼","Whimsical 🎲","Unique worldview 🔮"],
+  compat:[{icon:"🐕",name:"Dog",note:"Your differences create a comfortable balance"},{icon:"🦉",name:"Owl",note:"A mature bond built on mutual respect for freedom"}]},
+N:{name:"Owl",emoji:"🦉",color:"#37474F",bg:"linear-gradient(135deg,#37474F,#546E7A)",bgLight:"#f0f4f8",
+  desc:"You're the Owl type — mysterious, intellectual, and full of quiet charm! With deep insight and a unique perspective, you see things differently from everyone else. You're at your best in quiet moments, and time spent lost in thought is pure bliss. A proud lone wolf who loves freedom, your distinctive aura draws more admirers than you might realize. Your depth of knowledge and sharp observation give others fresh perspectives they never considered.",
+  traits:["Intellectual 🧠","Mysterious 🌑","Night owl 🦉","Insightful 🔍","Free spirit 🕊"],
+  compat:[{icon:"🐰",name:"Rabbit",note:"A deep connection through shared sensitivity"},{icon:"🐱",name:"Cat",note:"A mature bond built on mutual respect for freedom"}]},
+H:{name:"Dolphin",emoji:"🐬",color:"#00BCD4",bg:"linear-gradient(135deg,#00BCD4,#26C6DA)",bgLight:"#e0f7fa",
+  desc:"You're the Dolphin type — sociable, playful, and able to befriend anyone in no time! Your communication skills are outstanding and your sense of humor is top-notch. Endlessly curious, you love darting around trying new experiences. Your bright aura is contagious, and laughter never stops when you're around. Combining intelligence with playfulness, you're a captivating entertainer.",
+  traits:["Social 🎊","Humorous 😄","Curious 🌊","Flexible 🤸","Positive ✨"],
+  compat:[{icon:"🐕",name:"Dog",note:"Energy × energy — any place becomes a party"},{icon:"🐧",name:"Penguin",note:"Fun + teamwork = the perfect combo"}]},
+W:{name:"Wolf",emoji:"🐺",color:"#455A64",bg:"linear-gradient(135deg,#455A64,#607D8B)",bgLight:"#eceff1",
+  desc:"You're the Wolf type — a born leader with an iron will! Once you set a goal, you charge straight ahead with unstoppable drive and decisiveness. You deeply value your pack, and you'll fight with everything you have for those you trust. Unafraid of solitude and unwavering in your beliefs, you are the dependable leader others look up to. With charisma and responsibility, you have the power to guide many.",
+  traits:["Leadership 👑","Decisive ⚔️","Loyal 🤝","Charismatic 🔥","Resilient 🏔"],
+  compat:[{icon:"🦊",name:"Fox",note:"Strategy + action = an invincible duo"},{icon:"🐕",name:"Dog",note:"A rock-solid partnership built on trust"}]},
+P:{name:"Penguin",emoji:"🐧",color:"#1565C0",bg:"linear-gradient(135deg,#1565C0,#42A5F5)",bgLight:"#e3f2fd",
+  desc:"You're the Penguin type — cooperative and strongest when surrounded by your team! As a team player, you value harmony and quietly serve as the backbone of any group. You may seem reserved, but you have a strong core, and even in tough situations you persevere with steady, patient effort. Your warm personality earns everyone's trust, and your presence alone makes any team more cohesive.",
+  traits:["Cooperative 🤗","Persistent ❄️","Trustworthy 🐧","Steady effort 📚","Warm-hearted 💙"],
+  compat:[{icon:"🐬",name:"Dolphin",note:"Fun + teamwork = the perfect combo"},{icon:"🐰",name:"Rabbit",note:"A gentle bond of mutual care"}]},
+F:{name:"Fox",emoji:"🦊",color:"#E65100",bg:"linear-gradient(135deg,#E65100,#FF8F00)",bgLight:"#fff3e0",
+  desc:"You're the Fox type — quick-witted, resourceful, and strategically brilliant! You have a sharp analytical mind that reads any situation in an instant and finds the best option every time. You may look cool on the surface, but inside you're brimming with curiosity and a love for absorbing new knowledge and skills. Your cleverness and adaptability shine brightest in a crisis, earning you the trusted role of 'go-to strategist' among your peers.",
+  traits:["Strategic 🧠","Quick-witted 🦊","Adaptable 💨","Analytical 🔬","Curious 📖"],
+  compat:[{icon:"🐺",name:"Wolf",note:"Strategy + action = an invincible duo"},{icon:"🦉",name:"Owl",note:"Endless intellectual conversations — the perfect match"}]}
+};
+
+const results_zh = {
+D:{name:"狗狗型",emoji:"🐕",color:"#FF7043",bg:"linear-gradient(135deg,#FF7043,#EC407A)",bgLight:"#fff3e5",
+  desc:"你是像小狗一样阳光、忠诚又充满活力的类型！你超喜欢和人待在一起，对信任的人全力以赴的深情是你最大的魅力。你行动力十足，是团队里的气氛担当，总能自然地让周围人笑起来。坦率真诚、不会说谎的你深受大家喜爱。你全力以赴的样子给了很多人勇气和力量。",
+  traits:["忠诚 🐶","精力充沛 ⚡","坦率 ✨","善于社交 🎉","行动力强 🏃"],
+  compat:[{icon:"🐱",name:"猫咪型",note:"彼此的不同恰好形成舒适的平衡"},{icon:"🐰",name:"兔子型",note:"治愈×活力，最强组合！"}]},
+C:{name:"兔子型",emoji:"🐰",color:"#E91E63",bg:"linear-gradient(135deg,#E91E63,#F06292)",bgLight:"#fff0f5",
+  desc:"你是像兔子一样温柔、共情力强、重视人际关系的类型！你很擅长察言观色，有让周围人安心的气场。虽然有些敏感，但正因为这份细腻，你才能真正理解别人的感受。你有让重要的人幸福的力量，只要你在场，整个氛围都会变得温暖。",
+  traits:["温柔 🌸","共情力强 💕","善解人意 👂","细腻 🌷","治愈系 💆"],
+  compat:[{icon:"🐕",name:"狗狗型",note:"活力+安心感的完美搭配"},{icon:"🦉",name:"猫头鹰型",note:"在深度对话中建立深厚关系"}]},
+O:{name:"猫咪型",emoji:"🐱",color:"#7E57C2",bg:"linear-gradient(135deg,#7E57C2,#AB47BC)",bgLight:"#f8f0ff",
+  desc:"你是像猫咪一样我行我素、珍视自己世界的类型！你有享受独处时光的独立心，虽然任性但内心深处充满爱。你不会勉强自己合群，相信自己感觉的样子在别人眼里特别有魅力。你还有傲娇的一面，只在真正亲近的人面前展现的柔软让人怦然心动。",
+  traits:["我行我素 🌙","独立 💜","傲娇 😼","随心所欲 🎲","独特世界观 🔮"],
+  compat:[{icon:"🐕",name:"狗狗型",note:"彼此的不同恰好形成舒适的平衡"},{icon:"🦉",name:"猫头鹰型",note:"互相尊重自由的成熟关系"}]},
+N:{name:"猫头鹰型",emoji:"🦉",color:"#37474F",bg:"linear-gradient(135deg,#37474F,#546E7A)",bgLight:"#f0f4f8",
+  desc:"你是像猫头鹰一样神秘、充满知性魅力的类型！你以深刻的洞察力和独特的视角看待事物，散发着与众不同的存在感。安静的时光是你最能发挥力量的时候，独自思考的时间对你来说是最幸福的。你是热爱自由的孤高存在，被你独特气质吸引的人不在少数。你的知识深度和敏锐观察力为周围的人带来全新的启发。",
+  traits:["知性 🧠","神秘 🌑","夜猫子 🦉","洞察力强 🔍","自由人 🕊"],
+  compat:[{icon:"🐰",name:"兔子型",note:"因细腻而互相理解的深厚关系"},{icon:"🐱",name:"猫咪型",note:"互相尊重自由的成熟关系"}]},
+H:{name:"海豚型",emoji:"🐬",color:"#00BCD4",bg:"linear-gradient(135deg,#00BCD4,#26C6DA)",bgLight:"#e0f7fa",
+  desc:"你是像海豚一样善于社交、充满玩心、能和任何人迅速成为朋友的类型！你的沟通能力超强，幽默感也是一流。你好奇心旺盛，到处探索新体验就是你的生活乐趣。你明亮的气场感染着周围，在你身边总是充满欢笑。你兼具智慧和趣味，是极具魅力的开心果。",
+  traits:["社交达人 🎊","幽默 😄","好奇心旺盛 🌊","灵活 🤸","积极乐观 ✨"],
+  compat:[{icon:"🐕",name:"狗狗型",note:"活力×活力，到哪都嗨翻天"},{icon:"🐧",name:"企鹅型",note:"玩乐+团队协作的最佳拍档"}]},
+W:{name:"狼型",emoji:"🐺",color:"#455A64",bg:"linear-gradient(135deg,#455A64,#607D8B)",bgLight:"#eceff1",
+  desc:"你是像狼一样具有领导力、意志坚定的类型！一旦确定目标就毫不犹豫地向前冲，行动力和决断力是你最大的武器。你重视同伴，为信任的人会全力以赴地战斗。你不惧孤独，坚守信念的样子在他人眼中就是最可靠的领袖。你以个人魅力和责任感引导着身边的人。",
+  traits:["领导力 👑","决断力 ⚔️","重情重义 🤝","有魅力 🔥","坚韧 🏔"],
+  compat:[{icon:"🦊",name:"狐狸型",note:"策略×行动力，无敌组合"},{icon:"🐕",name:"狗狗型",note:"互相信赖的最强搭档"}]},
+P:{name:"企鹅型",emoji:"🐧",color:"#1565C0",bg:"linear-gradient(135deg,#1565C0,#42A5F5)",bgLight:"#e3f2fd",
+  desc:"你是像企鹅一样协调性强、和伙伴在一起时最能发挥力量的类型！作为团队成员你重视和谐，是默默付出的幕后英雄。看起来很低调，其实内心很坚强，即使面对困难也能坚持不懈地努力。你温暖的人格赢得了所有人的信赖，有你在整个团队的凝聚力都会大大提升。",
+  traits:["协调性强 🤗","坚持不懈 ❄️","值得信赖 🐧","脚踏实地 📚","人品温暖 💙"],
+  compat:[{icon:"🐬",name:"海豚型",note:"玩乐+团队协作的最佳拍档"},{icon:"🐰",name:"兔子型",note:"互相关心的温柔关系"}]},
+F:{name:"狐狸型",emoji:"🦊",color:"#E65100",bg:"linear-gradient(135deg,#E65100,#FF8F00)",bgLight:"#fff3e0",
+  desc:"你是像狐狸一样脑子转得快、机智灵活、善于策略性推进事情的类型！你有瞬间读懂局势的敏锐分析力，在任何场合都能找到最佳方案。表面上看起来很酷，其实你好奇心旺盛，超爱吸收新知识和技能。你的聪明和适应力在危机时刻最能发光，被周围的人视为'最可靠的军师'。",
+  traits:["善于策略 🧠","机智灵活 🦊","适应力强 💨","分析力强 🔬","求知欲旺 📖"],
+  compat:[{icon:"🐺",name:"狼型",note:"策略×行动力，无敌组合"},{icon:"🦉",name:"猫头鹰型",note:"知性对话永不停歇的最佳关系"}]}
+};
+
+const results_ko = {
+D:{name:"강아지 타입",emoji:"🐕",color:"#FF7043",bg:"linear-gradient(135deg,#FF7043,#EC407A)",bgLight:"#fff3e5",
+  desc:"당신은 강아지처럼 밝고, 충실하며, 에너지가 넘치는 타입! 사람과 함께 있는 것을 좋아하고, 신뢰하는 사람에게 끝까지 헌신하는 깊은 애정이 가장 큰 매력입니다. 행동력이 있어 팀의 분위기 메이커로 주변을 자연스럽게 웃게 만드는 힘이 있어요. 솔직하고 거짓말을 못 하는 정직한 성격은 주변 사람들에게 깊이 사랑받고 있습니다. 무엇이든 전력을 다하는 모습은 많은 사람에게 용기와 힘을 줍니다.",
+  traits:["충실 🐶","에너지 넘침 ⚡","솔직 ✨","사교적 🎉","뛰어난 행동력 🏃"],
+  compat:[{icon:"🐱",name:"고양이 타입",note:"서로의 다름이 편안한 균형을 만들어요"},{icon:"🐰",name:"토끼 타입",note:"힐링×활력으로 최강 콤비!"}]},
+C:{name:"토끼 타입",emoji:"🐰",color:"#E91E63",bg:"linear-gradient(135deg,#E91E63,#F06292)",bgLight:"#fff0f5",
+  desc:"당신은 토끼처럼 상냥하고, 공감 능력이 높으며, 인간관계를 소중히 여기는 타입! 분위기를 읽는 능력이 뛰어나고 주변 사람을 안심시키는 아우라가 있어요. 약간 섬세한 면도 있지만, 그 섬세함이 있기에 상대의 마음에 다가갈 수 있는 거예요. 소중한 사람을 행복하게 만들 수 있는 힘의 소유자이며, 당신이 있는 것만으로도 그 자리가 따뜻한 분위기로 감싸집니다.",
+  traits:["상냥함 🌸","공감력 💕","눈치 빠름 👂","섬세함 🌷","힐링 💆"],
+  compat:[{icon:"🐕",name:"강아지 타입",note:"활력을 받을 수 있는 안정감 있는 조합"},{icon:"🦉",name:"부엉이 타입",note:"지적인 대화로 깊은 관계로 발전"}]},
+O:{name:"고양이 타입",emoji:"🐱",color:"#7E57C2",bg:"linear-gradient(135deg,#7E57C2,#AB47BC)",bgLight:"#f8f0ff",
+  desc:"당신은 고양이처럼 마이페이스로, 자신만의 세계를 소중히 여기는 타입! 혼자만의 시간을 즐길 수 있는 자립심이 있고, 변덕스럽지만 깊은 애정을 가지고 있어요. 억지로 어울리지 않고 자신의 감성을 믿고 행동하는 모습이 주변 사람 눈에는 매우 매력적으로 보입니다. 츤데레인 면도 있어서, 마음을 연 상대에게만 보여주는 애교가 주위를 설레게 합니다.",
+  traits:["마이페이스 🌙","자립심 💜","츤데레 😼","변덕쟁이 🎲","독자적 세계관 🔮"],
+  compat:[{icon:"🐕",name:"강아지 타입",note:"서로의 다름이 편안한 균형을 만들어요"},{icon:"🦉",name:"부엉이 타입",note:"서로의 자유를 존중하는 어른의 관계"}]},
+N:{name:"부엉이 타입",emoji:"🦉",color:"#37474F",bg:"linear-gradient(135deg,#37474F,#546E7A)",bgLight:"#f0f4f8",
+  desc:"당신은 부엉이처럼 미스터리하고 지적인 매력이 넘치는 타입! 깊은 통찰력과 독자적인 시점으로 사물을 바라보며, 주위와는 한 차원 다른 존재감을 풍기고 있어요. 조용한 시간에 가장 힘을 발휘하며, 혼자 생각에 잠기는 시간이 지상 최고의 행복입니다. 자유를 사랑하는 고고한 존재로, 그 독특한 아우라에 끌리는 사람이 적지 않습니다. 깊은 지식과 날카로운 관찰력으로 주변에 새로운 깨달음을 줍니다.",
+  traits:["지적 🧠","미스터리 🌑","야행성 🦉","통찰력 🔍","자유인 🕊"],
+  compat:[{icon:"🐰",name:"토끼 타입",note:"섬세함을 이해하는 깊은 관계"},{icon:"🐱",name:"고양이 타입",note:"서로의 자유를 존중하는 어른의 관계"}]},
+H:{name:"돌고래 타입",emoji:"🐬",color:"#00BCD4",bg:"linear-gradient(135deg,#00BCD4,#26C6DA)",bgLight:"#e0f7fa",
+  desc:"당신은 돌고래처럼 사교적이고, 장난기 넘치며, 누구와도 금세 친해지는 타입! 커뮤니케이션 능력이 발군이고 유머 감각도 일품이에요. 호기심이 왕성해서 이곳저곳 돌아다니며 새로운 경험을 즐기는 것이 삶의 보람입니다. 밝은 아우라가 주위를 감싸고, 당신 곁에는 항상 웃음소리가 끊이지 않아요. 지성과 장난기를 겸비한 매력적인 엔터테이너입니다.",
+  traits:["사교적 🎊","유머 😄","호기심 왕성 🌊","유연함 🤸","긍정적 ✨"],
+  compat:[{icon:"🐕",name:"강아지 타입",note:"활력×활력으로 어디서든 분위기 UP"},{icon:"🐧",name:"펭귄 타입",note:"놀이와 팀워크의 최고 콤비"}]},
+W:{name:"늑대 타입",emoji:"🐺",color:"#455A64",bg:"linear-gradient(135deg,#455A64,#607D8B)",bgLight:"#eceff1",
+  desc:"당신은 늑대처럼 리더십이 있고, 강한 의지를 가진 타입! 목표를 정하면 망설이지 않고 돌진하는 행동력과 결단력이 가장 큰 무기입니다. 동료를 소중히 여기고, 신뢰하는 사람을 위해서라면 전력으로 싸우는 의리 있는 면도 있어요. 고독을 두려워하지 않고 자신의 신념을 관철하는 모습은 주변 사람에게 든든한 리더 그 자체입니다. 카리스마와 책임감으로 많은 사람을 이끄는 힘을 가지고 있어요.",
+  traits:["리더십 👑","결단력 ⚔️","의리 🤝","카리스마 🔥","인내력 🏔"],
+  compat:[{icon:"🦊",name:"여우 타입",note:"전략×행동력으로 무적의 콤비"},{icon:"🐕",name:"강아지 타입",note:"서로 신뢰하는 최강의 파트너"}]},
+P:{name:"펭귄 타입",emoji:"🐧",color:"#1565C0",bg:"linear-gradient(135deg,#1565C0,#42A5F5)",bgLight:"#e3f2fd",
+  desc:"당신은 펭귄처럼 협조성이 높고, 동료와 함께 있을 때 힘을 발휘하는 타입! 팀 플레이어로서 주위와의 조화를 소중히 여기고, 조용히 팀을 받쳐주는 든든한 존재입니다. 겸손해 보이지만 사실 내면이 강하고, 어려운 상황에서도 꾸준히 노력을 쌓아갈 수 있어요. 따뜻한 인성으로 모든 사람에게 신뢰받고, 당신이 있는 것만으로도 팀 전체의 결속력이 확 좋아집니다.",
+  traits:["협조성 🤗","끈기 ❄️","신뢰감 🐧","꾸준한 노력 📚","따뜻한 인성 💙"],
+  compat:[{icon:"🐬",name:"돌고래 타입",note:"놀이와 팀워크의 최고 콤비"},{icon:"🐰",name:"토끼 타입",note:"서로를 배려하는 따뜻한 관계"}]},
+F:{name:"여우 타입",emoji:"🦊",color:"#E65100",bg:"linear-gradient(135deg,#E65100,#FF8F00)",bgLight:"#fff3e0",
+  desc:"당신은 여우처럼 머리 회전이 빠르고, 재치 있고 전략적으로 일을 진행하는 타입! 상황을 순식간에 파악하는 날카로운 분석력이 있어 어떤 장면에서도 최선의 선택지를 찾아냅니다. 겉으로는 쿨해 보이지만, 사실 호기심이 왕성해서 새로운 지식과 스킬을 흡수하는 걸 좋아해요. 그 영리함과 적응력은 위기 상황에서 진가를 발휘하며, 주변에서 '믿음직한 참모'로 신뢰받고 있습니다.",
+  traits:["전략적 🧠","재치 🦊","적응력 💨","분석력 🔬","지적 호기심 📖"],
+  compat:[{icon:"🐺",name:"늑대 타입",note:"전략×행동력으로 무적의 콤비"},{icon:"🦉",name:"부엉이 타입",note:"지적인 대화가 끊이지 않는 최고의 관계"}]}
+};
+
+const resultsAll = { ja: results_ja, en: results_en, zh: results_zh, ko: results_ko };
+
+/* ===== ALL TYPES ===== */
+const allTypes_ja = [
 {key:'D',emoji:'🐕',name:'犬タイプ'},{key:'C',emoji:'🐰',name:'うさぎタイプ'},
 {key:'O',emoji:'🐱',name:'猫タイプ'},{key:'N',emoji:'🦉',name:'フクロウタイプ'},
 {key:'H',emoji:'🐬',name:'イルカタイプ'},{key:'W',emoji:'🐺',name:'オオカミタイプ'},
 {key:'P',emoji:'🐧',name:'ペンギンタイプ'},{key:'F',emoji:'🦊',name:'キツネタイプ'}
 ];
 
-let current=0,scores={D:0,C:0,O:0,N:0,H:0,W:0,P:0,F:0};
+const allTypes_en = [
+{key:'D',emoji:'🐕',name:'Dog'},{key:'C',emoji:'🐰',name:'Rabbit'},
+{key:'O',emoji:'🐱',name:'Cat'},{key:'N',emoji:'🦉',name:'Owl'},
+{key:'H',emoji:'🐬',name:'Dolphin'},{key:'W',emoji:'🐺',name:'Wolf'},
+{key:'P',emoji:'🐧',name:'Penguin'},{key:'F',emoji:'🦊',name:'Fox'}
+];
+
+const allTypes_zh = [
+{key:'D',emoji:'🐕',name:'狗狗型'},{key:'C',emoji:'🐰',name:'兔子型'},
+{key:'O',emoji:'🐱',name:'猫咪型'},{key:'N',emoji:'🦉',name:'猫头鹰型'},
+{key:'H',emoji:'🐬',name:'海豚型'},{key:'W',emoji:'🐺',name:'狼型'},
+{key:'P',emoji:'🐧',name:'企鹅型'},{key:'F',emoji:'🦊',name:'狐狸型'}
+];
+
+const allTypes_ko = [
+{key:'D',emoji:'🐕',name:'강아지 타입'},{key:'C',emoji:'🐰',name:'토끼 타입'},
+{key:'O',emoji:'🐱',name:'고양이 타입'},{key:'N',emoji:'🦉',name:'부엉이 타입'},
+{key:'H',emoji:'🐬',name:'돌고래 타입'},{key:'W',emoji:'🐺',name:'늑대 타입'},
+{key:'P',emoji:'🐧',name:'펭귄 타입'},{key:'F',emoji:'🦊',name:'여우 타입'}
+];
+
+const allTypesAll = { ja: allTypes_ja, en: allTypes_en, zh: allTypes_zh, ko: allTypes_ko };
+
+/* ===== QUIZ LOGIC ===== */
+let current = 0, scores = {D:0,C:0,O:0,N:0,H:0,W:0,P:0,F:0};
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('quizLang', l);
+  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.lang === l); });
+  document.getElementById('badge').innerHTML = T[l].badge;
+  document.getElementById('title').innerHTML = T[l].title;
+  document.getElementById('subtitle').innerHTML = T[l].subtitle;
+  document.getElementById('startBtn').innerHTML = T[l].startBtn;
+  document.getElementById('hint').textContent = T[l].hint;
+  document.getElementById('resultLabel').textContent = T[l].resultLabel;
+  if(document.getElementById('compatHead')) document.getElementById('compatHead').innerHTML = T[l].compatHead;
+  if(document.getElementById('allTypesHead')) document.getElementById('allTypesHead').innerHTML = T[l].allTypesHead;
+  document.getElementById('shareXBtn').innerHTML = T[l].shareX;
+  document.getElementById('shareLineBtn').innerHTML = T[l].shareLine;
+  document.getElementById('retryBtn').innerHTML = T[l].retry;
+  document.title = T[l].title.replace(/<br>/g, ' ');
+  if(document.getElementById('quiz').classList.contains('active')) render();
+  if(document.getElementById('result').classList.contains('active')) showCurrentResult();
+}
 
 function startQuiz(){
   document.getElementById('start').style.display='none';
   document.getElementById('quiz').classList.add('active');
   render();
 }
+
 function render(){
-  const q=questions[current];
-  const pct=(current/questions.length*100);
-  document.getElementById('progress').style.width=pct+'%';
-  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
-  document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
-  const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{
-    const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;
-    b.onclick=()=>answer(opt.s);o.appendChild(b);
+  var q = questionsAll[lang][current];
+  var pct = (current / questionsAll[lang].length * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('qCount').textContent = (current+1) + '/' + questionsAll[lang].length;
+  document.getElementById('qLabel').textContent = 'Q' + (current+1);
+  document.getElementById('qText').textContent = q.q;
+  var o = document.getElementById('options'); o.innerHTML = '';
+  q.opts.forEach(function(opt){
+    var b = document.createElement('button'); b.className = 'opt-btn'; b.textContent = opt.t;
+    b.onclick = function(){ answer(opt.s); }; o.appendChild(b);
   });
 }
+
 function answer(s){
-  for(let k in s)scores[k]+=s[k];
+  for(var k in s) scores[k] += s[k];
   current++;
-  if(current<questions.length)render();else showResult();
+  if(current < questionsAll[lang].length) render(); else showResult();
 }
+
+var lastResultKey = null;
 function showResult(){
-  let max='D',maxVal=0;
-  for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
-  document.getElementById('quiz').classList.remove('active');
-  const hero=document.getElementById('resultHero');
-  hero.style.background=r.bg;
-  document.getElementById('resultEmoji').textContent=r.emoji;
-  const rn=document.getElementById('resultName');
-  rn.textContent=r.name;rn.style.color='#fff';
-  document.getElementById('result').querySelector('.result-label').style.color='rgba(255,255,255,.8)';
-  const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.style.background='rgba(255,255,255,.25)';s.style.color='#fff';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
-  const cr=document.getElementById('compatRow');cr.innerHTML='';
-  r.compat.forEach(c=>{cr.innerHTML+=`<div class="compat-chip"><span class="c-icon">${c.icon}</span><div class="c-name">${c.name}</div><div class="c-note">${c.note}</div></div>`;});
-  const ag=document.getElementById('allTypesGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
-  document.getElementById('result').classList.add('active');
+  var max = 'D', maxVal = 0;
+  for(var k in scores) if(scores[k] > maxVal){ maxVal = scores[k]; max = k; }
+  lastResultKey = max;
+  showCurrentResult();
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の動物タイプは「'+n+'」でした！🐾\nあなたも診断してみて👇\n'+location.href)}`,'_blank')}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank')}
+
+function showCurrentResult(){
+  var max = lastResultKey;
+  var r = resultsAll[lang][max];
+  var at = allTypesAll[lang];
+  document.getElementById('quiz').classList.remove('active');
+  var hero = document.getElementById('resultHero');
+  hero.style.background = r.bg;
+  document.getElementById('resultEmoji').textContent = r.emoji;
+  var rn = document.getElementById('resultName');
+  rn.textContent = r.name; rn.style.color = '#fff';
+  document.getElementById('resultLabel').textContent = T[lang].resultLabel;
+  document.getElementById('resultLabel').style.color = 'rgba(255,255,255,.8)';
+  var tags = document.getElementById('resultTags'); tags.innerHTML = '';
+  r.traits.forEach(function(t){ var s = document.createElement('span'); s.className = 'tag'; s.style.background = 'rgba(255,255,255,.25)'; s.style.color = '#fff'; s.textContent = t; tags.appendChild(s); });
+  document.getElementById('resultDesc').textContent = r.desc;
+  var cr = document.getElementById('compatRow'); cr.innerHTML = '';
+  r.compat.forEach(function(c){ cr.innerHTML += '<div class="compat-chip"><span class="c-icon">'+c.icon+'</span><div class="c-name">'+c.name+'</div><div class="c-note">'+c.note+'</div></div>'; });
+  var ag = document.getElementById('allTypesGrid'); ag.innerHTML = '';
+  at.forEach(function(t){ ag.innerHTML += '<div class="type-chip'+(t.key===max?' me':'')+'"><span class="tc-icon">'+t.emoji+'</span><div><div class="tc-name">'+t.name+'</div>'+(t.key===max?'<div class="tc-me">'+T[lang].youLabel+'</div>':'')+'</div></div>'; });
+  document.getElementById('result').classList.add('active');
+  document.getElementById('compatHead').innerHTML = T[lang].compatHead;
+  document.getElementById('allTypesHead').innerHTML = T[lang].allTypesHead;
+}
+
+function shareX(){
+  var n = document.getElementById('resultName').textContent;
+  window.open('https://x.com/intent/tweet?text='+encodeURIComponent(T[lang].shareText(n)+location.href),'_blank');
+}
+function shareLine(){
+  window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href),'_blank');
+}
+
+setLang(lang);
 </script>
 </body>
 </html>
