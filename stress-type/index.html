@@ -117,137 +117,210 @@ h1{font-size:1.55em;font-weight:900;color:#1a3330;line-height:1.4;margin-bottom:
 
 </div>
 <script>
+let curLang='ja';
+
+/* ───── UI labels ───── */
+const ui={
+ja:{badge:"🛡️ メンタル診断",title:"ストレス耐性<br>タイプ診断",subtitle:"10の質問でストレスとの向き合い方＆<br>最適なリフレッシュ法がわかる！",start:"🔮 診断スタート！",hint:"全10問・約1分で完了",resultLabel:"あなたのストレス耐性タイプは…",refreshHead:"💡 おすすめリフレッシュ法",sectionHead:"🗺 全タイプ一覧",shareX:"𝕏 シェア",shareLine:"LINE シェア",retry:"🔄 もう一度診断する",you:"← あなた！"},
+en:{badge:"🛡️ Mental Quiz",title:"Stress Resilience<br>Type Quiz",subtitle:"10 questions to find your stress style &amp;<br>the best way to recharge!",start:"🔮 Start the Quiz!",hint:"10 questions · about 1 min",resultLabel:"Your stress resilience type is…",refreshHead:"💡 Recommended Refresh Methods",sectionHead:"🗺 All Types",shareX:"𝕏 Share",shareLine:"LINE Share",retry:"🔄 Try Again",you:"← You!"},
+zh:{badge:"🛡️ 心理测试",title:"抗压类型<br>诊断",subtitle:"通过10道题了解你的压力应对方式＆<br>找到最佳减压方法！",start:"🔮 开始诊断！",hint:"共10题・约1分钟完成",resultLabel:"你的抗压类型是…",refreshHead:"💡 推荐减压方法",sectionHead:"🗺 全部类型一览",shareX:"𝕏 分享",shareLine:"LINE 分享",retry:"🔄 重新诊断",you:"← 就是你！"},
+ko:{badge:"🛡️ 멘탈 진단",title:"스트레스 내성<br>유형 진단",subtitle:"10개 질문으로 스트레스 대처법 &amp;<br>최적의 리프레시 방법을 알아보세요!",start:"🔮 진단 시작!",hint:"총 10문항 · 약 1분 소요",resultLabel:"당신의 스트레스 내성 유형은…",refreshHead:"💡 추천 리프레시 방법",sectionHead:"🗺 전체 유형 목록",shareX:"𝕏 공유",shareLine:"LINE 공유",retry:"🔄 다시 진단하기",you:"← 바로 당신!"}
+};
+
+/* ───── Share templates ───── */
+const shareTpl={
+ja:n=>`私のストレス耐性タイプは「${n}」でした！
+あなたも診断してみて👇
+${location.href}`,
+en:n=>`My stress resilience type is "${n}"!
+Try it yourself 👇
+${location.href}`,
+zh:n=>`我的抗压类型是「${n}」！
+你也来测测看👇
+${location.href}`,
+ko:n=>`나의 스트레스 내성 유형은 "${n}"입니다!
+당신도 진단해 보세요 👇
+${location.href}`
+};
+
+/* ───── Questions (10) ───── */
 const questions=[
-{q:"急に大事な予定が変更になった。あなたの最初の反応は？",opts:[
-{t:"🧘「まあそういうこともあるか」と冷静に対処",s:{S:3}},
-{t:"🔄 状況を確認しつつ柔軟にプランBを考える",s:{F:3}},
-{t:"😤 イラッとするが表には出さず我慢する",s:{B:3}},
-{t:"📊 なぜ変更になったのか原因を分析する",s:{A:3}}
+{q:{ja:"急に大事な予定が変更になった。あなたの最初の反応は？",en:"An important plan suddenly changes. What is your first reaction?",zh:"重要的计划突然变更了。你的第一反应是？",ko:"중요한 일정이 갑자기 변경되었다. 당신의 첫 반응은?"},opts:[
+{t:{ja:"🧘「まあそういうこともあるか」と冷静に対処",en:'🧘 "Well, these things happen" — stay calm and deal with it',zh:"🧘「反正这种事也会有嘛」冷静应对",ko:'🧘 "뭐, 그럴 수도 있지" 하고 침착하게 대처'},s:{S:3}},
+{t:{ja:"🔄 状況を確認しつつ柔軟にプランBを考える",en:"🔄 Check the situation and flexibly think of a Plan B",zh:"🔄 确认情况的同时灵活地思考备选方案",ko:"🔄 상황을 확인하면서 유연하게 플랜B를 생각한다"},s:{F:3}},
+{t:{ja:"😤 イラッとするが表には出さず我慢する",en:"😤 Feel irritated but hold it in without showing it",zh:"😤 虽然很烦躁但忍住不表现出来",ko:"😤 짜증이 나지만 겉으로는 드러내지 않고 참는다"},s:{B:3}},
+{t:{ja:"📊 なぜ変更になったのか原因を分析する",en:"📊 Analyze why the change happened",zh:"📊 分析为什么会变更",ko:"📊 왜 변경되었는지 원인을 분석한다"},s:{A:3}}
 ]},
-{q:"仕事やタスクが山積みのとき、あなたはどうする？",opts:[
-{t:"📋 優先度をつけて淡々とこなしていく",s:{S:3}},
-{t:"🤝 周りに頼ったりやり方を工夫して乗り切る",s:{F:3}},
-{t:"💼 全部抱え込んで限界まで頑張ってしまう",s:{B:3}},
-{t:"🔥 プレッシャーをバネにして集中力が増す",s:{T:3}}
+{q:{ja:"仕事やタスクが山積みのとき、あなたはどうする？",en:"When work and tasks are piling up, what do you do?",zh:"工作和任务堆积如山时，你会怎么做？",ko:"일이나 할 일이 산더미처럼 쌓였을 때, 어떻게 하나요?"},opts:[
+{t:{ja:"📋 優先度をつけて淡々とこなしていく",en:"📋 Prioritize and steadily work through them",zh:"📋 按优先级逐一处理",ko:"📋 우선순위를 정해서 담담하게 처리한다"},s:{S:3}},
+{t:{ja:"🤝 周りに頼ったりやり方を工夫して乗り切る",en:"🤝 Ask others for help or find creative ways to manage",zh:"🤝 依靠周围的人或想办法巧妙地度过",ko:"🤝 주변에 도움을 구하거나 방법을 궁리해서 헤쳐나간다"},s:{F:3}},
+{t:{ja:"💼 全部抱え込んで限界まで頑張ってしまう",en:"💼 Take on everything and push yourself to the limit",zh:"💼 全部扛下来拼命干到极限",ko:"💼 전부 떠안고 한계까지 버텨본다"},s:{B:3}},
+{t:{ja:"🔥 プレッシャーをバネにして集中力が増す",en:"🔥 Use the pressure as fuel to boost your focus",zh:"🔥 把压力当作弹簧，集中力反而增加",ko:"🔥 압박감을 동력 삼아 집중력이 높아진다"},s:{T:3}}
 ]},
-{q:"嫌なことを言われたとき、どのくらい引きずる？",opts:[
-{t:"😄 あまり気にしない、すぐ忘れる",s:{S:3}},
-{t:"💨 一瞬凹むけど、すぐ気持ちを切り替えられる",s:{F:3}},
-{t:"😶 表面は平気でも内心ずっとモヤモヤする",s:{B:3}},
-{t:"🙈 なるべく思い出さないように別のことに集中する",s:{D:3}}
+{q:{ja:"嫌なことを言われたとき、どのくらい引きずる？",en:"When someone says something hurtful, how long does it bother you?",zh:"被人说了不好听的话时，你会在意多久？",ko:"싫은 말을 들었을 때, 얼마나 오래 신경 쓰이나요?"},opts:[
+{t:{ja:"😄 あまり気にしない、すぐ忘れる",en:"😄 Don't really care, forget it quickly",zh:"😄 不太在意，很快就忘了",ko:"😄 별로 신경 안 쓰고 금방 잊는다"},s:{S:3}},
+{t:{ja:"💨 一瞬凹むけど、すぐ気持ちを切り替えられる",en:"💨 Feel down for a moment, but quickly bounce back",zh:"💨 虽然一瞬间会沮丧，但很快就能调整心情",ko:"💨 잠깐 우울하지만 금방 기분 전환이 된다"},s:{F:3}},
+{t:{ja:"😶 表面は平気でも内心ずっとモヤモヤする",en:"😶 Seem fine on the outside but keep stewing inside",zh:"😶 表面上没事但内心一直很纠结",ko:"😶 겉으로는 괜찮은 척해도 속으로는 계속 찜찜하다"},s:{B:3}},
+{t:{ja:"🙈 なるべく思い出さないように別のことに集中する",en:"🙈 Try not to think about it and focus on something else",zh:"🙈 尽量不去想，专注于别的事情",ko:"🙈 최대한 떠올리지 않으려고 다른 일에 집중한다"},s:{D:3}}
 ]},
-{q:"休日の過ごし方として、一番リフレッシュできるのは？",opts:[
-{t:"🎧 一人で静かに好きなことをする",s:{S:2,D:1}},
-{t:"🎉 友達と会って話す・遊ぶ",s:{F:2,E:1}},
-{t:"📝 資格の勉強や自己研鑽に時間を使う",s:{P:3}},
-{t:"🛋️ 何も考えずひたすら寝る・ダラダラする",s:{D:3}}
+{q:{ja:"休日の過ごし方として、一番リフレッシュできるのは？",en:"What is the most refreshing way to spend your day off?",zh:"休息日怎么过最能让你放松？",ko:"휴일에 가장 리프레시되는 방법은?"},opts:[
+{t:{ja:"🎧 一人で静かに好きなことをする",en:"🎧 Spend quiet time alone doing what you love",zh:"🎧 一个人安静地做喜欢的事",ko:"🎧 혼자서 조용히 좋아하는 일을 한다"},s:{S:2,D:1}},
+{t:{ja:"🎉 友達と会って話す・遊ぶ",en:"🎉 Meet up with friends to chat and hang out",zh:"🎉 和朋友见面聊天、玩耍",ko:"🎉 친구를 만나서 이야기하고 논다"},s:{F:2,E:1}},
+{t:{ja:"📝 資格の勉強や自己研鑽に時間を使う",en:"📝 Study for certifications or invest in self-improvement",zh:"📝 用时间学习考证或自我提升",ko:"📝 자격증 공부나 자기계발에 시간을 쓴다"},s:{P:3}},
+{t:{ja:"🛋️ 何も考えずひたすら寝る・ダラダラする",en:"🛋️ Just sleep and lounge around without thinking",zh:"🛋️ 什么都不想，就只是睡觉、发呆",ko:"🛋️ 아무 생각 없이 그냥 자거나 빈둥거린다"},s:{D:3}}
 ]},
-{q:"理不尽なことを要求されたとき、あなたは？",opts:[
-{t:"💬 論理的に反論する",s:{S:2,A:1}},
-{t:"🤝 交渉して落としどころを見つける",s:{F:3}},
-{t:"😔 不満を感じながらも従ってしまう",s:{B:2,E:1}},
-{t:"🌊 受け流して後で愚痴る",s:{D:3}}
+{q:{ja:"理不尽なことを要求されたとき、あなたは？",en:"When asked to do something unreasonable, what do you do?",zh:"被要求做不合理的事情时，你会？",ko:"부당한 요구를 받았을 때, 당신은?"},opts:[
+{t:{ja:"💬 論理的に反論する",en:"💬 Argue back logically",zh:"💬 用逻辑反驳",ko:"💬 논리적으로 반박한다"},s:{S:2,A:1}},
+{t:{ja:"🤝 交渉して落としどころを見つける",en:"🤝 Negotiate and find a middle ground",zh:"🤝 协商找到折中方案",ko:"🤝 협상해서 타협점을 찾는다"},s:{F:3}},
+{t:{ja:"😔 不満を感じながらも従ってしまう",en:"😔 Feel unhappy but comply anyway",zh:"😔 虽然不满但还是照做了",ko:"😔 불만을 느끼면서도 따르게 된다"},s:{B:2,E:1}},
+{t:{ja:"🌊 受け流して後で愚痴る",en:"🌊 Let it slide and vent later",zh:"🌊 先忍下来事后再吐槽",ko:"🌊 흘려보내고 나중에 투덜거린다"},s:{D:3}}
 ]},
-{q:"周りの人が泣いたり怒ったりしているとき、あなたは？",opts:[
-{t:"🔍「何があったの？」と冷静に状況を把握する",s:{A:3}},
-{t:"🤗 一緒に寄り添いつつ解決策を考える",s:{F:2,E:1}},
-{t:"😢 自分もつられて感情的になってしまう",s:{E:3}},
-{t:"😰 どう対応していいかわからず困る",s:{D:3}}
+{q:{ja:"周りの人が泣いたり怒ったりしているとき、あなたは？",en:"When people around you are crying or angry, what do you do?",zh:"周围的人在哭或生气时，你会？",ko:"주변 사람이 울거나 화내고 있을 때, 당신은?"},opts:[
+{t:{ja:"🔍「何があったの？」と冷静に状況を把握する",en:'🔍 Calmly assess the situation: "What happened?"',zh:'🔍「怎么了？」冷静地了解情况',ko:'🔍 "무슨 일이야?" 하고 침착하게 상황을 파악한다'},s:{A:3}},
+{t:{ja:"🤗 一緒に寄り添いつつ解決策を考える",en:"🤗 Stay close and think of a solution together",zh:"🤗 陪伴在旁边同时想解决办法",ko:"🤗 함께 공감하면서 해결책을 생각한다"},s:{F:2,E:1}},
+{t:{ja:"😢 自分もつられて感情的になってしまう",en:"😢 Get emotional yourself, swept up in their feelings",zh:"😢 自己也被带动变得情绪化",ko:"😢 나도 덩달아 감정적이 되어버린다"},s:{E:3}},
+{t:{ja:"😰 どう対応していいかわからず困る",en:"😰 Feel lost and unsure how to respond",zh:"😰 不知道该怎么应对，很为难",ko:"😰 어떻게 대처해야 할지 몰라 당황한다"},s:{D:3}}
 ]},
-{q:"自分にとって一番辛い状況は？",opts:[
-{t:"🌀 コントロールできない事態に置かれること",s:{S:2,P:1}},
-{t:"🏝️ 誰にも相談できず孤立すること",s:{E:3}},
-{t:"⚡ 自分の限界を超えて頑張り続けること",s:{B:3}},
-{t:"🚪 逃げ場がなく向き合わざるを得ないこと",s:{D:3}}
+{q:{ja:"自分にとって一番辛い状況は？",en:"What is the most difficult situation for you?",zh:"对你来说最痛苦的状况是？",ko:"자신에게 가장 힘든 상황은?"},opts:[
+{t:{ja:"🌀 コントロールできない事態に置かれること",en:"🌀 Being in a situation you cannot control",zh:"🌀 被置于无法控制的局面中",ko:"🌀 통제할 수 없는 상황에 놓이는 것"},s:{S:2,P:1}},
+{t:{ja:"🏝️ 誰にも相談できず孤立すること",en:"🏝️ Being isolated with no one to talk to",zh:"🏝️ 无法向任何人倾诉而孤立无援",ko:"🏝️ 누구에게도 상담할 수 없이 고립되는 것"},s:{E:3}},
+{t:{ja:"⚡ 自分の限界を超えて頑張り続けること",en:"⚡ Pushing yourself beyond your limits non-stop",zh:"⚡ 超过自己的极限持续努力",ko:"⚡ 자신의 한계를 넘어서 계속 버티는 것"},s:{B:3}},
+{t:{ja:"🚪 逃げ場がなく向き合わざるを得ないこと",en:"🚪 Having no escape and being forced to face it",zh:"🚪 无处可逃不得不面对",ko:"🚪 도망칠 곳이 없어 마주할 수밖에 없는 것"},s:{D:3}}
 ]},
-{q:"チームでプロジェクトに取り組むとき、あなたの役割は？",opts:[
-{t:"📈 データや事実に基づいて計画を立てる",s:{A:3}},
-{t:"🎯 高い目標を設定してチームを引っ張る",s:{P:2,T:1}},
-{t:"💕 メンバーの気持ちに配慮して雰囲気を整える",s:{E:3}},
-{t:"⚡ 締め切り直前の緊張感で最高のパフォーマンスを出す",s:{T:3}}
+{q:{ja:"チームでプロジェクトに取り組むとき、あなたの役割は？",en:"When working on a team project, what is your role?",zh:"团队做项目时，你的角色是？",ko:"팀 프로젝트에 참여할 때, 당신의 역할은?"},opts:[
+{t:{ja:"📈 データや事実に基づいて計画を立てる",en:"📈 Make plans based on data and facts",zh:"📈 基于数据和事实制定计划",ko:"📈 데이터와 사실에 기반해 계획을 세운다"},s:{A:3}},
+{t:{ja:"🎯 高い目標を設定してチームを引っ張る",en:"🎯 Set high goals and lead the team",zh:"🎯 设定高目标带领团队",ko:"🎯 높은 목표를 설정하고 팀을 이끈다"},s:{P:2,T:1}},
+{t:{ja:"💕 メンバーの気持ちに配慮して雰囲気を整える",en:"💕 Care for members' feelings and create a good atmosphere",zh:"💕 关心成员的心情，营造良好氛围",ko:"💕 팀원들의 기분을 배려하고 분위기를 만든다"},s:{E:3}},
+{t:{ja:"⚡ 締め切り直前の緊張感で最高のパフォーマンスを出す",en:"⚡ Deliver peak performance under deadline pressure",zh:"⚡ 在截止日期前的紧张感中发挥最佳水平",ko:"⚡ 마감 직전의 긴장감 속에서 최고의 퍼포먼스를 낸다"},s:{T:3}}
 ]},
-{q:"失敗してしまったとき、あなたの思考パターンは？",opts:[
-{t:"🧠 原因を徹底的に分析して再発防止策を考える",s:{A:3}},
-{t:"😣 自分の基準に達しなかったことが許せない",s:{P:3}},
-{t:"😞 相手に迷惑をかけたことが一番気になる",s:{E:2,B:1}},
-{t:"💪 悔しさをバネにして次こそはと燃える",s:{T:3}}
+{q:{ja:"失敗してしまったとき、あなたの思考パターンは？",en:"When you fail, what is your thought pattern?",zh:"失败的时候，你的思维模式是？",ko:"실패했을 때, 당신의 사고 패턴은?"},opts:[
+{t:{ja:"🧠 原因を徹底的に分析して再発防止策を考える",en:"🧠 Thoroughly analyze the cause and think of prevention measures",zh:"🧠 彻底分析原因并思考防止再发的对策",ko:"🧠 원인을 철저히 분석하고 재발 방지책을 생각한다"},s:{A:3}},
+{t:{ja:"😣 自分の基準に達しなかったことが許せない",en:"😣 Can't forgive yourself for not meeting your own standards",zh:"😣 无法原谅自己没有达到自己的标准",ko:"😣 자기 기준에 못 미친 것이 용납이 안 된다"},s:{P:3}},
+{t:{ja:"😞 相手に迷惑をかけたことが一番気になる",en:"😞 Worry most about the trouble you caused others",zh:"😞 最在意给别人添了麻烦",ko:"😞 상대에게 폐를 끼친 것이 가장 신경 쓰인다"},s:{E:2,B:1}},
+{t:{ja:"💪 悔しさをバネにして次こそはと燃える",en:"💪 Use the frustration as fuel and burn to do better next time",zh:"💪 把不甘心当作动力，下次一定要做好",ko:"💪 분함을 동력 삼아 다음에는 꼭 해내겠다고 불태운다"},s:{T:3}}
 ]},
-{q:"ストレスを感じたとき、最も自分に当てはまるのは？",opts:[
-{t:"📊 ストレスの原因を紙に書き出して整理する",s:{A:2,S:1}},
-{t:"✨ 完璧にやり遂げないと気が済まない",s:{P:3}},
-{t:"🫂 誰かの悩みを聞いていたら自分も疲れていた",s:{E:3}},
-{t:"🚀 むしろストレスがあった方が頑張れる気がする",s:{T:2,F:1}}
+{q:{ja:"ストレスを感じたとき、最も自分に当てはまるのは？",en:"When feeling stressed, which describes you best?",zh:"感到压力时，最符合你的是？",ko:"스트레스를 느낄 때, 가장 자신에게 해당되는 것은?"},opts:[
+{t:{ja:"📊 ストレスの原因を紙に書き出して整理する",en:"📊 Write down the causes of stress on paper and organize them",zh:"📊 把压力的原因写在纸上整理一下",ko:"📊 스트레스의 원인을 종이에 적어 정리한다"},s:{A:2,S:1}},
+{t:{ja:"✨ 完璧にやり遂げないと気が済まない",en:"✨ Can't rest until everything is done perfectly",zh:"✨ 不做到完美就不甘心",ko:"✨ 완벽하게 해내지 않으면 성이 안 찬다"},s:{P:3}},
+{t:{ja:"🫂 誰かの悩みを聞いていたら自分も疲れていた",en:"🫂 Listening to someone's worries made you tired too",zh:"🫂 听别人的烦恼结果自己也累了",ko:"🫂 누군가의 고민을 듣다 보니 나도 지쳐 있었다"},s:{E:3}},
+{t:{ja:"🚀 むしろストレスがあった方が頑張れる気がする",en:"🚀 Actually feel more motivated when there is stress",zh:"🚀 反而觉得有压力的时候更能努力",ko:"🚀 오히려 스트레스가 있는 편이 더 열심히 할 수 있는 것 같다"},s:{T:2,F:1}}
 ]}
 ];
+
+/* ───── Results ───── */
 const results={
-S:{name:"鉄壁メンタルタイプ",emoji:"🏔️",bg:"linear-gradient(135deg,#11998e,#38ef7d)",
-  desc:"あなたはストレスに対して非常に強い耐性を持つ鉄壁メンタルの持ち主です。感情に振り回されにくく、どんな困難な状況でも冷静に判断を下せる力があります。周囲からは頼れる存在として信頼されることが多いでしょう。ただし、その強さゆえに自分の疲労やストレスのサインを見逃しがちな面もあるため、定期的にセルフケアの時間を設けることが大切です。",
-  refresh:"💡 リフレッシュ法：サウナや温泉でフィジカルから深くリラックスする時間を作りましょう。一人旅や自然の中での静かな時間で完全にスイッチオフするのも効果的です。マインドフルネス瞑想で自分の内面としっかり向き合う習慣をつけると、見落としがちな心の疲れにも気づけるようになります。",
-  traits:["冷静沈着🧊","プレッシャーに強い💪","感情コントロール🎯","頼られる存在👑","自己管理力高い📊"]},
-F:{name:"しなやか適応タイプ",emoji:"🌊",bg:"linear-gradient(135deg,#38b2ac,#4fc3f7)",
-  desc:"あなたはストレスを上手に受け流し、柔軟に対処できるバランス感覚に優れた適応型です。人を頼ることも一人で解決することもでき、状況に応じて最適なアプローチを選べる器用さが最大の武器です。環境の変化にも強く、新しい状況にもスムーズに馴染める適応力を持っています。ストレスマネジメント能力が最も高いタイプと言えますが、柔軟すぎるがゆえに自分の本音を見失わないよう注意しましょう。",
-  refresh:"💡 リフレッシュ法：友達とのおしゃべりやカフェ巡りで気分転換するのが最適です。ヨガやストレッチで心身のバランスを整えるのも相性が良いでしょう。新しい趣味や体験にチャレンジすることで刺激を得ると、持ち前の適応力でさらに成長できます。",
-  traits:["柔軟性が高い🌱","人を頼れる🤝","切り替え上手🔄","バランス型⚖️","環境適応力🌍"]},
-B:{name:"溜め込み爆発タイプ",emoji:"🌋",bg:"linear-gradient(135deg,#e74c3c,#c0392b)",
-  desc:"あなたは責任感が非常に強く、ストレスや不満を内側に溜め込みやすいタイプです。普段は驚くほど我慢強く周囲を支える頑張り屋ですが、キャパシティを超えると一気に感情が爆発してしまうことがあります。「まだ大丈夫」と無理を続ける傾向があるため、小さなストレスのうちにこまめに発散する習慣が重要です。自分の限界ラインを把握し、70%くらいで「助けて」と言える勇気を持つことが、長期的な心の健康につながります。",
-  refresh:"💡 リフレッシュ法：カラオケや激しい運動で感情を思いきり発散するのが最も効果的です。信頼できる人に愚痴を聞いてもらい、溜まったものを言葉にして外に出しましょう。日記やジャーナリングで日々の感情を書き出す習慣をつけると、爆発を未然に防ぐことができます。",
-  traits:["責任感が強い🎖️","我慢強い😤","完璧主義傾向⭐","頼るのが苦手😅","爆発力がある💥"]},
-D:{name:"スルー回避タイプ",emoji:"🫧",bg:"linear-gradient(135deg,#7E57C2,#AB47BC)",
-  desc:"あなたはストレスを感じると無意識のうちに距離を取ろうとする回避型のタイプです。これは自分を守るための本能的な防衛メカニズムとして機能しており、繊細で感受性が豊かな証拠でもあります。ただし、問題を先送りにしてしまう傾向があり、後から大きなストレスとして返ってくることも少なくありません。少しずつ小さな課題から向き合う練習をすると、自信がつき、もっと楽に日常を過ごせるようになるでしょう。",
-  refresh:"💡 リフレッシュ法：自然の中をゆっくり散歩して心をリセットするのがおすすめです。動物カフェや水族館など、癒やしの空間で安心感を取り戻しましょう。好きなアニメ・映画・漫画に没頭する時間も大切ですが、それだけでなく軽い達成感を味わえる小さなチャレンジも取り入れてみてください。",
-  traits:["繊細で感受性豊か🌸","マイペース🌙","想像力が豊か🎨","自分の世界を持つ🔮","逃げ足が速い🐱"]},
-A:{name:"分析型ストレスマネージャー",emoji:"🔬",bg:"linear-gradient(135deg,#1565C0,#42A5F5)",
-  desc:"あなたはストレスの原因を論理的に分析し、体系的に対処する知性派タイプです。感情よりも理性で物事を捉え、問題の根本原因を突き止めてから行動に移す慎重さを持っています。データや事実に基づいた判断が得意で、再現性のあるストレス対処法を自分なりに確立できる能力があります。ただし、分析に時間をかけすぎて行動が遅れたり、感情面のケアを後回しにしてしまう傾向があるため、時には直感や気持ちにも耳を傾けることが大切です。",
-  refresh:"💡 リフレッシュ法：ストレスの原因と対策をノートやアプリに書き出して「見える化」すると安心感が得られます。読書や知的な趣味を通じて新しい視点を取り入れることも効果的です。パズルやボードゲームなど頭を使う遊びで「分析脳」を楽しい方向に活用するのもおすすめです。",
-  traits:["論理的思考力🧠","冷静な判断力🔍","計画性が高い📐","データ重視📊","問題解決力💡"]},
-E:{name:"共感疲労タイプ",emoji:"💐",bg:"linear-gradient(135deg,#EC407A,#F48FB1)",
-  desc:"あなたは周囲の人の感情に深く共感し、他者の喜びや悲しみを自分のことのように感じ取れる豊かな感受性の持ち主です。その共感力は人間関係を深める大きな長所ですが、他人の感情を背負いすぎて知らないうちに心が疲弊してしまう「共感疲労」に陥りやすい傾向があります。特に悩みを相談されることが多い立場にいると、自分自身のケアが後回しになりがちです。「人の力になりたい」という気持ちを大切にしつつ、自分と他者の感情の境界線を意識することが心の健康を保つ鍵になります。",
-  refresh:"💡 リフレッシュ法：一人きりの静かな時間を確保して、他者の感情から距離を置く「感情デトックス」を定期的に行いましょう。アロマテラピーや入浴など五感を使ったセルフケアで自分自身の心を優先的に癒やすことが大切です。感情の境界線を学ぶ本やワークショップに参加すると、共感力を保ちながらも自分を守るスキルが身につきます。",
-  traits:["共感力が高い💕","聞き上手👂","気配り上手🌷","感情移入しやすい🪞","優しさの人🤗"]},
-P:{name:"完璧主義プレッシャータイプ",emoji:"👑",bg:"linear-gradient(135deg,#F57F17,#FFD54F)",
-  desc:"あなたは自分自身に高い基準を設定し、常にベストを尽くそうとする完璧主義タイプです。その向上心と努力は素晴らしい成果を生み出す原動力ですが、「もっとできるはず」「これでは不十分」という内なる声が常にプレッシャーとなって心を圧迫しています。他人から見れば十分な成果でも自分では納得できないことが多く、達成感を感じにくい傾向があります。100点を目指すのではなく「80点で十分」と思えるようになると、パフォーマンスを維持しながらも心に余裕が生まれるでしょう。",
-  refresh:"💡 リフレッシュ法：結果を気にしなくていい趣味や遊び（絵を描く、料理、ガーデニングなど）でプロセスそのものを楽しむ練習をしましょう。「今日できたこと」を3つ書き出す感謝日記をつけると、自分を認める習慣が身につきます。完璧でなくても評価されている事実を意識的に受け取る練習も効果的です。",
-  traits:["向上心が強い🔥","努力家🏆","高い基準⭐","細部にこだわる🔎","自分に厳しい⚡"]},
-T:{name:"変換エネルギータイプ",emoji:"⚡",bg:"linear-gradient(135deg,#4A148C,#CE93D8)",
-  desc:"あなたはストレスやプレッシャーを逆にエネルギーに変換して、高いパフォーマンスを発揮できる稀有なタイプです。締め切り前の緊張感や困難な状況でこそ本領を発揮し、火事場の馬鹿力的な底力を持っています。逆境をバネにする力は大きな武器ですが、常にストレスを燃料にしていると燃え尽き症候群に陥るリスクもあります。ストレスがない穏やかな状態でもモチベーションを維持できる仕組みを作っておくと、長期的に安定したパフォーマンスが可能になります。",
-  refresh:"💡 リフレッシュ法：スポーツや筋トレなど身体を動かすアクティブな活動でエネルギーを健全に発散しましょう。新しい目標やチャレンジを設定して、ポジティブな緊張感を維持するのも効果的です。ただし意識的に「何もしない時間」も作り、心身の回復期間を確保することがバーンアウト予防には不可欠です。",
-  traits:["逆境に強い🔥","行動力がある🚀","集中力が高い🎯","負けず嫌い💪","情熱的⚡"]}
+S:{emoji:'🏔️',bg:'linear-gradient(135deg,#11998e,#38ef7d)',
+  name:{ja:"鉄壁メンタルタイプ",en:"Iron-Wall Mental Type",zh:"铁壁心理型",ko:"철벽 멘탈 타입"},
+  desc:{ja:"あなたはストレスに対して非常に強い耐性を持つ鉄壁メンタルの持ち主です。感情に振り回されにくく、どんな困難な状況でも冷静に判断を下せる力があります。周囲からは頼れる存在として信頼されることが多いでしょう。ただし、その強さゆえに自分の疲労やストレスのサインを見逃しがちな面もあるため、定期的にセルフケアの時間を設けることが大切です。",en:"You have an incredibly strong resistance to stress — a true iron-wall mentality. You are not easily swayed by emotions and can make calm decisions even in the toughest situations. Others often see you as a reliable figure they can depend on. However, because of that very strength, you tend to overlook your own fatigue and stress signals, so it is important to make time for regular self-care.",zh:"你拥有对压力极强的抵抗力，是真正的铁壁心理型。你不容易被情绪左右，即使在最困难的情况下也能冷静判断。周围的人往往把你视为可靠的存在。不过，正因为你太强大，容易忽视自己的疲劳和压力信号，所以定期进行自我关怀非常重要。",ko:"당신은 스트레스에 대해 매우 강한 내성을 가진 철벽 멘탈의 소유자입니다. 감정에 휘둘리지 않고 어떤 어려운 상황에서도 침착하게 판단을 내릴 수 있는 힘이 있습니다. 주변에서는 믿음직한 존재로 신뢰받는 경우가 많습니다. 다만, 그 강함 때문에 자신의 피로나 스트레스 신호를 놓치기 쉬우므로 정기적으로 셀프케어 시간을 갖는 것이 중요합니다."},
+  refresh:{ja:"サウナや温泉でフィジカルから深くリラックスする時間を作りましょう。一人旅や自然の中での静かな時間で完全にスイッチオフするのも効果的です。マインドフルネス瞑想で自分の内面としっかり向き合う習慣をつけると、見落としがちな心の疲れにも気づけるようになります。",en:"Make time to deeply relax physically with saunas or hot springs. Completely switching off through solo travel or quiet time in nature is also effective. Building a habit of mindfulness meditation to connect with your inner self will help you notice the mental fatigue you tend to overlook.",zh:"通过桑拿或温泉从身体层面进行深度放松吧。独自旅行或在大自然中度过安静的时光来彻底关机也很有效。养成正念冥想的习惯来好好面对自己的内心，就能察觉到容易被忽视的心理疲劳。",ko:"사우나나 온천에서 신체적으로 깊이 릴랙스하는 시간을 만드세요. 혼자 여행이나 자연 속에서 조용한 시간으로 완전히 스위치를 끄는 것도 효과적입니다. 마음챙김 명상으로 자신의 내면과 제대로 마주하는 습관을 들이면 놓치기 쉬운 마음의 피로도 알아차릴 수 있게 됩니다."},
+  traits:{ja:["冷静沈着🧊","プレッシャーに強い💪","感情コントロール🎯","頼られる存在👑","自己管理力高い📊"],en:["Cool & composed🧊","Handles pressure💪","Emotional control🎯","Reliable figure👑","Strong self-management📊"],zh:["冷静沉着🧊","抗压能力强💪","情绪控制力🎯","值得依赖👑","自我管理力高📊"],ko:["냉정침착🧊","압박에 강함💪","감정 컨트롤🎯","믿음직한 존재👑","자기관리력 높음📊"]}},
+F:{emoji:'🌊',bg:'linear-gradient(135deg,#38b2ac,#4fc3f7)',
+  name:{ja:"しなやか適応タイプ",en:"Flexible Adaptation Type",zh:"柔韧适应型",ko:"유연한 적응 타입"},
+  desc:{ja:"あなたはストレスを上手に受け流し、柔軟に対処できるバランス感覚に優れた適応型です。人を頼ることも一人で解決することもでき、状況に応じて最適なアプローチを選べる器用さが最大の武器です。環境の変化にも強く、新しい状況にもスムーズに馴染める適応力を持っています。ストレスマネジメント能力が最も高いタイプと言えますが、柔軟すぎるがゆえに自分自身の本音が見えにくくなることもあります。",en:"You are an adaptable type with an excellent sense of balance who can deflect stress skillfully and cope flexibly. Your greatest weapon is the versatility to ask others for help or solve things alone, choosing the best approach for each situation. You adapt smoothly to environmental changes and new circumstances. While you may have the strongest stress management ability of all types, being too flexible can sometimes make it hard to see your own true feelings.",zh:"你是一个能巧妙化解压力、灵活应对的平衡感极佳的适应型。既能依靠他人也能独自解决问题，根据情况选择最优方式的灵活性是你最大的武器。你对环境变化的适应力也很强，能顺利融入新的状况。可以说你是压力管理能力最高的类型，但正因为太灵活，有时候反而看不清自己内心的真实想法。",ko:"당신은 스트레스를 능숙하게 흘려보내고 유연하게 대처하는 균형 감각이 뛰어난 적응형입니다. 사람에게 의지할 수도, 혼자 해결할 수도 있으며 상황에 따라 최적의 접근법을 선택하는 능숙함이 최대 무기입니다. 환경 변화에도 강하고 새로운 상황에도 매끄럽게 적응하는 능력을 가지고 있습니다. 스트레스 관리 능력이 가장 높은 타입이라 할 수 있지만, 너무 유연해서 자신의 진심이 보이지 않을 때도 있습니다."},
+  refresh:{ja:"友達とのおしゃべりやカフェ巡りで気分転換するのが最適です。ヨガやストレッチで心身のバランスを整えるのも相性が良いでしょう。新しい趣味や体験にチャレンジすることで刺激を得ると、持ち前の適応力でさらに成長できます。",en:"Chatting with friends or visiting cafes for a change of pace is ideal for you. Yoga or stretching to balance mind and body is also a great fit. Taking on new hobbies or experiences for stimulation allows your natural adaptability to help you grow even further.",zh:"和朋友聊天或逛咖啡厅来转换心情最适合你。通过瑜伽或拉伸来调整身心平衡也很合适。尝试新爱好或新体验来获得刺激，凭借你天生的适应力还能进一步成长。",ko:"친구와의 수다나 카페 투어로 기분 전환하는 것이 최적입니다. 요가나 스트레칭으로 심신의 균형을 맞추는 것도 잘 맞습니다. 새로운 취미나 경험에 도전해서 자극을 받으면 타고난 적응력으로 더욱 성장할 수 있습니다."},
+  traits:{ja:["柔軟性が高い🌱","人を頼れる🤝","切り替え上手🔄","バランス型⚖️","環境適応力🌍"],en:["Highly flexible🌱","Can rely on others🤝","Quick to switch gears🔄","Well-balanced⚖️","Adapts to any environment🌍"],zh:["灵活性高🌱","善于依靠他人🤝","切换自如🔄","平衡型⚖️","环境适应力强🌍"],ko:["유연성이 높음🌱","사람에게 의지할 수 있음🤝","전환이 빠름🔄","균형 잡힌 타입⚖️","환경 적응력🌍"]}},
+B:{emoji:'🌋',bg:'linear-gradient(135deg,#e74c3c,#c0392b)',
+  name:{ja:"溜め込み爆発タイプ",en:"Bottled-Up Explosion Type",zh:"压抑爆发型",ko:"억누름 폭발 타입"},
+  desc:{ja:"あなたは責任感が非常に強く、ストレスや不満を内側に溜め込みやすいタイプです。普段は驚くほど我慢強く周囲を支える頑張り屋ですが、キャパシティを超えると一気に感情が爆発してしまうことがあります。「まだ大丈夫」と無理を続ける傾向があるため、小さなストレスのうちにこまめに発散する習慣が重要です。自分の限界ラインを把握し、70%くらいで「助けて」と言える勇気を持ちましょう。",en:"You have a very strong sense of responsibility and tend to bottle up stress and frustration inside. Normally you are surprisingly patient and a hard worker who supports those around you, but when your capacity is exceeded, emotions can explode all at once. Because you tend to keep pushing on thinking 'I can still handle it,' developing a habit of releasing small stresses regularly is crucial. Know your limits and have the courage to say 'help me' at about 70%.",zh:"你责任感非常强，容易把压力和不满积压在心里。平时你惊人地忍耐，是支撑周围人的努力型，但一旦超出承受范围，情绪就会一下子爆发。因为你总是觉得'还撑得住'而继续勉强，所以在小压力阶段就及时释放的习惯很重要。了解自己的极限线，在70%左右就鼓起勇气说'帮帮我'吧。",ko:"당신은 책임감이 매우 강하고 스트레스나 불만을 안에 쌓아두기 쉬운 타입입니다. 평소에는 놀라울 정도로 인내심이 강하고 주변을 지탱하는 노력파이지만, 용량을 넘으면 한꺼번에 감정이 폭발하는 경우가 있습니다. '아직 괜찮아'라며 무리를 계속하는 경향이 있으므로 작은 스트레스일 때 자주 발산하는 습관이 중요합니다. 자신의 한계선을 파악하고 70% 정도에서 '도와줘'라고 말할 수 있는 용기를 가집시다."},
+  refresh:{ja:"カラオケや激しい運動で感情を思いきり発散するのが最も効果的です。信頼できる人に愚痴を聞いてもらい、溜まったものを言葉にして外に出しましょう。日記やジャーナリングで日々の感情を書き出す習慣をつけると、爆発を未然に防ぐことができます。",en:"The most effective approach is to fully release emotions through karaoke or intense exercise. Have someone you trust listen to your complaints and put what has been building up into words. Building a habit of journaling your daily feelings helps prevent explosions before they happen.",zh:"通过唱K或剧烈运动来尽情发泄情绪是最有效的。找信任的人倾诉，把积压的东西用语言释放出来。养成写日记记录每天情绪的习惯，可以防患于未然。",ko:"노래방이나 격렬한 운동으로 감정을 마음껏 발산하는 것이 가장 효과적입니다. 신뢰할 수 있는 사람에게 하소연을 들어달라고 하여 쌓인 것을 말로 밖으로 내보내세요. 일기나 저널링으로 매일의 감정을 기록하는 습관을 들이면 폭발을 사전에 방지할 수 있습니다."},
+  traits:{ja:["責任感が強い🎖️","我慢強い😤","完璧主義傾向⭐","頼るのが苦手😅","爆発力がある💥"],en:["Strong sense of duty🎖️","Very patient😤","Perfectionist tendencies⭐","Hard to ask for help😅","Explosive power💥"],zh:["责任感强🎖️","忍耐力强😤","完美主义倾向⭐","不善于求助😅","爆发力强💥"],ko:["책임감이 강함🎖️","참을성이 강함😤","완벽주의 성향⭐","의지하는 게 어려움😅","폭발력이 있음💥"]}},
+D:{emoji:'🫧',bg:'linear-gradient(135deg,#7E57C2,#AB47BC)',
+  name:{ja:"スルー回避タイプ",en:"Avoidance & Escape Type",zh:"回避逃避型",ko:"회피 타입"},
+  desc:{ja:"あなたはストレスを感じると無意識のうちに距離を取ろうとする回避型のタイプです。これは自分を守るための本能的な防衛メカニズムとして機能しており、繊細で感受性が豊かな証拠でもあります。ただし、問題を先送りにしてしまう傾向があり、後から大きなストレスとして返ってくることも少なくありません。少しずつ小さな課題から向き合う練習をすると、自信がつき回避の必要性が減っていきます。",en:"You are the avoidance type who unconsciously tries to distance yourself when feeling stress. This functions as an instinctive defense mechanism to protect yourself and is proof of your sensitivity and rich perception. However, you tend to put off problems, which often come back as bigger stress later. Gradually practicing facing small challenges will build confidence and reduce the need for avoidance.",zh:"你是感到压力时会无意识地想要保持距离的回避型。这作为保护自己的本能防御机制在发挥作用，也证明你是细腻且感受力丰富的人。但是，你容易把问题往后拖，之后往往会以更大的压力回来。从小事开始逐渐练习面对，就能建立自信，减少回避的需要。",ko:"당신은 스트레스를 느끼면 무의식적으로 거리를 두려 하는 회피형 타입입니다. 이것은 자신을 지키기 위한 본능적인 방어 메커니즘으로 기능하며 섬세하고 감수성이 풍부한 증거이기도 합니다. 다만 문제를 미루는 경향이 있어 나중에 큰 스트레스로 돌아오는 경우도 적지 않습니다. 조금씩 작은 과제부터 마주하는 연습을 하면 자신감이 생기고 회피의 필요성이 줄어듭니다."},
+  refresh:{ja:"自然の中をゆっくり散歩して心をリセットするのがおすすめです。動物カフェや水族館など、癒やしの空間で安心感を取り戻しましょう。好きなアニメ・映画・漫画に没頭する時間も大切ですが、それだけでなく軽い達成感を味わえる小さなチャレンジも取り入れてみてください。",en:"A slow walk in nature to reset your mind is recommended. Regain a sense of comfort in healing spaces like animal cafes or aquariums. Immersing yourself in anime, movies, or manga is important too, but also try adding small challenges that give you a light sense of achievement.",zh:"推荐在大自然中慢慢散步来重置心情。在动物咖啡厅或水族馆等治愈空间中找回安心感。沉浸在喜欢的动漫、电影、漫画中的时间也很重要，但也请尝试加入一些能获得轻松成就感的小挑战。",ko:"자연 속에서 천천히 산책하며 마음을 리셋하는 것을 추천합니다. 동물 카페나 수족관 같은 힐링 공간에서 안정감을 되찾으세요. 좋아하는 애니메이션·영화·만화에 몰입하는 시간도 소중하지만, 가벼운 성취감을 맛볼 수 있는 작은 도전도 함께 해보세요."},
+  traits:{ja:["繊細で感受性豊か🌸","マイペース🌙","想像力が豊か🎨","自分の世界を持つ🔮","逃げ足が速い🐱"],en:["Sensitive & perceptive🌸","Goes at own pace🌙","Rich imagination🎨","Has own inner world🔮","Quick to escape🐱"],zh:["细腻且感受力丰富🌸","按自己的节奏🌙","想象力丰富🎨","拥有自己的世界🔮","逃跑速度快🐱"],ko:["섬세하고 감수성 풍부🌸","마이페이스🌙","상상력이 풍부🎨","자기만의 세계가 있음🔮","도망이 빠름🐱"]}},
+A:{emoji:'🔬',bg:'linear-gradient(135deg,#1565C0,#42A5F5)',
+  name:{ja:"分析型ストレスマネージャー",en:"Analytical Stress Manager",zh:"分析型压力管理者",ko:"분석형 스트레스 매니저"},
+  desc:{ja:"あなたはストレスの原因を論理的に分析し、体系的に対処する知性派タイプです。感情よりも理性で物事を捉え、問題の根本原因を突き止めてから行動に移す慎重さを持っています。データや事実に基づいた判断が得意で、再現性のあるストレス対処法を自分なりに確立できる能力があります。ただし、分析に時間をかけすぎて行動が遅れたり、感情面のケアを後回しにしがちな点には注意が必要です。",en:"You are the intellectual type who logically analyzes the causes of stress and deals with them systematically. You grasp things with reason rather than emotion and have the prudence to identify root causes before taking action. You excel at judgments based on data and facts and have the ability to establish reproducible stress coping methods. However, be careful of spending too much time analyzing and delaying action, or neglecting emotional care.",zh:"你是用逻辑分析压力原因、系统性应对的智慧型。比起情感你更用理性看待事物，具有找到根本原因后再行动的谨慎性。擅长基于数据和事实做判断，有能力建立自己的可复制的压力应对方法。不过要注意别花太多时间分析导致行动迟缓，也别忽略了情感层面的关怀。",ko:"당신은 스트레스의 원인을 논리적으로 분석하고 체계적으로 대처하는 지성파 타입입니다. 감정보다 이성으로 사물을 파악하고 문제의 근본 원인을 밝혀낸 뒤 행동에 옮기는 신중함을 가지고 있습니다. 데이터와 사실에 기반한 판단이 뛰어나며 재현 가능한 스트레스 대처법을 스스로 확립할 수 있는 능력이 있습니다. 다만, 분석에 시간을 너무 들여 행동이 늦어지거나 감정 면의 케어를 뒷전으로 미루기 쉬운 점에 주의가 필요합니다."},
+  refresh:{ja:"ストレスの原因と対策をノートやアプリに書き出して「見える化」すると安心感が得られます。読書や知的な趣味を通じて新しい視点を取り入れることも効果的です。パズルやボードゲームなど頭を使う遊びで「分析脳」を楽しい方向に活用するのもおすすめです。",en:"Writing down stress causes and solutions in a notebook or app to 'visualize' them gives a sense of relief. Gaining new perspectives through reading or intellectual hobbies is also effective. Using your 'analytical brain' in a fun direction through puzzles or board games is also recommended.",zh:"把压力的原因和对策写在笔记本或APP上进行'可视化'，能获得安心感。通过阅读或智力爱好来获取新视角也很有效。通过拼图或桌游等动脑的游戏把'分析脑'用在有趣的方向上也很推荐。",ko:"스트레스의 원인과 대책을 노트나 앱에 적어 '시각화'하면 안심감을 얻을 수 있습니다. 독서나 지적인 취미를 통해 새로운 관점을 받아들이는 것도 효과적입니다. 퍼즐이나 보드게임 같은 두뇌 놀이로 '분석 뇌'를 즐거운 방향으로 활용하는 것도 추천합니다."},
+  traits:{ja:["論理的思考力🧠","冷静な判断力🔍","計画性が高い📐","データ重視📊","問題解決力💡"],en:["Logical thinking🧠","Calm judgment🔍","Highly organized📐","Data-driven📊","Problem-solving💡"],zh:["逻辑思维力🧠","冷静的判断力🔍","计划性强📐","重视数据📊","问题解决力💡"],ko:["논리적 사고력🧠","냉정한 판단력🔍","계획성이 높음📐","데이터 중시📊","문제해결력💡"]}},
+E:{emoji:'💐',bg:'linear-gradient(135deg,#EC407A,#F48FB1)',
+  name:{ja:"共感疲労タイプ",en:"Empathy Fatigue Type",zh:"共情疲劳型",ko:"공감 피로 타입"},
+  desc:{ja:"あなたは周囲の人の感情に深く共感し、他者の喜びや悲しみを自分のことのように感じ取れる豊かな感受性の持ち主です。その共感力は人間関係を深める大きな長所ですが、他人の感情を背負いすぎて知らないうちに心が疲弊してしまう「共感疲労」に陥りやすい傾向があります。特に悩みを相談されることが多い立場にいると、自分自身のケアが後回しになりがちです。",en:"You are someone with rich sensitivity who can deeply empathize with the emotions of those around you, feeling others' joy and sadness as if they were your own. This empathy is a great strength for deepening relationships, but you tend to fall into 'empathy fatigue' — becoming mentally exhausted from taking on too many other people's emotions without realizing it. Especially if you are often in a position where people come to you with their problems, your own self-care tends to get postponed.",zh:"你能深深共情周围人的感受，把别人的喜悦和悲伤当作自己的事来感受，拥有丰富的感受力。这种共情能力是加深人际关系的一大优点，但你容易在不知不觉中因为承担太多别人的情绪而陷入'共情疲劳'。特别是如果你经常处于被人倾诉烦恼的位置，就容易把自我关怀放到后面。",ko:"당신은 주변 사람들의 감정에 깊이 공감하며 타인의 기쁨과 슬픔을 자기 일처럼 느낄 수 있는 풍부한 감수성의 소유자입니다. 그 공감 능력은 인간관계를 깊게 하는 큰 장점이지만, 남의 감정을 너무 짊어지다 보면 자신도 모르게 마음이 지치는 '공감 피로'에 빠지기 쉬운 경향이 있습니다. 특히 고민을 상담받는 입장에 있으면 자기 자신의 케어가 뒷전이 되기 쉽습니다."},
+  refresh:{ja:"一人きりの静かな時間を確保して、他者の感情から距離を置く「感情デトックス」を定期的に行いましょう。アロマテラピーや入浴など五感を使ったセルフケアで自分自身の心を優先的に癒やすことが大切です。感情の境界線を学ぶ本やワークショップに参加すると、共感力を保ちながらも自分を守るスキルが身につきます。",en:"Secure quiet time alone and regularly practice 'emotional detox' — distancing yourself from others' emotions. It is important to prioritize healing your own heart through sensory self-care like aromatherapy or baths. Participating in books or workshops about emotional boundaries helps you develop skills to protect yourself while maintaining your empathy.",zh:"确保独处的安静时间，定期进行与他人情绪保持距离的'情绪排毒'。通过芳疗或泡澡等五感的自我关怀来优先治愈自己的心很重要。参加关于情感界限的书籍或工作坊，能在保持共情力的同时学会保护自己的技能。",ko:"혼자만의 조용한 시간을 확보하여 타인의 감정으로부터 거리를 두는 '감정 디톡스'를 정기적으로 실천하세요. 아로마테라피나 입욕 등 오감을 활용한 셀프케어로 자기 자신의 마음을 우선적으로 치유하는 것이 중요합니다. 감정의 경계선을 배우는 책이나 워크숍에 참여하면 공감력을 유지하면서도 자신을 지키는 스킬을 익힐 수 있습니다."},
+  traits:{ja:["共感力が高い💕","聞き上手👂","気配り上手🌷","感情移入しやすい🪞","優しさの人🤗"],en:["Highly empathetic💕","Great listener👂","Considerate🌷","Emotionally absorbing🪞","Truly kind🤗"],zh:["共情力高💕","善于倾听👂","善于关怀🌷","容易感情移入🪞","温柔的人🤗"],ko:["공감력이 높음💕","경청을 잘함👂","배려를 잘함🌷","감정 이입이 쉬움🪞","따뜻한 사람🤗"]}},
+P:{emoji:'👑',bg:'linear-gradient(135deg,#F57F17,#FFD54F)',
+  name:{ja:"完璧主義プレッシャータイプ",en:"Perfectionist Pressure Type",zh:"完美主义压力型",ko:"완벽주의 압박 타입"},
+  desc:{ja:"あなたは自分自身に高い基準を設定し、常にベストを尽くそうとする完璧主義タイプです。その向上心と努力は素晴らしい成果を生み出す原動力ですが、「もっとできるはず」「これでは不十分」という内なる声が常にプレッシャーとなって心を圧迫しています。他人から見れば十分な成果でも自分では納得できないことが多く、達成感を感じにくい傾向があります。",en:"You are a perfectionist type who sets high standards for yourself and always strives to do your best. That ambition and effort are a driving force that produces wonderful results, but the inner voice saying 'I should be able to do more' or 'this is not enough' constantly pressures your heart. Even achievements that seem sufficient to others often don't satisfy you, and you tend to have difficulty feeling a sense of accomplishment.",zh:"你是为自己设定高标准、始终追求最好的完美主义型。那种上进心和努力是创造出色成果的原动力，但'应该能做得更好''这还不够'这样的内心声音总是作为压力在压迫你的心。即使在别人看来已经足够好的成果，自己也常常不满意，不容易感到成就感。",ko:"당신은 자기 자신에게 높은 기준을 설정하고 항상 최선을 다하려는 완벽주의 타입입니다. 그 향상심과 노력은 훌륭한 성과를 만들어내는 원동력이지만, '더 할 수 있을 텐데' '이걸론 부족해'라는 내면의 목소리가 항상 프레셔가 되어 마음을 압박합니다. 남들이 보기엔 충분한 성과도 자신은 납득하지 못하는 경우가 많아 성취감을 느끼기 어려운 경향이 있습니다."},
+  refresh:{ja:"結果を気にしなくていい趣味や遊び（絵を描く、料理、ガーデニングなど）でプロセスそのものを楽しむ練習をしましょう。「今日できたこと」を3つ書き出す感謝日記をつけると、自分を認める習慣が身につきます。完璧でなくても評価されている事実を意識的に受け取る練習も効果的です。",en:"Practice enjoying the process through hobbies where results don't matter (drawing, cooking, gardening, etc.). Keeping a gratitude journal where you write three things you accomplished today helps build a habit of acknowledging yourself. Consciously accepting the fact that you are valued even without being perfect is also effective.",zh:"通过不需要在意结果的爱好和游戏（画画、做饭、园艺等）来练习享受过程本身。写'今天做到的事'感恩日记列出3件事，就能养成肯定自己的习惯。有意识地接受即使不完美也被认可的事实，也是很有效的练习。",ko:"결과를 신경 쓰지 않아도 되는 취미나 놀이(그림 그리기, 요리, 가드닝 등)로 과정 자체를 즐기는 연습을 합시다. '오늘 해낸 일' 3가지를 적는 감사 일기를 쓰면 자신을 인정하는 습관이 생깁니다. 완벽하지 않아도 인정받고 있다는 사실을 의식적으로 받아들이는 연습도 효과적입니다."},
+  traits:{ja:["向上心が強い🔥","努力家🏆","高い基準⭐","細部にこだわる🔎","自分に厳しい⚡"],en:["Highly ambitious🔥","Hard worker🏆","High standards⭐","Detail-oriented🔎","Strict with self⚡"],zh:["上进心强🔥","努力家🏆","高标准⭐","注重细节🔎","对自己严格⚡"],ko:["향상심이 강함🔥","노력파🏆","높은 기준⭐","세부사항에 집착🔎","자신에게 엄격⚡"]}},
+T:{emoji:'⚡',bg:'linear-gradient(135deg,#4A148C,#CE93D8)',
+  name:{ja:"変換エネルギータイプ",en:"Stress-to-Energy Converter Type",zh:"压力转化能量型",ko:"변환 에너지 타입"},
+  desc:{ja:"あなたはストレスやプレッシャーを逆にエネルギーに変換して、高いパフォーマンスを発揮できる稀有なタイプです。締め切り前の緊張感や困難な状況でこそ本領を発揮し、火事場の馬鹿力的な底力を持っています。逆境をバネにする力は大きな武器ですが、常にストレスを燃料にしていると燃え尽き症候群に陥るリスクもあります。ストレスがない穏やかな状態でも充実感を見つける練習をしておくと、長く高いパフォーマンスを維持できます。",en:"You are a rare type who can convert stress and pressure into energy and deliver high performance. You show your true abilities in tense deadline situations and tough circumstances, possessing remarkable reserves of strength. The power to use adversity as a springboard is a great weapon, but constantly using stress as fuel carries a risk of burnout. Practicing finding fulfillment even in calm, stress-free states will help you maintain high performance over the long term.",zh:"你是能把压力和紧张反过来转化为能量、发挥高水平表现的稀有类型。在截止日期前的紧张感和困难情况下才能发挥真正实力，拥有绝处逢生的底蕴。以逆境为跳板的力量是很大的武器，但总是把压力当燃料的话也有陷入倦怠症候群的风险。在没有压力的平静状态下也练习找到充实感，就能长期保持高水平表现。",ko:"당신은 스트레스와 압박감을 오히려 에너지로 변환하여 높은 퍼포먼스를 발휘할 수 있는 희귀한 타입입니다. 마감 전의 긴장감이나 어려운 상황에서 진가를 발휘하며 대단한 저력을 가지고 있습니다. 역경을 동력 삼는 힘은 큰 무기이지만, 항상 스트레스를 연료로 삼으면 번아웃 위험도 있습니다. 스트레스 없는 평온한 상태에서도 충실감을 찾는 연습을 해두면 오래도록 높은 퍼포먼스를 유지할 수 있습니다."},
+  refresh:{ja:"スポーツや筋トレなど身体を動かすアクティブな活動でエネルギーを健全に発散しましょう。新しい目標やチャレンジを設定して、ポジティブな緊張感を維持するのも効果的です。ただし意識的に「何もしない時間」も作り、心身の回復期間を確保することがバーンアウト予防には不可欠です。",en:"Channel your energy healthily through active pursuits like sports or weight training. Setting new goals and challenges to maintain positive tension is also effective. However, consciously creating 'do-nothing time' and securing recovery periods for mind and body is essential for preventing burnout.",zh:"通过运动或健身等活动来健康地释放能量吧。设定新目标和挑战来维持积极的紧张感也很有效。但是有意识地创造'什么都不做的时间'，确保身心恢复期对于预防倦怠是不可或缺的。",ko:"스포츠나 근력 운동 등 몸을 움직이는 활동으로 에너지를 건전하게 발산합시다. 새로운 목표나 도전을 설정하여 긍정적인 긴장감을 유지하는 것도 효과적입니다. 다만 의식적으로 '아무것도 하지 않는 시간'도 만들어 심신의 회복 기간을 확보하는 것이 번아웃 예방에 필수적입니다."},
+  traits:{ja:["逆境に強い🔥","行動力がある🚀","集中力が高い🎯","負けず嫌い💪","情熱的⚡"],en:["Thrives in adversity🔥","Action-oriented🚀","Highly focused🎯","Hates to lose💪","Passionate⚡"],zh:["逆境中坚强🔥","行动力强🚀","集中力高🎯","不服输💪","充满热情⚡"],ko:["역경에 강함🔥","행동력이 있음🚀","집중력이 높음🎯","지기 싫어함💪","열정적⚡"]}}
 };
+
+/* ───── All types list ───── */
 const allTypes=[
-{key:'S',emoji:'🏔️',name:'鉄壁メンタルタイプ'},{key:'F',emoji:'🌊',name:'しなやか適応タイプ'},
-{key:'B',emoji:'🌋',name:'溜め込み爆発タイプ'},{key:'D',emoji:'🫧',name:'スルー回避タイプ'},
-{key:'A',emoji:'🔬',name:'分析型ストレスマネージャー'},{key:'E',emoji:'💐',name:'共感疲労タイプ'},
-{key:'P',emoji:'👑',name:'完璧主義プレッシャータイプ'},{key:'T',emoji:'⚡',name:'変換エネルギータイプ'}
+{key:'S',emoji:'🏔️',name:{ja:'鉄壁メンタルタイプ',en:'Iron-Wall Mental',zh:'铁壁心理型',ko:'철벽 멘탈'}},
+{key:'F',emoji:'🌊',name:{ja:'しなやか適応タイプ',en:'Flexible Adaptation',zh:'柔韧适应型',ko:'유연한 적응'}},
+{key:'B',emoji:'🌋',name:{ja:'溜め込み爆発タイプ',en:'Bottled-Up Explosion',zh:'压抑爆发型',ko:'억누름 폭발'}},
+{key:'D',emoji:'🫧',name:{ja:'スルー回避タイプ',en:'Avoidance & Escape',zh:'回避逃避型',ko:'회피 타입'}},
+{key:'A',emoji:'🔬',name:{ja:'分析型ストレスマネージャー',en:'Analytical Manager',zh:'分析型管理者',ko:'분석형 매니저'}},
+{key:'E',emoji:'💐',name:{ja:'共感疲労タイプ',en:'Empathy Fatigue',zh:'共情疲劳型',ko:'공감 피로'}},
+{key:'P',emoji:'👑',name:{ja:'完璧主義プレッシャータイプ',en:'Perfectionist Pressure',zh:'完美主义压力型',ko:'완벽주의 압박'}},
+{key:'T',emoji:'⚡',name:{ja:'変換エネルギータイプ',en:'Stress-to-Energy',zh:'压力转化能量型',ko:'변환 에너지'}}
 ];
+
 let current=0,scores={S:0,F:0,B:0,D:0,A:0,E:0,P:0,T:0};
+
+/* ───── setLang ───── */
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  const u=ui[lang];
+  document.getElementById('badge').innerHTML=u.badge;
+  document.getElementById('title').innerHTML=u.title;
+  document.getElementById('subtitle').innerHTML=u.subtitle;
+  document.getElementById('startBtn').textContent=u.start;
+  document.getElementById('hint').textContent=u.hint;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('sectionHead').textContent=u.sectionHead;
+  document.getElementById('shareXBtn').textContent=u.shareX;
+  document.getElementById('shareLineBtn').textContent=u.shareLine;
+  document.getElementById('retryBtn').textContent=u.retry;
+  /* re-render quiz / result if already in progress */
+  if(document.getElementById('quiz').classList.contains('active'))render();
+  if(document.getElementById('result').classList.contains('active'))showResult();
+}
+
 function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+
 function render(){
   const q=questions[current];
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
   document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qText').textContent=q.q[curLang];
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t[curLang];b.onclick=()=>answer(opt.s);o.appendChild(b);});
 }
+
 function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+
 function showResult(){
   let max='S',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
+  const r=results[max];const u=ui[curLang];
   document.getElementById('quiz').classList.remove('active');
   const hero=document.getElementById('resultHero');hero.style.background=r.bg;
   document.getElementById('resultEmoji').textContent=r.emoji;
-  document.getElementById('resultName').textContent=r.name;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('resultName').textContent=r.name[curLang];
   const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
-  document.getElementById('refreshBox').innerHTML='<h3>💡 おすすめリフレッシュ法</h3><p>'+r.refresh+'</p>';
+  r.traits[curLang].forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc[curLang];
+  document.getElementById('refreshBox').innerHTML='<h3>'+u.refreshHead+'</h3><p>'+r.refresh[curLang]+'</p>';
+  document.getElementById('sectionHead').textContent=u.sectionHead;
   const ag=document.getElementById('allGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name[curLang]}</div>${t.key===max?'<div class="tc-me">'+u.you+'</div>':''}</div></div>`;});
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私のストレス耐性タイプは「'+n+'」でした！\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
+
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareTpl[curLang](n))}`,'_blank');}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+
+setLang(curLang);
 </script>
 </body>
 </html>
