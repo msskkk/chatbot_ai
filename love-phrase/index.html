@@ -120,137 +120,451 @@ h1{font-size:1.55em;font-weight:900;color:#2D1020;line-height:1.4;margin-bottom:
 
 </div>
 <script>
+let curLang='ja';
+
+/* ========== UI static text translations ========== */
+const ui={
+ja:{
+  badge:"💕 恋愛診断",
+  title:"恋愛キラーフレーズ<br>診断",
+  subtitle:"10の質問であなたが無意識に放ってる<br>モテフレーズ＆地雷ワードを診断！",
+  startBtn:"💘 診断スタート！",
+  hint:"全10問・約1分で完了",
+  resultLabel:"あなたのキラーフレーズは…",
+  sectionHead:"🗺 全タイプ一覧",
+  shareX:"𝕏 シェア",
+  shareLine:"LINE シェア",
+  retryBtn:"🔄 もう一度診断する",
+  dangerTitle:"⚠️ 注意すべき地雷ワード",
+  youLabel:"← あなた！"
+},
+en:{
+  badge:"💕 Love Quiz",
+  title:"Love Killer Phrase<br>Quiz",
+  subtitle:"10 questions to reveal the killer phrases<br>& danger words you unknowingly use in love!",
+  startBtn:"💘 Start the Quiz!",
+  hint:"10 questions, about 1 minute",
+  resultLabel:"Your killer phrase is...",
+  sectionHead:"🗺 All Types",
+  shareX:"𝕏 Share",
+  shareLine:"LINE Share",
+  retryBtn:"🔄 Try Again",
+  dangerTitle:"⚠️ Danger Word to Watch Out For",
+  youLabel:"← You!"
+},
+zh:{
+  badge:"💕 恋爱诊断",
+  title:"恋爱必杀金句<br>诊断",
+  subtitle:"10道题揭晓你在恋爱中<br>不自觉说出的必杀金句和雷区台词！",
+  startBtn:"💘 开始诊断！",
+  hint:"共10题・约1分钟完成",
+  resultLabel:"你的必杀金句是…",
+  sectionHead:"🗺 全部类型一览",
+  shareX:"𝕏 分享",
+  shareLine:"LINE 分享",
+  retryBtn:"🔄 再测一次",
+  dangerTitle:"⚠️ 需要注意的雷区台词",
+  youLabel:"← 就是你！"
+},
+ko:{
+  badge:"💕 연애 진단",
+  title:"연애 킬러 멘트<br>진단",
+  subtitle:"10가지 질문으로 당신이 무의식중에 쓰는<br>킬러 멘트 & 지뢰 멘트를 진단!",
+  startBtn:"💘 진단 시작!",
+  hint:"총 10문항・약 1분 소요",
+  resultLabel:"당신의 킬러 멘트는…",
+  sectionHead:"🗺 전체 유형 목록",
+  shareX:"𝕏 공유",
+  shareLine:"LINE 공유",
+  retryBtn:"🔄 다시 진단하기",
+  dangerTitle:"⚠️ 주의해야 할 지뢰 멘트",
+  youLabel:"← 바로 당신!"
+}
+};
+
+/* ========== Share message templates ========== */
+const shareTpl={
+ja:p=>'私の恋愛キラーフレーズは\n「'+p+'」\nでした！💋\nあなたも診断してみて👇\n'+location.href,
+en:p=>'My love killer phrase is\n"'+p+'"\n💋 Try the quiz yourself 👇\n'+location.href,
+zh:p=>'我的恋爱必杀金句是\n「'+p+'」\n💋 你也来测测看吧👇\n'+location.href,
+ko:p=>'내 연애 킬러 멘트는\n「'+p+'」\n이었어! 💋\n너도 진단해봐 👇\n'+location.href
+};
+
+/* ========== Questions (i18n) ========== */
 const questions=[
-{q:"気になる人とのLINE、あなたのスタイルは？",opts:[
-{t:"💬 相手のペースに合わせて返信する",s:{C:3}},
-{t:"😂 面白いスタンプや画像を送りまくる",s:{H:3}},
-{t:"✨ さりげなく褒め言葉を入れる",s:{S:3}},
-{t:"😏 既読つけてちょっと焦らす",s:{M:3}}
+{q:{
+  ja:"気になる人とのLINE、あなたのスタイルは？",
+  en:"How do you text someone you're interested in?",
+  zh:"和心仪对象聊天时，你的风格是？",
+  ko:"관심 있는 사람과 메시지할 때, 당신의 스타일은?"
+},opts:[
+  {t:{ja:"💬 相手のペースに合わせて返信する",en:"💬 Reply at their pace",zh:"💬 配合对方的节奏回复",ko:"💬 상대의 속도에 맞춰 답장한다"},s:{C:3}},
+  {t:{ja:"😂 面白いスタンプや画像を送りまくる",en:"😂 Flood them with funny stickers & memes",zh:"😂 疯狂发搞笑表情包和图片",ko:"😂 재밌는 스티커와 짤을 마구 보낸다"},s:{H:3}},
+  {t:{ja:"✨ さりげなく褒め言葉を入れる",en:"✨ Slip in subtle compliments",zh:"✨ 不经意间加入夸赞的话",ko:"✨ 은근슬쩍 칭찬을 섞는다"},s:{S:3}},
+  {t:{ja:"😏 既読つけてちょっと焦らす",en:"😏 Leave them on read for a bit to build suspense",zh:"😏 已读不回，稍微吊一下胃口",ko:"😏 읽씹하면서 살짝 애태운다"},s:{M:3}}
 ]},
-{q:"デート中、沈黙が訪れたら？",opts:[
-{t:"😊「一緒にいると落ち着くね」と伝える",s:{C:3}},
-{t:"🎯「好きだよ」とまっすぐ目を見て言う",s:{D:3}},
-{t:"💕「今日の服、すごく似合ってるね」と褒める",s:{S:3}},
-{t:"🌙「何考えてるの？」と意味深に聞く",s:{M:3}}
+{q:{
+  ja:"デート中、沈黙が訪れたら？",
+  en:"When there's an awkward silence on a date?",
+  zh:"约会时突然冷场了怎么办？",
+  ko:"데이트 중 갑자기 침묵이 찾아오면?"
+},opts:[
+  {t:{ja:"😊「一緒にいると落ち着くね」と伝える",en:'😊 Say "I feel so at ease with you"',zh:'😊 说"和你在一起好安心"',ko:'😊 "같이 있으면 편안해"라고 말한다'},s:{C:3}},
+  {t:{ja:'🎯「好きだよ」とまっすぐ目を見て言う',en:'🎯 Look straight into their eyes and say "I like you"',zh:'🎯 直视对方的眼睛说"我喜欢你"',ko:'🎯 눈을 바라보며 "좋아해"라고 직구를 날린다'},s:{D:3}},
+  {t:{ja:'💕「今日の服、すごく似合ってるね」と褒める',en:'💕 Compliment them: "That outfit looks amazing on you"',zh:'💕 夸对方"今天的衣服真适合你"',ko:'💕 "오늘 옷 진짜 잘 어울린다"고 칭찬한다'},s:{S:3}},
+  {t:{ja:'🌙「何考えてるの？」と意味深に聞く',en:'🌙 Ask mysteriously "What are you thinking about?"',zh:'🌙 意味深长地问"你在想什么？"',ko:'🌙 의미심장하게 "무슨 생각해?"라고 묻는다'},s:{M:3}}
 ]},
-{q:"好きな人に告白するなら、どんな言い方？",opts:[
-{t:"📣「好きです！付き合ってください！」と直球で",s:{D:3}},
-{t:"🎉「一緒にいると毎日楽しすぎるんだけど」",s:{H:3}},
-{t:"🌟「こんなに素敵な人に出会えて幸せ」",s:{S:3}},
-{t:"😤「…別に、あんたのことなんか…好きだよ」",s:{T:3}}
+{q:{
+  ja:"好きな人に告白するなら、どんな言い方？",
+  en:"How would you confess your feelings?",
+  zh:"向喜欢的人告白的话，你会怎么说？",
+  ko:"좋아하는 사람에게 고백한다면, 어떻게 말할까?"
+},opts:[
+  {t:{ja:'📣「好きです！付き合ってください！」と直球で',en:'📣 Go straight: "I like you! Will you go out with me?"',zh:'📣 直接了当："我喜欢你！请和我交往！"',ko:'📣 "좋아해! 사귀자!" 직구로 승부한다'},s:{D:3}},
+  {t:{ja:'🎉「一緒にいると毎日楽しすぎるんだけど」',en:'🎉 "Being with you makes every day so much fun"',zh:'🎉 "和你在一起每天都太开心了"',ko:'🎉 "같이 있으면 매일이 너무 즐거운데"'},s:{H:3}},
+  {t:{ja:'🌟「こんなに素敵な人に出会えて幸せ」',en:'🌟 "I feel so lucky to have met someone as wonderful as you"',zh:'🌟 "能遇到这么好的人真的很幸福"',ko:'🌟 "이렇게 멋진 사람을 만나서 행복해"'},s:{S:3}},
+  {t:{ja:'😤「…別に、あんたのことなんか…好きだよ」',en:'😤 "I-it\'s not like I like you or anything... I do, okay?"',zh:'😤 "…才、才不是喜欢你呢……喜欢啦"',ko:'😤 "…딱히, 너 같은 거…좋아한다고"'},s:{T:3}}
 ]},
-{q:"友達の恋愛相談に乗るとき、あなたは？",opts:[
-{t:"🤗「気持ちわかるよ」と寄り添う",s:{C:3}},
-{t:"💪「こうすれば絶対うまくいく！」と盛り上げる",s:{H:3}},
-{t:"🎩「まずは相手の気持ちを尊重してみては？」と冷静に",s:{G:3}},
-{t:"🎯「駆け引きも大事だよ」とアドバイスする",s:{M:3}}
+{q:{
+  ja:"友達の恋愛相談に乗るとき、あなたは？",
+  en:"When a friend asks you for love advice?",
+  zh:"朋友找你聊恋爱烦恼时，你会？",
+  ko:"친구의 연애 상담을 들어줄 때, 당신은?"
+},opts:[
+  {t:{ja:'🤗「気持ちわかるよ」と寄り添う',en:'🤗 Empathize: "I totally understand how you feel"',zh:'🤗 温柔地说"我理解你的心情"',ko:'🤗 "네 마음 이해해"라며 공감해준다'},s:{C:3}},
+  {t:{ja:'💪「こうすれば絶対うまくいく！」と盛り上げる',en:'💪 Hype them up: "Do this and it\'ll definitely work!"',zh:'💪 鼓励说"这样做肯定没问题！"',ko:'💪 "이렇게 하면 무조건 잘 될 거야!"라고 북돋아준다'},s:{H:3}},
+  {t:{ja:'🎩「まずは相手の気持ちを尊重してみては？」と冷静に',en:'🎩 Calmly suggest: "How about respecting their feelings first?"',zh:'🎩 冷静地说"先试着尊重对方的心情吧"',ko:'🎩 "먼저 상대방 마음을 존중해보는 건 어때?"라고 차분히 말한다'},s:{G:3}},
+  {t:{ja:'🎯「駆け引きも大事だよ」とアドバイスする',en:'🎯 Advise: "Playing a little hard to get works wonders"',zh:'🎯 建议说"适当的欲擒故纵也很重要哦"',ko:'🎯 "밀당도 중요해"라고 조언한다'},s:{M:3}}
 ]},
-{q:"相手の好きなところを聞かれたら？",opts:[
-{t:"🛋️「一緒にいると安心する」",s:{C:2,G:1}},
-{t:"📣「全部好き！言わなきゃわかんないでしょ」",s:{D:3}},
-{t:"🙏「尊敬できるところがたくさんある」",s:{S:3}},
-{t:"👀「なんか目が離せないんだよね」",s:{M:2,T:1}}
+{q:{
+  ja:"相手の好きなところを聞かれたら？",
+  en:"When asked what you like about your partner?",
+  zh:"被问到喜欢对方哪里时？",
+  ko:"상대의 좋아하는 점을 물어보면?"
+},opts:[
+  {t:{ja:'🛋️「一緒にいると安心する」',en:'🛋️ "I feel safe when I\'m with you"',zh:'🛋️ "和你在一起很安心"',ko:'🛋️ "같이 있으면 마음이 편해"'},s:{C:2,G:1}},
+  {t:{ja:'📣「全部好き！言わなきゃわかんないでしょ」',en:'📣 "I love everything about you! Can\'t you tell?"',zh:'📣 "全都喜欢！不说你怎么知道"',ko:'📣 "전부 다 좋아! 말 안 하면 모르잖아"'},s:{D:3}},
+  {t:{ja:'🙏「尊敬できるところがたくさんある」',en:'🙏 "There\'s so much about you I admire"',zh:'🙏 "你有很多令人尊敬的地方"',ko:'🙏 "존경할 수 있는 부분이 정말 많아"'},s:{S:3}},
+  {t:{ja:'👀「なんか目が離せないんだよね」',en:'👀 "I just can\'t take my eyes off you"',zh:'👀 "就是忍不住一直看你"',ko:'👀 "왠지 눈을 뗄 수가 없어"'},s:{M:2,T:1}}
 ]},
-{q:"恋愛で一番大事にしていることは？",opts:[
-{t:"🏠 お互いの居心地の良さ",s:{C:2,A:1}},
-{t:"🎊 一緒にいる時間の楽しさ",s:{H:3}},
-{t:"🤝 相手への尊敬と信頼",s:{G:3}},
-{t:"💓 ドキドキ感やときめき",s:{M:2,T:1}}
+{q:{
+  ja:"恋愛で一番大事にしていることは？",
+  en:"What do you value most in a relationship?",
+  zh:"恋爱中你最看重的是什么？",
+  ko:"연애에서 가장 중요하게 생각하는 것은?"
+},opts:[
+  {t:{ja:"🏠 お互いの居心地の良さ",en:"🏠 Feeling comfortable together",zh:"🏠 彼此相处的舒适感",ko:"🏠 서로의 편안함"},s:{C:2,A:1}},
+  {t:{ja:"🎊 一緒にいる時間の楽しさ",en:"🎊 Having fun together",zh:"🎊 在一起时的快乐",ko:"🎊 함께하는 시간의 즐거움"},s:{H:3}},
+  {t:{ja:"🤝 相手への尊敬と信頼",en:"🤝 Mutual respect and trust",zh:"🤝 对对方的尊重和信任",ko:"🤝 상대에 대한 존경과 신뢰"},s:{G:3}},
+  {t:{ja:"💓 ドキドキ感やときめき",en:"💓 Heart-fluttering excitement",zh:"💓 心动和怦然心跳的感觉",ko:"💓 두근두근 설렘"},s:{M:2,T:1}}
 ]},
-{q:"別れ際、最後にかける言葉は？",opts:[
-{t:"🌸「気をつけてね。また会えるの楽しみにしてる」",s:{C:2,G:1}},
-{t:"🎉「今日めっちゃ楽しかった！次はどこ行く？」",s:{H:3}},
-{t:"💖「今日は本当にありがとう。幸せだった」",s:{S:2,G:1}},
-{t:"😤「…別に寂しくなんかないし。…早く帰りなよ」",s:{T:3}}
+{q:{
+  ja:"別れ際、最後にかける言葉は？",
+  en:"What do you say when it's time to part ways?",
+  zh:"分别时，你最后会说什么？",
+  ko:"헤어질 때, 마지막으로 건네는 말은?"
+},opts:[
+  {t:{ja:'🌸「気をつけてね。また会えるの楽しみにしてる」',en:'🌸 "Take care. I\'m already looking forward to seeing you again"',zh:'🌸 "路上小心哦，期待下次见面"',ko:'🌸 "조심히 가. 다음에 또 만나는 거 기대할게"'},s:{C:2,G:1}},
+  {t:{ja:'🎉「今日めっちゃ楽しかった！次はどこ行く？」',en:'🎉 "Today was amazing! Where should we go next?"',zh:'🎉 "今天超开心！下次去哪？"',ko:'🎉 "오늘 진짜 재밌었어! 다음엔 어디 갈까?"'},s:{H:3}},
+  {t:{ja:'💖「今日は本当にありがとう。幸せだった」',en:'💖 "Thank you so much for today. I felt truly happy"',zh:'💖 "今天真的谢谢你，我很幸福"',ko:'💖 "오늘 정말 고마워. 행복했어"'},s:{S:2,G:1}},
+  {t:{ja:'😤「…別に寂しくなんかないし。…早く帰りなよ」',en:'😤 "I-I\'m not sad at all... Just go home already"',zh:'😤 "…才不会寂寞呢。…你快回去吧"',ko:'😤 "…딱히 아쉽지 않거든. …빨리 가라고"'},s:{T:3}}
 ]},
-{q:"パートナーが落ち込んでいるとき、あなたは？",opts:[
-{t:"🍳 黙って好きな料理を作ってあげる",s:{A:3}},
-{t:"😂 とにかく笑わせて元気づける",s:{H:2,D:1}},
-{t:"🎩「何かあったら話してね」と静かに寄り添う",s:{G:3}},
-{t:"😤「…しょうがないな、隣にいてやるよ」",s:{T:3}}
+{q:{
+  ja:"パートナーが落ち込んでいるとき、あなたは？",
+  en:"When your partner is feeling down, what do you do?",
+  zh:"伴侣心情低落时，你会怎么做？",
+  ko:"파트너가 우울해할 때, 당신은?"
+},opts:[
+  {t:{ja:"🍳 黙って好きな料理を作ってあげる",en:"🍳 Quietly cook their favorite meal",zh:"🍳 默默地做对方喜欢的饭菜",ko:"🍳 말없이 좋아하는 요리를 만들어준다"},s:{A:3}},
+  {t:{ja:"😂 とにかく笑わせて元気づける",en:"😂 Do whatever it takes to make them laugh",zh:"😂 总之先逗笑对方让TA开心起来",ko:"😂 어떻게든 웃겨서 기운을 내게 한다"},s:{H:2,D:1}},
+  {t:{ja:'🎩「何かあったら話してね」と静かに寄り添う',en:'🎩 Quietly stay close: "I\'m here if you want to talk"',zh:'🎩 静静地陪伴说"有什么想说的随时和我聊"',ko:'🎩 "무슨 일 있으면 말해"라며 조용히 곁에 있는다'},s:{G:3}},
+  {t:{ja:'😤「…しょうがないな、隣にいてやるよ」',en:'😤 "...Fine, I\'ll stay by your side, I guess"',zh:'😤 "…真拿你没办法，我陪你坐会儿吧"',ko:'😤 "…어쩔 수 없지, 옆에 있어줄게"'},s:{T:3}}
 ]},
-{q:"記念日のサプライズ、どうする？",opts:[
-{t:"📣「一年ありがとう！大好きだよ！」と直接伝える",s:{D:3}},
-{t:"🎁 相手が欲しがってたものをこっそり用意する",s:{A:3}},
-{t:"🌹 上品なレストランで丁寧にお祝いする",s:{G:3}},
-{t:"😤「別に…記念日だから用意したわけじゃないし」",s:{T:2,A:1}}
+{q:{
+  ja:"記念日のサプライズ、どうする？",
+  en:"How do you plan an anniversary surprise?",
+  zh:"纪念日的惊喜，你会怎么安排？",
+  ko:"기념일 서프라이즈, 어떻게 할까?"
+},opts:[
+  {t:{ja:'📣「一年ありがとう！大好きだよ！」と直接伝える',en:'📣 Say it straight: "Thank you for this year! I love you!"',zh:'📣 直接说"一周年快乐！我超喜欢你！"',ko:'📣 "1년 고마워! 정말 좋아해!"라고 직접 말한다'},s:{D:3}},
+  {t:{ja:"🎁 相手が欲しがってたものをこっそり用意する",en:"🎁 Secretly prepare the gift they've been wanting",zh:"🎁 偷偷准备对方一直想要的东西",ko:"🎁 상대가 갖고 싶어 하던 것을 몰래 준비한다"},s:{A:3}},
+  {t:{ja:"🌹 上品なレストランで丁寧にお祝いする",en:"🌹 Celebrate with an elegant dinner at a fine restaurant",zh:"🌹 在高级餐厅优雅地庆祝",ko:"🌹 고급 레스토랑에서 정성스럽게 축하한다"},s:{G:3}},
+  {t:{ja:'😤「別に…記念日だから用意したわけじゃないし」',en:'😤 "It\'s not like I prepared this because it\'s our anniversary..."',zh:'😤 "才…才不是因为纪念日才准备的呢"',ko:'😤 "딱히…기념일이라서 준비한 건 아니거든"'},s:{T:2,A:1}}
 ]},
-{q:"好きな人が他の異性と話していたら？",opts:[
-{t:"📣「ちょっと焼きもち焼いちゃった」と素直に言う",s:{D:3}},
-{t:"🧹 帰り道にさりげなく荷物を持ってあげる",s:{A:3}},
-{t:"🌟「でも私はあなたの一番の味方だよ」と褒める",s:{S:2,C:1}},
-{t:"😤 平気なフリしてるけど、帰ったらLINE長文送る",s:{T:2,M:1}}
+{q:{
+  ja:"好きな人が他の異性と話していたら？",
+  en:"How do you react when your crush talks to someone else?",
+  zh:"喜欢的人在和别的异性聊天时？",
+  ko:"좋아하는 사람이 다른 이성과 이야기하고 있다면?"
+},opts:[
+  {t:{ja:'📣「ちょっと焼きもち焼いちゃった」と素直に言う',en:'📣 Honestly say "I got a little jealous, actually"',zh:'📣 坦率地说"我有点吃醋了"',ko:'📣 "나 좀 질투났어"라고 솔직하게 말한다'},s:{D:3}},
+  {t:{ja:"🧹 帰り道にさりげなく荷物を持ってあげる",en:"🧹 Casually carry their bag on the way home",zh:"🧹 回去的路上自然地帮TA拎东西",ko:"🧹 돌아가는 길에 슬쩍 짐을 들어준다"},s:{A:3}},
+  {t:{ja:'🌟「でも私はあなたの一番の味方だよ」と褒める',en:'🌟 Reassure them: "But I\'ll always be your biggest supporter"',zh:'🌟 说"但我永远是最支持你的人"',ko:'🌟 "그래도 난 네 가장 큰 편이야"라고 말한다'},s:{S:2,C:1}},
+  {t:{ja:"😤 平気なフリしてるけど、帰ったらLINE長文送る",en:"😤 Pretend to be fine, then send a long text later that night",zh:"😤 假装没事，回家后发一大段消息",ko:"😤 아무렇지 않은 척하다가 집 가서 장문 메시지를 보낸다"},s:{T:2,M:1}}
 ]}
 ];
+
+/* ========== Results (i18n) ========== */
 const results={
-C:{phrase:"「一緒にいると安心する」",name:"癒やし系キラーフレーズタイプ",bg:"linear-gradient(135deg,#ee9ca7,#d4577a)",
-  desc:"あなたのキラーフレーズは相手に「安心感」を与える言葉。自然体で相手を包み込むような温かさがあり、一緒にいるとホッとする存在です。派手さはないけれど、じわじわと相手の心に染み込んでいくのが最大の武器。日常の何気ない一言が相手にとっては最高の癒やしになっています。焦らず自分のペースで、ゆっくり信頼関係を築いていける恋愛長距離ランナータイプです。",
-  danger:"⚠️ 注意ワード：「誰でもいいわけじゃないんだけど…」→ 安心感を与えるはずが逆に不安にさせるかも。自信を持って気持ちを伝えよう！",
-  traits:["安心感💆","包容力🤗","自然体🌿","聞き上手👂","長続き❤️"]},
-H:{phrase:"「一緒にいると楽しすぎる！」",name:"ムードメーカー系キラーフレーズタイプ",bg:"linear-gradient(135deg,#f093fb,#f5576c)",
-  desc:"あなたのキラーフレーズは「楽しさ」を共有する言葉！テンションが高くポジティブなエネルギーで相手を惹きつけます。一緒にいると笑顔が絶えず、「この人といると元気になれる」と思わせる力があります。グループの中でも一際目立つ太陽のような存在で、出会いからの初速が最強。あなたの笑顔と明るさは、相手にとってかけがえのないビタミンのような存在です。",
-  danger:"⚠️ 注意ワード：「俺（私）といれば絶対楽しいって！」→ 自信は魅力だけど押しが強すぎると引かれるかも。相手のペースも大事に！",
-  traits:["ムードメーカー🎉","ポジティブ☀️","モテオーラ✨","社交的💬","初速が速い🚀"]},
-S:{phrase:"「こんな人、他にいない」",name:"褒め上手キラーフレーズタイプ",bg:"linear-gradient(135deg,#f6d365,#fda085)",
-  desc:"あなたのキラーフレーズは相手を「特別」に感じさせる言葉！さりげない褒め言葉で相手の自己肯定感を高め、「この人は自分を見てくれている」と思わせる天才です。誠実さが伝わるので、真剣な恋愛に発展しやすいタイプ。観察力が鋭く、相手の小さな変化にもすぐ気づくことができるので、「自分のことをこんなに理解してくれる人はいない」と思わせる力があります。",
-  danger:"⚠️ 注意ワード：「前の恋人とは全然違う」→ 褒めてるつもりが比較に聞こえるかも。相手だけを見つめる言葉選びを！",
-  traits:["褒め上手👑","誠実🙏","特別感を演出✨","観察力🔍","真剣な恋愛向き💒"]},
-M:{phrase:"「…気になってるんだけど」",name:"ミステリアス駆け引きタイプ",bg:"linear-gradient(135deg,#667eea,#764ba2)",
-  desc:"あなたのキラーフレーズは相手を「ドキッ」とさせる意味深な言葉！全てを言わないからこそ想像力を掻き立て、相手の頭の中をあなたでいっぱいにする小悪魔的な魅力があります。押して引く駆け引きの天才で、相手は常にあなたの真意を知りたくてたまらなくなります。恋愛の駆け引きにおいては百戦錬磨。ただし、引きすぎると相手が離れてしまうこともあるので注意が必要です。",
-  danger:"⚠️ 注意ワード：「別にどっちでもいいけど」→ 駆け引きのつもりが「興味ない」と受け取られるかも。好意は時にはストレートに！",
-  traits:["小悪魔😈","ミステリアス🌙","駆け引き上手🎲","ドキドキさせる💓","恋愛巧者🏆"]},
-D:{phrase:"「好きだよ。ずっと好きだった」",name:"直球ストレートタイプ",bg:"linear-gradient(135deg,#ff6b6b,#ee5a24)",
-  desc:"あなたのキラーフレーズは、まっすぐに気持ちを伝えるストレートな言葉！駆け引きなんて必要ない、気持ちをそのまま言葉にするあなたの素直さは最大の武器です。相手に「この人は嘘をつかない」という絶対的な信頼感を与えることができます。不器用に見えることもあるけれど、その真剣さと一途さに心を打たれる人は多く、告白の成功率が実は一番高いタイプかもしれません。",
-  danger:"⚠️ 注意ワード：「なんで分かってくれないの！？」→ ストレートすぎて相手を追い詰めることも。伝えるタイミングと場所も大事にしよう！",
-  traits:["一途❤️‍🔥","素直📣","信頼感🤝","情熱的🔥","裏表なし💎"]},
-G:{phrase:"「あなたといる時間は特別です」",name:"紳士・淑女タイプ",bg:"linear-gradient(135deg,#a18cd1,#fbc2eb)",
-  desc:"あなたのキラーフレーズは、丁寧で上品な愛情表現！相手を大切に思う気持ちが言葉の端々から伝わる、品格のある恋愛スタイルの持ち主です。決して馴れ馴れしくならず、相手への敬意を忘れないあなたの姿勢は、深い信頼関係を築くための最高の土台になります。焦らず丁寧に距離を縮めていくので、相手は「この人になら安心して心を開ける」と感じるはず。大人の恋愛ができる稀有なタイプです。",
-  danger:"⚠️ 注意ワード：「お気持ちは嬉しいのですが…」→ 丁寧すぎて他人行儀に感じられるかも。時には砕けた表現で距離を縮めよう！",
-  traits:["品格🎩","丁寧語💐","大人の恋愛🍷","信頼構築🏛️","誠実な姿勢📜"]},
-A:{phrase:"「言葉じゃなくて、そばにいるから」",name:"行動で示すタイプ",bg:"linear-gradient(135deg,#11998e,#38ef7d)",
-  desc:"あなたのキラーフレーズは、言葉ではなく行動そのもの！「好き」と口にするより、さりげない優しさや気遣いで愛情を示すタイプです。重い荷物をそっと持ってあげたり、疲れている時に好きな飲み物を差し入れたり。あなたの愛情は日常の中に溶け込んでいて、相手は「この人がいないと生きていけない」と気づいた時にはもう手遅れ。最強の生活密着型恋愛マスターです。",
-  danger:"⚠️ 注意ワード：「言わなくても分かるでしょ？」→ 行動は素晴らしいけど、時には言葉にしないと伝わらないことも。たまには「好き」と言おう！",
-  traits:["さりげない優しさ🧹","気配り☕","縁の下の力持ち💪","生活力🏠","不可欠な存在🔑"]},
-T:{phrase:"「…別に、あんたがいないと寂しいとか思ってないし」",name:"ツンデレタイプ",bg:"linear-gradient(135deg,#fc5c7d,#6a82fb)",
-  desc:"あなたのキラーフレーズは、素直になれない裏腹な言葉！本当は大好きなのに、つい反対のことを言ってしまうあなた。でもそのギャップこそが最大の破壊力を持っています。普段はツンツンしているのに、ふとした瞬間に見せる優しさや照れた表情に、相手はキュンが止まりません。「この人の本心を知りたい」と思わせる中毒性があり、一度ハマったら抜け出せない魅力の持ち主です。",
-  danger:"⚠️ 注意ワード：「別にあんたのことなんか好きじゃないし」→ ツンが強すぎると本当に嫌われてると思われるかも。デレの配分を増やそう！",
-  traits:["ギャップ萌え💕","照れ屋😳","一途な本心❤️","中毒性🫠","不器用な愛😤"]}
+C:{
+  phrase:{ja:"「一緒にいると安心する」",en:'"I feel at ease with you"',zh:"「和你在一起好安心」",ko:"「같이 있으면 마음이 편해」"},
+  name:{ja:"癒やし系キラーフレーズタイプ",en:"Healing & Comfort Type",zh:"治愈系必杀金句类型",ko:"힐링형 킬러 멘트 타입"},
+  bg:"linear-gradient(135deg,#ee9ca7,#d4577a)",
+  desc:{
+    ja:"あなたのキラーフレーズは相手に「安心感」を与える言葉。自然体で相手を包み込むような温かさがあり、一緒にいるとホッとする存在です。派手さはないけれど、じわじわと相手の心に染み込んでいくのが最大の武器。日常の何気ない一言が相手にとっては最高の癒やしになっています。焦らず自分のペースで、ゆっくり信頼関係を築いていける恋愛長距離ランナータイプです。",
+    en:"Your killer phrase gives your partner a deep sense of security. You have a natural warmth that wraps around them like a cozy blanket — being around you just feels like home. You don't need flashy words; your quiet, steady affection seeps into their heart over time. Your casual, everyday words become their greatest source of comfort. You're the long-distance runner of love, building trust at your own pace.",
+    zh:"你的必杀金句是给对方带来「安全感」的话语。你有一种自然而然的温暖，让人一靠近就觉得安心。虽然不够华丽，但你的话语会慢慢渗透到对方心里，这就是你最强的武器。日常中不经意的一句话，对对方来说就是最好的治愈。你是那种能以自己的节奏，慢慢建立信任关系的恋爱长跑选手。",
+    ko:"당신의 킬러 멘트는 상대에게 '안심감'을 주는 말이에요. 자연스럽게 상대를 감싸 안는 듯한 따뜻함이 있어 함께 있으면 편안한 존재입니다. 화려하지 않지만, 서서히 상대의 마음에 스며드는 것이 최고의 무기. 일상 속 무심한 한마디가 상대에게는 최고의 힐링이 됩니다. 조급해하지 않고 자기만의 속도로 신뢰를 쌓아가는 연애 장거리 러너 타입이에요."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「誰でもいいわけじゃないんだけど…」→ 安心感を与えるはずが逆に不安にさせるかも。自信を持って気持ちを伝えよう！",
+    en:'⚠️ Danger word: "It\'s not like just anyone would do..." → This might make them insecure instead of reassured. Be confident and express your feelings clearly!',
+    zh:"⚠️ 注意台词：「并不是谁都行的…」→ 本想让人安心，反而可能让对方不安。要自信地表达你的心意！",
+    ko:"⚠️ 주의 멘트: 「아무나 좋은 건 아닌데…」→ 안심을 주려다 오히려 불안하게 할 수 있어요. 자신감을 가지고 마음을 전하세요!"
+  },
+  traits:{ja:["安心感💆","包容力🤗","自然体🌿","聞き上手👂","長続き❤️"],en:["Reassuring💆","Embracing🤗","Natural🌿","Great Listener👂","Long-lasting❤️"],zh:["安心感💆","包容力🤗","自然体🌿","善于倾听👂","长久❤️"],ko:["안심감💆","포용력🤗","자연스러움🌿","잘 들어줌👂","오래 감❤️"]}
+},
+H:{
+  phrase:{ja:"「一緒にいると楽しすぎる！」",en:'"Being with you is way too much fun!"',zh:"「和你在一起太开心了！」",ko:"「같이 있으면 너무 즐거워!」"},
+  name:{ja:"ムードメーカー系キラーフレーズタイプ",en:"Mood Maker Type",zh:"气氛制造者必杀金句类型",ko:"분위기 메이커 킬러 멘트 타입"},
+  bg:"linear-gradient(135deg,#f093fb,#f5576c)",
+  desc:{
+    ja:"あなたのキラーフレーズは「楽しさ」を共有する言葉！テンションが高くポジティブなエネルギーで相手を惹きつけます。一緒にいると笑顔が絶えず、「この人といると元気になれる」と思わせる力があります。グループの中でも一際目立つ太陽のような存在で、出会いからの初速が最強。あなたの笑顔と明るさは、相手にとってかけがえのないビタミンのような存在です。",
+    en:"Your killer phrase is all about sharing the fun! Your high energy and positive vibes are magnetic. People can't stop smiling around you, and you have the power to make anyone think, \"I feel alive when I'm with this person.\" You're the sun that shines brightest in any group, and your first-impression game is unbeatable. Your smile and cheerfulness are like essential vitamins for your partner.",
+    zh:"你的必杀金句就是分享「快乐」的话语！你用高涨的热情和正能量吸引着对方。和你在一起笑容不断，让人忍不住觉得「和这个人在一起好有活力」。在人群中你就像太阳一样闪耀，从认识那一刻起就魅力全开。你的笑容和开朗，对对方来说就像不可或缺的维生素。",
+    ko:"당신의 킬러 멘트는 '즐거움'을 나누는 말! 높은 텐션과 긍정 에너지로 상대를 끌어당겨요. 함께 있으면 웃음이 끊이지 않고, '이 사람과 있으면 힘이 난다'고 느끼게 하는 힘이 있습니다. 어디서든 눈에 띄는 태양 같은 존재로, 첫 만남부터의 속도가 최강. 당신의 미소와 밝음은 상대에게 비타민 같은 존재예요."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「俺（私）といれば絶対楽しいって！」→ 自信は魅力だけど押しが強すぎると引かれるかも。相手のペースも大事に！",
+    en:'⚠️ Danger word: "Trust me, you\'ll have the best time with me!" → Confidence is attractive, but being too pushy can be off-putting. Respect their pace too!',
+    zh:"⚠️ 注意台词：「和我在一起绝对开心！」→ 自信是魅力，但太强势可能适得其反。也要尊重对方的节奏！",
+    ko:"⚠️ 주의 멘트: 「나랑 있으면 무조건 재밌을 거야!」→ 자신감은 매력이지만 너무 밀면 부담될 수 있어요. 상대의 속도도 존중하세요!"
+  },
+  traits:{ja:["ムードメーカー🎉","ポジティブ☀️","モテオーラ✨","社交的💬","初速が速い🚀"],en:["Mood Maker🎉","Positive☀️","Charismatic✨","Social💬","Fast Starter🚀"],zh:["气氛担当🎉","正能量☀️","魅力四射✨","善于社交💬","初速最快🚀"],ko:["분위기 메이커🎉","긍정적☀️","매력 뿜뿜✨","사교적💬","첫 속도 최강🚀"]}
+},
+S:{
+  phrase:{ja:"「こんな人、他にいない」",en:'"There\'s no one else like you"',zh:"「像你这样的人，再也找不到了」",ko:"「이런 사람, 다시 없어」"},
+  name:{ja:"褒め上手キラーフレーズタイプ",en:"Master of Compliments Type",zh:"夸赞达人必杀金句类型",ko:"칭찬의 달인 킬러 멘트 타입"},
+  bg:"linear-gradient(135deg,#f6d365,#fda085)",
+  desc:{
+    ja:"あなたのキラーフレーズは相手を「特別」に感じさせる言葉！さりげない褒め言葉で相手の自己肯定感を高め、「この人は自分を見てくれている」と思わせる天才です。誠実さが伝わるので、真剣な恋愛に発展しやすいタイプ。観察力が鋭く、相手の小さな変化にもすぐ気づくことができるので、「自分のことをこんなに理解してくれる人はいない」と思わせる力があります。",
+    en:"Your killer phrase makes your partner feel truly special! You're a genius at weaving in subtle compliments that boost their self-esteem and make them think, \"This person really sees me.\" Your sincerity shines through, making it easy for things to develop into something serious. With your keen eye for detail, you notice even the smallest changes, making your partner feel like no one else understands them the way you do.",
+    zh:"你的必杀金句是让对方感到「特别」的话语！你用不经意的夸赞提升对方的自信心，是那种能让人觉得「这个人真的看见我了」的天才。因为能传达出真诚，所以容易发展成认真的恋爱。你观察力很强，能马上注意到对方细微的变化，让人觉得「没有人能像这个人一样理解我」。",
+    ko:"당신의 킬러 멘트는 상대를 '특별'하게 느끼게 하는 말! 은근한 칭찬으로 상대의 자존감을 높여주며, '이 사람은 날 정말 봐주는구나'라고 느끼게 하는 천재예요. 진심이 전해져서 진지한 연애로 발전하기 쉬운 타입. 관찰력이 뛰어나 상대의 작은 변화도 바로 알아채서 '나를 이렇게 이해해주는 사람은 없어'라고 느끼게 하는 힘이 있습니다."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「前の恋人とは全然違う」→ 褒めてるつもりが比較に聞こえるかも。相手だけを見つめる言葉選びを！",
+    en:'⚠️ Danger word: "You\'re nothing like my ex" → You mean it as a compliment, but it sounds like a comparison. Focus your words entirely on them!',
+    zh:"⚠️ 注意台词：「和前任完全不一样」→ 本想夸人，听起来却像在比较。要把话语只聚焦在对方身上！",
+    ko:"⚠️ 주의 멘트: 「전 애인이랑은 완전 달라」→ 칭찬하려다 비교처럼 들릴 수 있어요. 상대만을 바라보는 말을 골라요!"
+  },
+  traits:{ja:["褒め上手👑","誠実🙏","特別感を演出✨","観察力🔍","真剣な恋愛向き💒"],en:["Compliment Pro👑","Sincere🙏","Makes You Special✨","Observant🔍","Serious Romance💒"],zh:["超会夸人👑","真诚🙏","营造特别感✨","观察力强🔍","认真恋爱型💒"],ko:["칭찬의 달인👑","진심🙏","특별함 연출✨","관찰력🔍","진지한 연애형💒"]}
+},
+M:{
+  phrase:{ja:"「…気になってるんだけど」",en:'"...I can\'t stop thinking about you"',zh:"「…其实我一直很在意你」",ko:"「…사실 신경 쓰이거든」"},
+  name:{ja:"ミステリアス駆け引きタイプ",en:"Mysterious Push & Pull Type",zh:"神秘系欲擒故纵类型",ko:"미스터리어스 밀당 타입"},
+  bg:"linear-gradient(135deg,#667eea,#764ba2)",
+  desc:{
+    ja:"あなたのキラーフレーズは相手を「ドキッ」とさせる意味深な言葉！全てを言わないからこそ想像力を掻き立て、相手の頭の中をあなたでいっぱいにする小悪魔的な魅力があります。押して引く駆け引きの天才で、相手は常にあなたの真意を知りたくてたまらなくなります。恋愛の駆け引きにおいては百戦錬磨。ただし、引きすぎると相手が離れてしまうこともあるので注意が必要です。",
+    en:"Your killer phrase makes hearts skip a beat with mysterious, suggestive words! By never saying everything, you ignite their imagination and fill their mind with thoughts of you. You're a genius at the push-and-pull game — your partner is always dying to know what you really mean. You're a seasoned veteran of love strategy. Just be careful not to pull back too much, or they might walk away.",
+    zh:"你的必杀金句是让对方「心跳漏一拍」的意味深长的话！正因为你不会把话说透，才更能激发对方的想象力，让对方满脑子都是你。你是推拉博弈的天才，对方总是迫不及待想知道你的真正心意。在恋爱博弈中你是百战百胜的老手。但要注意，退得太多对方可能真的会走开哦。",
+    ko:"당신의 킬러 멘트는 상대를 '두근'하게 하는 의미심장한 말! 전부 말하지 않기에 상상력을 자극하고, 상대의 머릿속을 당신으로 가득 채우는 소악마적 매력이 있어요. 밀당의 천재로, 상대는 항상 당신의 진심을 알고 싶어 안달이 납니다. 연애 밀당에서는 백전백승. 다만 너무 밀면 상대가 떠날 수 있으니 주의가 필요해요."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「別にどっちでもいいけど」→ 駆け引きのつもりが「興味ない」と受け取られるかも。好意は時にはストレートに！",
+    en:'⚠️ Danger word: "I don\'t really care either way" → What\'s meant as playing it cool may be taken as disinterest. Show your feelings directly sometimes!',
+    zh:"⚠️ 注意台词：「反正怎样都行」→ 本想玩欲擒故纵，却可能被当成「不感兴趣」。好感有时也要直接表达！",
+    ko:"⚠️ 주의 멘트: 「뭐 어느 쪽이든 상관없지만」→ 밀당하려다 '관심 없음'으로 받아들여질 수 있어요. 호감은 때로 솔직하게!"
+  },
+  traits:{ja:["小悪魔😈","ミステリアス🌙","駆け引き上手🎲","ドキドキさせる💓","恋愛巧者🏆"],en:["Charming Devil😈","Mysterious🌙","Push & Pull Pro🎲","Heart-Flutter💓","Love Strategist🏆"],zh:["小恶魔😈","神秘感🌙","博弈高手🎲","让人心动💓","恋爱达人🏆"],ko:["소악마😈","미스터리어스🌙","밀당 고수🎲","두근두근💓","연애 전략가🏆"]}
+},
+D:{
+  phrase:{ja:"「好きだよ。ずっと好きだった」",en:'"I like you. I\'ve always liked you"',zh:"「我喜欢你。一直都喜欢你」",ko:"「좋아해. 계속 좋아했어」"},
+  name:{ja:"直球ストレートタイプ",en:"Straight Shooter Type",zh:"直球型",ko:"직구 스트레이트 타입"},
+  bg:"linear-gradient(135deg,#ff6b6b,#ee5a24)",
+  desc:{
+    ja:"あなたのキラーフレーズは、まっすぐに気持ちを伝えるストレートな言葉！駆け引きなんて必要ない、気持ちをそのまま言葉にするあなたの素直さは最大の武器です。相手に「この人は嘘をつかない」という絶対的な信頼感を与えることができます。不器用に見えることもあるけれど、その真剣さと一途さに心を打たれる人は多く、告白の成功率が実は一番高いタイプかもしれません。",
+    en:"Your killer phrase is a straight-from-the-heart confession! No games, no tricks — your honesty is your greatest weapon. You give your partner an unshakable sense of trust, knowing you'd never deceive them. You might come across as a little clumsy sometimes, but your sincerity and devotion move people deeply. You probably have the highest confession success rate of all types.",
+    zh:"你的必杀金句就是直截了当地表达心意！不需要任何套路，直接把感情变成语言是你最大的武器。你能给对方「这个人绝不会说谎」的绝对信任感。虽然有时看起来有点笨拙，但被你的认真和专一打动的人其实很多，告白成功率可能是所有类型中最高的。",
+    ko:"당신의 킬러 멘트는 진심을 담은 직구! 밀당 같은 건 필요 없어요. 마음을 그대로 말로 전하는 솔직함이 최강 무기입니다. 상대에게 '이 사람은 거짓말을 안 해'라는 절대적 신뢰감을 줄 수 있어요. 서툴러 보일 때도 있지만, 그 진지함과 한결같음에 감동받는 사람이 많아 고백 성공률이 사실 가장 높은 타입일지도 몰라요."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「なんで分かってくれないの！？」→ ストレートすぎて相手を追い詰めることも。伝えるタイミングと場所も大事にしよう！",
+    en:'⚠️ Danger word: "Why don\'t you understand!?" → Being too direct can feel overwhelming. Timing and setting matter too!',
+    zh:"⚠️ 注意台词：「为什么你就是不懂！？」→ 太直接可能会让对方感到压力。传达的时机和场合也很重要！",
+    ko:"⚠️ 주의 멘트: 「왜 이해를 못 해!?」→ 너무 직구라 상대를 몰아붙일 수 있어요. 전하는 타이밍과 장소도 중요해요!"
+  },
+  traits:{ja:["一途❤️‍🔥","素直📣","信頼感🤝","情熱的🔥","裏表なし💎"],en:["Devoted❤️‍🔥","Honest📣","Trustworthy🤝","Passionate🔥","No Pretense💎"],zh:["专一❤️‍🔥","坦率📣","信赖感🤝","热情🔥","表里如一💎"],ko:["한결같음❤️‍🔥","솔직📣","신뢰감🤝","열정적🔥","꾸밈없음💎"]}
+},
+G:{
+  phrase:{ja:"「あなたといる時間は特別です」",en:'"Every moment with you is precious"',zh:"「和你相处的时光很特别」",ko:"「당신과 함께하는 시간은 특별해요」"},
+  name:{ja:"紳士・淑女タイプ",en:"Gentleman / Lady Type",zh:"绅士淑女类型",ko:"젠틀맨·레이디 타입"},
+  bg:"linear-gradient(135deg,#a18cd1,#fbc2eb)",
+  desc:{
+    ja:"あなたのキラーフレーズは、丁寧で上品な愛情表現！相手を大切に思う気持ちが言葉の端々から伝わる、品格のある恋愛スタイルの持ち主です。決して馴れ馴れしくならず、相手への敬意を忘れないあなたの姿勢は、深い信頼関係を築くための最高の土台になります。焦らず丁寧に距離を縮めていくので、相手は「この人になら安心して心を開ける」と感じるはず。大人の恋愛ができる稀有なタイプです。",
+    en:"Your killer phrase is a polished, elegant expression of love! Your care for your partner shines through in every word, reflecting a classy approach to romance. You never overstep boundaries and always treat them with respect — the perfect foundation for deep trust. You close the distance gently and patiently, making your partner feel safe to open up. You're a rare breed who truly knows how to love with maturity.",
+    zh:"你的必杀金句是优雅而有品位的爱的表达！你对对方的珍视从字里行间传递出来，是品格恋爱风格的代表。你从不逾矩，始终保持对对方的尊重，这为建立深厚的信任关系奠定了最好的基础。你不急不躁、温柔地拉近距离，让对方觉得「可以安心地向这个人敞开心扉」。你是能谈一段成熟恋爱的稀有类型。",
+    ko:"당신의 킬러 멘트는 정중하고 품격 있는 사랑의 표현! 상대를 소중히 여기는 마음이 말 한마디 한마디에서 전해지는 격조 있는 연애 스타일이에요. 결코 선을 넘지 않고 상대에 대한 존중을 잊지 않는 자세는 깊은 신뢰를 쌓기 위한 최고의 토대가 됩니다. 서두르지 않고 정성껏 거리를 좁혀가기에, 상대는 '이 사람에게라면 마음을 열어도 괜찮겠다'고 느낄 거예요. 성숙한 연애를 할 수 있는 드문 타입입니다."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「お気持ちは嬉しいのですが…」→ 丁寧すぎて他人行儀に感じられるかも。時には砕けた表現で距離を縮めよう！",
+    en:'⚠️ Danger word: "I appreciate your feelings, however..." → Being too formal may feel distant. Try using casual language sometimes to close the gap!',
+    zh:"⚠️ 注意台词：「您的心意我很感激，但是…」→ 太客气反而让人觉得有距离感。偶尔也用轻松的方式拉近距离吧！",
+    ko:"⚠️ 주의 멘트: 「마음은 감사하지만…」→ 너무 정중하면 거리감을 느낄 수 있어요. 가끔은 편한 표현으로 거리를 좁혀봐요!"
+  },
+  traits:{ja:["品格🎩","丁寧語💐","大人の恋愛🍷","信頼構築🏛️","誠実な姿勢📜"],en:["Elegant🎩","Polite💐","Mature Love🍷","Trust Builder🏛️","Sincere📜"],zh:["品格🎩","有礼貌💐","成熟恋爱🍷","信任构建🏛️","真诚📜"],ko:["품격🎩","정중함💐","어른의 연애🍷","신뢰 구축🏛️","성실📜"]}
+},
+A:{
+  phrase:{ja:"「言葉じゃなくて、そばにいるから」",en:'"I won\'t say it in words — I\'ll just be here for you"',zh:"「不用言语，我会一直陪在你身边」",ko:"「말 대신, 곁에 있어 줄게」"},
+  name:{ja:"行動で示すタイプ",en:"Actions Speak Louder Type",zh:"用行动说话类型",ko:"행동으로 보여주는 타입"},
+  bg:"linear-gradient(135deg,#11998e,#38ef7d)",
+  desc:{
+    ja:"あなたのキラーフレーズは、言葉ではなく行動そのもの！「好き」と口にするより、さりげない優しさや気遣いで愛情を示すタイプです。重い荷物をそっと持ってあげたり、疲れている時に好きな飲み物を差し入れたり。あなたの愛情は日常の中に溶け込んでいて、相手は「この人がいないと生きていけない」と気づいた時にはもう手遅れ。最強の生活密着型恋愛マスターです。",
+    en:'Your killer phrase isn\'t words — it\'s your actions! Rather than saying "I love you," you show it through quiet acts of kindness. Carrying their heavy bags, bringing them their favorite drink when they\'re tired. Your love is woven into everyday life, and by the time your partner realizes they can\'t live without you, it\'s already too late. You\'re the ultimate master of love through daily devotion.',
+    zh:"你的必杀金句不是话语，而是行动本身！比起说「喜欢」，你更擅长用默默的温柔和体贴来表达爱意。悄悄帮对方拿沉重的行李，在对方疲惫时送上喜欢的饮料。你的爱融入了日常生活的每一个角落，等对方意识到「没有这个人活不下去」的时候已经来不及了。你是最强的生活系恋爱大师。",
+    ko:"당신의 킬러 멘트는 말이 아닌 행동 그 자체! '좋아해'라고 말하기보다 은근한 다정함과 배려로 사랑을 보여주는 타입이에요. 무거운 짐을 슬쩍 들어주고, 지쳤을 때 좋아하는 음료를 건네주고. 당신의 사랑은 일상 속에 녹아 있어서, 상대가 '이 사람 없이는 못 살겠다'고 깨달았을 때는 이미 늦었어요. 최강의 생활 밀착형 연애 마스터입니다."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「言わなくても分かるでしょ？」→ 行動は素晴らしいけど、時には言葉にしないと伝わらないことも。たまには「好き」と言おう！",
+    en:'⚠️ Danger word: "You should know without me saying it" → Your actions are wonderful, but sometimes words are needed too. Say "I love you" once in a while!',
+    zh:"⚠️ 注意台词：「不说你也应该知道吧？」→ 行动固然很棒，但有时候不说出来对方真的不知道。偶尔也要说「喜欢你」！",
+    ko:"⚠️ 주의 멘트: 「말 안 해도 알잖아」→ 행동은 훌륭하지만 때로는 말로 해야 전해져요. 가끔은 '좋아해'라고 말해 주세요!"
+  },
+  traits:{ja:["さりげない優しさ🧹","気配り☕","縁の下の力持ち💪","生活力🏠","不可欠な存在🔑"],en:["Quiet Kindness🧹","Thoughtful☕","Unsung Hero💪","Life Skills🏠","Indispensable🔑"],zh:["默默的温柔🧹","善解人意☕","幕后英雄💪","生活能手🏠","不可或缺🔑"],ko:["은근한 다정함🧹","세심한 배려☕","든든한 지원군💪","생활력🏠","없으면 안 될 존재🔑"]}
+},
+T:{
+  phrase:{ja:"「…別に、あんたがいないと寂しいとか思ってないし」",en:'"...It\'s not like I miss you when you\'re gone or anything"',zh:"「…才、才不是没有你就会寂寞呢」",ko:"「…딱히, 네가 없으면 외롭다거나 그런 거 아니거든」"},
+  name:{ja:"ツンデレタイプ",en:"Tsundere Type",zh:"傲娇类型",ko:"츤데레 타입"},
+  bg:"linear-gradient(135deg,#fc5c7d,#6a82fb)",
+  desc:{
+    ja:"あなたのキラーフレーズは、素直になれない裏腹な言葉！本当は大好きなのに、つい反対のことを言ってしまうあなた。でもそのギャップこそが最大の破壊力を持っています。普段はツンツンしているのに、ふとした瞬間に見せる優しさや照れた表情に、相手はキュンが止まりません。「この人の本心を知りたい」と思わせる中毒性があり、一度ハマったら抜け出せない魅力の持ち主です。",
+    en:"Your killer phrase is the classic \"say the opposite of what you mean\"! You're head over heels but can't help acting like you don't care. That gap between your words and true feelings is absolutely devastating. Your partner melts when they catch a glimpse of your soft side or see you blush. You're addictively charming — once someone falls for your tsundere act, there's no going back.",
+    zh:"你的必杀金句就是口是心非的反话！明明超喜欢，却总是说相反的话。但正是这种反差拥有最强杀伤力。平时一副高冷的样子，不经意间露出温柔和害羞的表情时，对方的心简直要融化了。让人忍不住想「好想知道这个人的真心」，一旦陷进去就出不来的致命魅力。",
+    ko:"당신의 킬러 멘트는 솔직해지지 못하는 반전의 말! 사실 엄청 좋아하면서 자꾸 반대로 말해버리는 당신. 하지만 그 갭이야말로 최강의 파괴력을 가지고 있어요. 평소에는 쌀쌀하다가 문득 보여주는 다정함이나 부끄러워하는 표정에 상대는 심쿵이 멈추지 않아요. '이 사람의 진심을 알고 싶다'고 느끼게 하는 중독성이 있어, 한 번 빠지면 헤어나올 수 없는 매력의 소유자입니다."
+  },
+  danger:{
+    ja:"⚠️ 注意ワード：「別にあんたのことなんか好きじゃないし」→ ツンが強すぎると本当に嫌われてると思われるかも。デレの配分を増やそう！",
+    en:'⚠️ Danger word: "I don\'t even like you anyway" → If you\'re too cold, they might actually believe it. Turn up the sweet side a bit!',
+    zh:"⚠️ 注意台词：「才不喜欢你呢」→ 太傲娇的话对方可能真的以为你讨厌TA。多展示一点温柔的一面吧！",
+    ko:"⚠️ 주의 멘트: 「딱히 너 같은 거 좋아하지 않거든」→ 츤이 너무 강하면 진짜 싫어하는 줄 알 수 있어요. 데레 비율을 늘려봐요!"
+  },
+  traits:{ja:["ギャップ萌え💕","照れ屋😳","一途な本心❤️","中毒性🫠","不器用な愛😤"],en:["Gap Appeal💕","Shy😳","Devoted Heart❤️","Addictive🫠","Clumsy Love😤"],zh:["反差萌💕","容易害羞😳","专一的真心❤️","让人上瘾🫠","笨拙的爱😤"],ko:["갭 모에💕","부끄럼쟁이😳","한결같은 진심❤️","중독성🫠","서툰 사랑😤"]}
+}
 };
+
+/* ========== All types listing (i18n) ========== */
 const allTypes=[
-{key:'C',emoji:'💆',name:'癒やし系キラーフレーズ'},{key:'H',emoji:'🎉',name:'ムードメーカー系'},
-{key:'S',emoji:'👑',name:'褒め上手キラーフレーズ'},{key:'M',emoji:'🌙',name:'ミステリアス駆け引き'},
-{key:'D',emoji:'❤️‍🔥',name:'直球ストレート'},{key:'G',emoji:'🎩',name:'紳士・淑女'},
-{key:'A',emoji:'🧹',name:'行動で示す'},{key:'T',emoji:'😤',name:'ツンデレ'}
+{key:'C',emoji:'💆',name:{ja:'癒やし系キラーフレーズ',en:'Healing & Comfort',zh:'治愈系必杀金句',ko:'힐링형 킬러 멘트'}},
+{key:'H',emoji:'🎉',name:{ja:'ムードメーカー系',en:'Mood Maker',zh:'气氛制造者',ko:'분위기 메이커'}},
+{key:'S',emoji:'👑',name:{ja:'褒め上手キラーフレーズ',en:'Master of Compliments',zh:'夸赞达人',ko:'칭찬의 달인'}},
+{key:'M',emoji:'🌙',name:{ja:'ミステリアス駆け引き',en:'Mysterious Push & Pull',zh:'神秘系欲擒故纵',ko:'미스터리어스 밀당'}},
+{key:'D',emoji:'❤️‍🔥',name:{ja:'直球ストレート',en:'Straight Shooter',zh:'直球型',ko:'직구 스트레이트'}},
+{key:'G',emoji:'🎩',name:{ja:'紳士・淑女',en:'Gentleman / Lady',zh:'绅士淑女',ko:'젠틀맨·레이디'}},
+{key:'A',emoji:'🧹',name:{ja:'行動で示す',en:'Actions Speak Louder',zh:'用行动说话',ko:'행동으로 보여주는'}},
+{key:'T',emoji:'😤',name:{ja:'ツンデレ',en:'Tsundere',zh:'傲娇',ko:'츤데레'}}
 ];
+
 let current=0,scores={C:0,H:0,S:0,M:0,D:0,G:0,A:0,T:0};
-function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+
+/* ========== setLang: Switch language and refresh UI ========== */
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('data-lang')===lang);
+  });
+  const u=ui[lang];
+  document.getElementById('badgeText').textContent=u.badge;
+  document.getElementById('heroTitle').innerHTML=u.title;
+  document.getElementById('heroSubtitle').innerHTML=u.subtitle;
+  document.getElementById('startBtn').textContent=u.startBtn;
+  document.getElementById('hintText').textContent=u.hint;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('sectionHead').textContent=u.sectionHead;
+  document.getElementById('shareXBtn').textContent=u.shareX;
+  document.getElementById('shareLineBtn').textContent=u.shareLine;
+  document.getElementById('retryBtn').textContent=u.retryBtn;
+  /* If quiz is active, re-render current question */
+  if(document.getElementById('quiz').classList.contains('active')){
+    render();
+  }
+  /* If result is active, re-render result */
+  if(document.getElementById('result').classList.contains('active')){
+    refreshResult();
+  }
+}
+
+/* ========== Quiz logic ========== */
+function startQuiz(){
+  document.getElementById('start').style.display='none';
+  document.getElementById('quiz').classList.add('active');
+  render();
+}
+
 function render(){
   const q=questions[current];
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
   document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qText').textContent=q.q[curLang];
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=opt.t[curLang];
+    b.onclick=()=>answer(opt.s);
+    o.appendChild(b);
+  });
 }
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+
+function answer(s){
+  for(let k in s)scores[k]+=s[k];
+  current++;
+  if(current<questions.length)render();else showResult();
+}
+
+/* ========== Result display ========== */
+let lastResultKey='C';
 function showResult(){
-  let max='C',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
+  let max='C',maxVal=0;
+  for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  lastResultKey=max;
   document.getElementById('quiz').classList.remove('active');
-  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
-  document.getElementById('phraseText').textContent=r.phrase;
-  document.getElementById('resultName').textContent=r.name;
-  const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
-  document.getElementById('dangerBox').innerHTML='<h3>⚠️ 注意すべき地雷ワード</h3><p>'+r.danger+'</p>';
-  const ag=document.getElementById('allGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  renderResult(max);
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const p=document.getElementById('phraseText').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の恋愛キラーフレーズは\n「'+p+'」\nでした！💋\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+
+function renderResult(key){
+  const r=results[key];
+  const lang=curLang;
+  const u=ui[lang];
+  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  document.getElementById('phraseText').textContent=r.phrase[lang];
+  document.getElementById('resultName').textContent=r.name[lang];
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits[lang].forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc[lang];
+  document.getElementById('dangerBox').innerHTML='<h3>'+u.dangerTitle+'</h3><p>'+r.danger[lang]+'</p>';
+  const ag=document.getElementById('allGrid');ag.innerHTML='';
+  allTypes.forEach(t=>{
+    ag.innerHTML+=`<div class="type-chip${t.key===key?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name[lang]}</div>${t.key===key?'<div class="tc-me">'+u.youLabel+'</div>':''}</div></div>`;
+  });
+}
+
+function refreshResult(){
+  renderResult(lastResultKey);
+}
+
+/* ========== Share functions ========== */
+function shareX(){
+  const p=document.getElementById('phraseText').textContent;
+  window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareTpl[curLang](p))}`,'_blank');
+}
+function shareLine(){
+  window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');
+}
+
+/* ========== Initialize ========== */
+setLang(curLang);
 </script>
 </body>
 </html>
