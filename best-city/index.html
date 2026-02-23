@@ -118,137 +118,182 @@ h1{font-size:1.55em;font-weight:900;color:#0a2520;line-height:1.4;margin-bottom:
 
 </div>
 <script>
+let curLang='ja';
+const ui={
+ja:{badge:'🏙️ 住む街診断',title:'理想の住む街<br>診断',subtitle:'10の質問で、あなたにピッタリの<br>日本の街がわかる！',start:'🔮 診断スタート！',hint:'全10問・約1分で完了',resultLabel:'あなたが住むべき街は…',allTypesHead:'🗺 全タイプ一覧',shareX:'𝕏 シェア',shareLine:'LINE シェア',retry:'🔄 もう一度診断する',you:'← あなた！',spotHead:'📍 おすすめエリア'},
+en:{badge:'🏙️ City Match Quiz',title:'Find Your Ideal<br>City in Japan',subtitle:'Answer 10 questions to discover<br>the perfect Japanese city for you!',start:'🔮 Start the Quiz!',hint:'10 questions, about 1 minute',resultLabel:'The city you should live in is...',allTypesHead:'🗺 All Types',shareX:'𝕏 Share',shareLine:'LINE Share',retry:'🔄 Try Again',you:'← You!',spotHead:'📍 Recommended Areas'},
+zh:{badge:'🏙️ 城市匹配测试',title:'找到你的理想<br>日本城市',subtitle:'回答10个问题，<br>找到最适合你的日本城市！',start:'🔮 开始测试！',hint:'共10题・约1分钟完成',resultLabel:'你应该住的城市是…',allTypesHead:'🗺 全部类型',shareX:'𝕏 分享',shareLine:'LINE 分享',retry:'🔄 再测一次',you:'← 就是你！',spotHead:'📍 推荐地区'},
+ko:{badge:'🏙️ 도시 매칭 테스트',title:'당신에게 딱 맞는<br>일본 도시 찾기',subtitle:'10개의 질문으로<br>당신에게 꼭 맞는 일본 도시를 찾아보세요!',start:'🔮 테스트 시작!',hint:'총 10문항・약 1분 소요',resultLabel:'당신이 살아야 할 도시는…',allTypesHead:'🗺 전체 유형',shareX:'𝕏 공유',shareLine:'LINE 공유',retry:'🔄 다시 하기',you:'← 바로 당신!',spotHead:'📍 추천 지역'}
+};
+const shareTpl={
+ja:n=>'私が住むべき街は「'+n+'」でした！🏙️\nあなたも診断してみて👇\n',
+en:n=>'My ideal city in Japan is "'+n+'"! 🏙️\nFind yours too 👇\n',
+zh:n=>'我最适合住的城市是「'+n+'」！🏙️\n你也来测测吧👇\n',
+ko:n=>'내가 살아야 할 도시는 "'+n+'"! 🏙️\n당신도 테스트해 보세요👇\n'
+};
 const questions=[
-{q:"休日の理想的な過ごし方は？",opts:[
-{t:"☕ 最新のカフェやイベントに行く",s:{T:2,Y:1}},
-{t:"🏛️ お寺や美術館を巡ってゆっくり過ごす",s:{K:2,H:1}},
-{t:"🍽️ 美味しいご飯を食べに街を散策する",s:{F:2,N:1}},
-{t:"🌊 海や山で自然を満喫する",s:{O:2,S:1}}
+{q:{ja:"休日の理想的な過ごし方は？",en:"How would you ideally spend your day off?",zh:"你理想的休息日怎么过？",ko:"휴일에 이상적으로 어떻게 보내고 싶나요?"},opts:[
+{t:{ja:"☕ 最新のカフェやイベントに行く",en:"☕ Hit up the latest cafes and events",zh:"☕ 去最新的咖啡馆和活动",ko:"☕ 최신 카페나 이벤트에 가기"},s:{T:2,Y:1}},
+{t:{ja:"🏛️ お寺や美術館を巡ってゆっくり過ごす",en:"🏛️ Visit temples and museums at a relaxed pace",zh:"🏛️ 悠闲地逛寺庙和美术馆",ko:"🏛️ 절이나 미술관을 여유롭게 둘러보기"},s:{K:2,H:1}},
+{t:{ja:"🍽️ 美味しいご飯を食べに街を散策する",en:"🍽️ Stroll around town hunting for great food",zh:"🍽️ 在街上散步寻找美食",ko:"🍽️ 맛있는 음식을 찾아 거리를 산책하기"},s:{F:2,N:1}},
+{t:{ja:"🌊 海や山で自然を満喫する",en:"🌊 Enjoy nature at the beach or mountains",zh:"🌊 在海边或山中尽情享受大自然",ko:"🌊 바다나 산에서 자연을 만끽하기"},s:{O:2,S:1}}
 ]},
-{q:"食事で一番大事にするのは？",opts:[
-{t:"🔥 トレンドの店や話題のグルメ",s:{T:2,Y:1}},
-{t:"🍵 和食の繊細さや季節感",s:{K:3}},
-{t:"💰 コスパ最強のうまい飯",s:{F:2,N:1}},
-{t:"🦀 新鮮な海の幸や地元の名産品",s:{S:2,H:1}}
+{q:{ja:"食事で一番大事にするのは？",en:"What matters most to you about food?",zh:"吃饭时你最看重什么？",ko:"식사에서 가장 중요하게 생각하는 것은?"},opts:[
+{t:{ja:"🔥 トレンドの店や話題のグルメ",en:"🔥 Trendy restaurants and buzzworthy food",zh:"🔥 流行的餐厅和热门美食",ko:"🔥 트렌디한 가게와 화제의 맛집"},s:{T:2,Y:1}},
+{t:{ja:"🍵 和食の繊細さや季節感",en:"🍵 The delicacy and seasonality of Japanese cuisine",zh:"🍵 日式料理的精致和季节感",ko:"🍵 일식의 섬세함과 계절감"},s:{K:3}},
+{t:{ja:"💰 コスパ最強のうまい飯",en:"💰 Delicious food with the best value",zh:"💰 性价比超高的美食",ko:"💰 가성비 최강의 맛있는 밥"},s:{F:2,N:1}},
+{t:{ja:"🦀 新鮮な海の幸や地元の名産品",en:"🦀 Fresh seafood and local specialties",zh:"🦀 新鲜的海鲜和当地特产",ko:"🦀 신선한 해산물과 지역 특산품"},s:{S:2,H:1}}
 ]},
-{q:"人付き合いのスタイルは？",opts:[
-{t:"🌐 広く浅く、いろんな人と繋がりたい",s:{T:3}},
-{t:"🤝 礼儀を大切にした適度な距離感がいい",s:{K:2,N:1}},
-{t:"🤗 フレンドリーで温かい関係が好き",s:{F:2,H:1}},
-{t:"💎 少人数の深い繋がりを大事にしたい",s:{O:2,S:1}}
+{q:{ja:"人付き合いのスタイルは？",en:"What's your social style?",zh:"你的社交风格是？",ko:"당신의 인간관계 스타일은?"},opts:[
+{t:{ja:"🌐 広く浅く、いろんな人と繋がりたい",en:"🌐 Wide network — I love meeting all kinds of people",zh:"🌐 广泛社交，想和各种人交流",ko:"🌐 넓고 얕게, 다양한 사람들과 연결되고 싶다"},s:{T:3}},
+{t:{ja:"🤝 礼儀を大切にした適度な距離感がいい",en:"🤝 Polite and respectful with comfortable distance",zh:"🤝 注重礼仪，保持适当的距离",ko:"🤝 예의를 중시하며 적당한 거리감이 좋다"},s:{K:2,N:1}},
+{t:{ja:"🤗 フレンドリーで温かい関係が好き",en:"🤗 Friendly and warm relationships",zh:"🤗 喜欢友好温暖的关系",ko:"🤗 친근하고 따뜻한 관계가 좋다"},s:{F:2,H:1}},
+{t:{ja:"💎 少人数の深い繋がりを大事にしたい",en:"💎 Deep bonds with a small close circle",zh:"💎 珍惜少数人之间的深厚关系",ko:"💎 소수의 깊은 유대를 소중히 하고 싶다"},s:{O:2,S:1}}
 ]},
-{q:"仕事に対する考え方は？",opts:[
-{t:"📈 キャリアアップ重視。チャンスが多い方がいい",s:{T:2,Y:1}},
-{t:"🏺 伝統やクラフトマンシップのある仕事に惹かれる",s:{K:2,H:1}},
-{t:"🔧 技術やものづくりの分野で活躍したい",s:{N:3}},
-{t:"🌙 ストレスフリーで自分らしく働きたい",s:{O:2,S:1}}
+{q:{ja:"仕事に対する考え方は？",en:"What's your attitude toward work?",zh:"你对工作的看法是？",ko:"일에 대한 생각은?"},opts:[
+{t:{ja:"📈 キャリアアップ重視。チャンスが多い方がいい",en:"📈 Career growth first — more opportunities, the better",zh:"📈 重视职业发展，机会越多越好",ko:"📈 커리어 성장 중시. 기회가 많을수록 좋다"},s:{T:2,Y:1}},
+{t:{ja:"🏺 伝統やクラフトマンシップのある仕事に惹かれる",en:"🏺 Drawn to tradition and craftsmanship",zh:"🏺 被传统和工匠精神吸引",ko:"🏺 전통과 장인정신이 있는 일에 끌린다"},s:{K:2,H:1}},
+{t:{ja:"🔧 技術やものづくりの分野で活躍したい",en:"🔧 Want to thrive in tech and manufacturing",zh:"🔧 想在技术和制造领域大展身手",ko:"🔧 기술이나 제조 분야에서 활약하고 싶다"},s:{N:3}},
+{t:{ja:"🌙 ストレスフリーで自分らしく働きたい",en:"🌙 Stress-free work, staying true to myself",zh:"🌙 无压力地做自己想做的工作",ko:"🌙 스트레스 없이 나답게 일하고 싶다"},s:{O:2,S:1}}
 ]},
-{q:"住む場所で一番重視するのは？",opts:[
-{t:"🚇 交通アクセスと利便性",s:{T:2,N:1}},
-{t:"⛩️ 歴史や文化的な雰囲気",s:{K:2,H:1}},
-{t:"🏠 家賃と生活コストのバランス",s:{F:2,N:1}},
-{t:"🌳 自然環境の豊かさ",s:{O:2,S:1}}
+{q:{ja:"住む場所で一番重視するのは？",en:"What do you value most in a place to live?",zh:"选择住所时你最看重什么？",ko:"사는 곳에서 가장 중시하는 것은?"},opts:[
+{t:{ja:"🚇 交通アクセスと利便性",en:"🚇 Transport access and convenience",zh:"🚇 交通便利性",ko:"🚇 교통 접근성과 편리함"},s:{T:2,N:1}},
+{t:{ja:"⛩️ 歴史や文化的な雰囲気",en:"⛩️ Historical and cultural atmosphere",zh:"⛩️ 历史和文化氛围",ko:"⛩️ 역사와 문화적인 분위기"},s:{K:2,H:1}},
+{t:{ja:"🏠 家賃と生活コストのバランス",en:"🏠 Balance of rent and living costs",zh:"🏠 房租和生活成本的平衡",ko:"🏠 집세와 생활비의 균형"},s:{F:2,N:1}},
+{t:{ja:"🌳 自然環境の豊かさ",en:"🌳 Rich natural environment",zh:"🌳 丰富的自然环境",ko:"🌳 풍요로운 자연환경"},s:{O:2,S:1}}
 ]},
-{q:"どんな気候が好き？",opts:[
-{t:"❄️ 四季がはっきり！冬は雪も楽しみたい",s:{S:3}},
-{t:"🌸 寒すぎず暑すぎず穏やかな気候がいい",s:{Y:2,H:1}},
-{t:"☀️ 温暖で過ごしやすい気候がいい",s:{F:2,O:1}},
-{t:"🌺 一年中暖かい南国気候が理想",s:{O:3}}
+{q:{ja:"どんな気候が好き？",en:"What kind of climate do you prefer?",zh:"你喜欢什么样的气候？",ko:"어떤 기후를 좋아하나요?"},opts:[
+{t:{ja:"❄️ 四季がはっきり！冬は雪も楽しみたい",en:"❄️ Distinct seasons! I want snowy winters too",zh:"❄️ 四季分明！冬天也想享受雪景",ko:"❄️ 사계절이 뚜렷하고 겨울엔 눈도 즐기고 싶다"},s:{S:3}},
+{t:{ja:"🌸 寒すぎず暑すぎず穏やかな気候がいい",en:"🌸 Mild climate — not too hot, not too cold",zh:"🌸 不太冷不太热，温和的气候最好",ko:"🌸 너무 춥지도 덥지도 않은 온화한 기후가 좋다"},s:{Y:2,H:1}},
+{t:{ja:"☀️ 温暖で過ごしやすい気候がいい",en:"☀️ Warm and easy to live in",zh:"☀️ 温暖舒适的气候最好",ko:"☀️ 따뜻하고 살기 편한 기후가 좋다"},s:{F:2,O:1}},
+{t:{ja:"🌺 一年中暖かい南国気候が理想",en:"🌺 Tropical warmth year-round is the dream",zh:"🌺 一年四季温暖的南国气候最理想",ko:"🌺 일 년 내내 따뜻한 남국 기후가 이상적이다"},s:{O:3}}
 ]},
-{q:"引っ越すなら何を基準にする？",opts:[
-{t:"💼 仕事やビジネスの機会が多い場所",s:{T:2,Y:1}},
-{t:"🏮 歴史的な街並みや独自の文化がある場所",s:{K:2,H:1}},
-{t:"🍖 ご飯が美味しくて人が温かい場所",s:{F:2,S:1}},
-{t:"🌿 のんびり暮らせて自然が近い場所",s:{O:2,S:1}}
+{q:{ja:"引っ越すなら何を基準にする？",en:"What would you base a move on?",zh:"搬家的话你会以什么为标准？",ko:"이사한다면 무엇을 기준으로 하나요?"},opts:[
+{t:{ja:"💼 仕事やビジネスの機会が多い場所",en:"💼 Lots of job and business opportunities",zh:"💼 工作和商业机会多的地方",ko:"💼 일이나 비즈니스 기회가 많은 곳"},s:{T:2,Y:1}},
+{t:{ja:"🏮 歴史的な街並みや独自の文化がある場所",en:"🏮 Historic streets and unique culture",zh:"🏮 有历史街道和独特文化的地方",ko:"🏮 역사적인 거리와 독자적인 문화가 있는 곳"},s:{K:2,H:1}},
+{t:{ja:"🍖 ご飯が美味しくて人が温かい場所",en:"🍖 Great food and warm-hearted people",zh:"🍖 饭菜好吃、人也热情的地方",ko:"🍖 밥이 맛있고 사람이 따뜻한 곳"},s:{F:2,S:1}},
+{t:{ja:"🌿 のんびり暮らせて自然が近い場所",en:"🌿 Laid-back living close to nature",zh:"🌿 悠闲生活、亲近自然的地方",ko:"🌿 느긋하게 살 수 있고 자연이 가까운 곳"},s:{O:2,S:1}}
 ]},
-{q:"週末のお出かけ先として理想的なのは？",opts:[
-{t:"🎢 テーマパークやショッピングモール",s:{Y:2,T:1}},
-{t:"♨️ 温泉やスキー場などの自然レジャー",s:{S:3}},
-{t:"🏯 歴史的な城跡や世界遺産巡り",s:{H:2,K:1}},
-{t:"🏭 工場見学や産業ミュージアム",s:{N:3}}
+{q:{ja:"週末のお出かけ先として理想的なのは？",en:"What's your ideal weekend outing?",zh:"周末出游的理想去处是？",ko:"주말 나들이로 이상적인 곳은?"},opts:[
+{t:{ja:"🎢 テーマパークやショッピングモール",en:"🎢 Theme parks and shopping malls",zh:"🎢 主题乐园和购物中心",ko:"🎢 테마파크나 쇼핑몰"},s:{Y:2,T:1}},
+{t:{ja:"♨️ 温泉やスキー場などの自然レジャー",en:"♨️ Hot springs, ski resorts, and nature activities",zh:"♨️ 温泉、滑雪场等自然休闲",ko:"♨️ 온천이나 스키장 등 자연 레저"},s:{S:3}},
+{t:{ja:"🏯 歴史的な城跡や世界遺産巡り",en:"🏯 Historic castles and World Heritage sites",zh:"🏯 历史古城和世界遗产巡游",ko:"🏯 역사적인 성터나 세계유산 탐방"},s:{H:2,K:1}},
+{t:{ja:"🏭 工場見学や産業ミュージアム",en:"🏭 Factory tours and industrial museums",zh:"🏭 工厂参观和产业博物馆",ko:"🏭 공장 견학이나 산업 박물관"},s:{N:3}}
 ]},
-{q:"あなたが大事にしたい暮らしのキーワードは？",opts:[
-{t:"🌃 都会的でスタイリッシュな暮らし",s:{Y:3}},
-{t:"🍺 地元愛が強いコミュニティでの暮らし",s:{N:2,H:1}},
-{t:"⛰️ 雄大な自然に囲まれたアウトドアライフ",s:{S:2,O:1}},
-{t:"⚖️ 仕事とプライベートの完璧な両立",s:{F:3}}
+{q:{ja:"あなたが大事にしたい暮らしのキーワードは？",en:"What keyword best describes your ideal lifestyle?",zh:"你最看重的生活关键词是？",ko:"당신이 소중히 하고 싶은 삶의 키워드는?"},opts:[
+{t:{ja:"🌃 都会的でスタイリッシュな暮らし",en:"🌃 Stylish and urban living",zh:"🌃 都市时尚的生活",ko:"🌃 도시적이고 세련된 생활"},s:{Y:3}},
+{t:{ja:"🍺 地元愛が強いコミュニティでの暮らし",en:"🍺 Life in a community with strong local pride",zh:"🍺 在充满地方自豪感的社区中生活",ko:"🍺 지역 사랑이 강한 커뮤니티에서의 생활"},s:{N:2,H:1}},
+{t:{ja:"⛰️ 雄大な自然に囲まれたアウトドアライフ",en:"⛰️ Outdoor life surrounded by grand nature",zh:"⛰️ 在雄伟大自然中的户外生活",ko:"⛰️ 웅대한 자연에 둘러싸인 아웃도어 라이프"},s:{S:2,O:1}},
+{t:{ja:"⚖️ 仕事とプライベートの完璧な両立",en:"⚖️ Perfect work-life balance",zh:"⚖️ 完美的工作与生活平衡",ko:"⚖️ 일과 사생활의 완벽한 양립"},s:{F:3}}
 ]},
-{q:"あなたの性格に一番近いのは？",opts:[
-{t:"🚀 好奇心旺盛で常に新しいことに挑戦したい",s:{T:2,Y:1}},
-{t:"📚 知的で物事を深く考えるのが好き",s:{K:2,N:1}},
-{t:"🕊️ 平和主義で周りとの調和を大切にする",s:{H:2,F:1}},
-{t:"🏕️ マイペースで自由な生き方がしたい",s:{O:2,S:1}}
+{q:{ja:"あなたの性格に一番近いのは？",en:"Which personality is closest to yours?",zh:"最接近你性格的是？",ko:"당신의 성격에 가장 가까운 것은?"},opts:[
+{t:{ja:"🚀 好奇心旺盛で常に新しいことに挑戦したい",en:"🚀 Endlessly curious, always chasing new challenges",zh:"🚀 充满好奇心，总想挑战新事物",ko:"🚀 호기심이 왕성하고 항상 새로운 도전을 하고 싶다"},s:{T:2,Y:1}},
+{t:{ja:"📚 知的で物事を深く考えるのが好き",en:"📚 Intellectual — I love thinking deeply",zh:"📚 喜欢深入思考事物",ko:"📚 지적이고 깊이 생각하는 것을 좋아한다"},s:{K:2,N:1}},
+{t:{ja:"🕊️ 平和主義で周りとの調和を大切にする",en:"🕊️ Peaceful — I value harmony with others",zh:"🕊️ 和平主义，重视与周围人的和谐",ko:"🕊️ 평화주의로 주변과의 조화를 소중히 한다"},s:{H:2,F:1}},
+{t:{ja:"🏕️ マイペースで自由な生き方がしたい",en:"🏕️ Free-spirited, living at my own pace",zh:"🏕️ 按自己的节奏自由地生活",ko:"🏕️ 마이페이스로 자유로운 삶을 살고 싶다"},s:{O:2,S:1}}
 ]}
 ];
 const results={
-T:{name:"東京（都心エリア）",emoji:"🗼",bg:"linear-gradient(135deg,#e74c3c,#c0392b)",
-  desc:"あなたにピッタリなのは東京！最先端のトレンド、ビジネスチャンス、エンタメ、グルメ…すべてが集まる日本の中心地です。渋谷・新宿・六本木など個性の異なるエリアが無数にあり、自分のスタイルに合った街を見つけられるのも大きな魅力。世界中から人が集まるダイバーシティな環境で、刺激的なキャリアと出会いに満ちた毎日を送りたいあなたにとって、これ以上の街はありません。常に進化し続けるこの街で、あなたの可能性も無限に広がるでしょう。",
-  spot:"📍 おすすめエリア：渋谷・恵比寿（トレンド＆グルメの激戦区）/ 下北沢（サブカルチャーの聖地）/ 中目黒（大人のおしゃれタウン）/ 吉祥寺（住みやすさNo.1の人気エリア）/ 品川・大崎（再開発で注目の新拠点）",
-  traits:["刺激的✨","キャリア志向📈","トレンド好き🔥","アクティブ⚡","多様性🌐"]},
-K:{name:"京都",emoji:"⛩️",bg:"linear-gradient(135deg,#8e44ad,#6c3483)",
-  desc:"あなたにピッタリなのは京都！千年の歴史と伝統が息づくこの街では、日常の中に日本文化の美しさを感じながら暮らすことができます。世界遺産の寺社仏閣が生活圏内にあり、四季折々の風景が心を潤してくれるのは京都ならではの贅沢です。大学が多く若い世代も活気にあふれており、古い伝統と新しい感性が融合した独特の文化圏を形成しています。知的好奇心が旺盛で、深みのある暮らしを求めるあなたに最適な街です。",
-  spot:"📍 おすすめエリア：出町柳（学生街＆鴨川デルタの癒し）/ 嵐山（竹林と渡月橋の風情）/ 河原町・烏丸（都心の利便性）/ 北白川（閑静な文教地区）/ 一乗寺（ラーメン激戦区＆書店街）",
-  traits:["文化的🏛️","知的好奇心🧠","和の美意識🍵","落ち着いてる🌙","独自の世界観🔮"]},
-F:{name:"福岡",emoji:"🍜",bg:"linear-gradient(135deg,#e67e22,#d35400)",
-  desc:"あなたにピッタリなのは福岡！食の美味しさは全国トップクラスで、博多ラーメン・もつ鍋・明太子をはじめとしたグルメの宝庫です。人は温かくフレンドリーで、都市機能と自然が驚くほどコンパクトにまとまっているのが最大の魅力。生活コストも東京に比べて格段にリーズナブルで、空港から市街地まで地下鉄でわずか10分というアクセスの良さも見逃せません。QOLの高さと暮らしやすさを重視するあなたにとって、福岡はまさにベストチョイスです。",
-  spot:"📍 おすすめエリア：天神・大名（九州一の繁華街＆グルメ天国）/ 薬院・平尾（おしゃれカフェが集まる住宅街）/ 百道・西新（海沿いファミリー向け）/ 糸島（海と山の自然＆こだわりカフェ）/ 春吉（夜の屋台文化の中心地）",
-  traits:["グルメ好き🍖","コスパ重視💰","温かい人柄🤗","バランス型⚖️","QOL重視💎"]},
-O:{name:"沖縄",emoji:"🌺",bg:"linear-gradient(135deg,#00b894,#00cec9)",
-  desc:"あなたにピッタリなのは沖縄！エメラルドグリーンの美しい海と温暖な亜熱帯気候の中で、「うちなータイム」と呼ばれるゆったりとした時間の流れに身を委ねることができます。都会の喧騒から離れ、自然と共に自分らしいペースで生きることの素晴らしさを実感できる場所です。独自の琉球文化や芸能、島料理など本土とは異なる豊かな文化体験も日常の一部になります。リモートワーク拠点としても人気が急上昇しており、新しいライフスタイルを模索するあなたにぴったりの選択です。",
-  spot:"📍 おすすめエリア：那覇・国際通り周辺（利便性＆琉球文化の入口）/ 北谷（アメリカンビレッジ＆海沿い）/ 読谷（やちむんの里＆のんびり暮らし）/ 宮古島（日本屈指の絶景ビーチ）/ 恩納村（リゾート＆サーフィン天国）",
-  traits:["自然派🌊","のんびり😌","癒やし重視💚","自分らしさ🌙","ストレスフリー🕊"]},
-S:{name:"札幌",emoji:"⛄",bg:"linear-gradient(135deg,#2980b9,#2c3e50)",
-  desc:"あなたにピッタリなのは札幌！雄大な北海道の自然と200万都市の利便性が見事に両立した、全国屈指の住みやすい街です。夏は爽やかで涼しく、冬は一面の銀世界でウィンタースポーツを存分に楽しめる四季のメリハリが魅力。ジンギスカン・海鮮・スープカレー・ラーメンなど食のレベルは圧倒的で、「食の宝庫」の名にふさわしいグルメ体験が日常になります。豊かな自然の中でアクティブに暮らしながらも、都市の快適さを手放したくないあなたに最適な街です。",
-  spot:"📍 おすすめエリア：円山・宮の森（緑豊かな高級住宅街）/ 大通・狸小路（都心の利便性＆グルメ）/ 琴似（コスパ良好な生活圏）/ 小樽（レトロな港町・日帰り圏内）/ ニセコ（世界級パウダースノー）",
-  traits:["自然好き⛰️","食通🦀","四季を楽しむ❄️","アウトドア派🏕️","おおらか🐻"]},
-Y:{name:"横浜",emoji:"🚢",bg:"linear-gradient(135deg,#3498db,#2ecc71)",
-  desc:"あなたにピッタリなのは横浜！港町ならではの開放的でおしゃれな雰囲気と、東京都心への抜群のアクセスを兼ね備えた理想的な街です。みなとみらいの近未来的な景観から、元町・山手の異国情緒あふれるレトロな街並みまで、多彩な表情を持っています。東京に比べて家賃がリーズナブルでありながら、ショッピング・グルメ・文化施設が充実しており、都会的な暮らしを望むあなたにちょうどいいバランスを提供してくれます。海風を感じながらスタイリッシュに暮らしたい人にぴったりの港町です。",
-  spot:"📍 おすすめエリア：みなとみらい（近未来的ウォーターフロント）/ 元町・中華街（異国情緒＆グルメ）/ 日吉・綱島（東横線で都心直結）/ 山手（洋館が並ぶ高台の住宅街）/ 横浜駅周辺（大型商業施設集積地）",
-  traits:["おしゃれ🎨","港町好き🚢","バランス感覚⚖️","都会派🌃","開放的🌅"]},
-N:{name:"名古屋",emoji:"🏯",bg:"linear-gradient(135deg,#f39c12,#e74c3c)",
-  desc:"あなたにピッタリなのは名古屋！日本のものづくりの中心地として、トヨタをはじめとする世界的企業が集積するこの街は、堅実なキャリアと安定した暮らしを同時に叶えてくれます。名古屋めしに代表される独自の食文化は一度ハマると抜け出せないほど個性的で奥深いものがあります。東京・大阪の中間に位置する地理的優位性と、大都市でありながらリーズナブルな生活コストも大きな魅力。実利を大切にしながらも地元愛にあふれた、コスパ最強の暮らしを求めるあなたにおすすめの街です。",
-  spot:"📍 おすすめエリア：栄・名駅（都心の利便性＆ショッピング）/ 覚王山（おしゃれで落ち着いた住宅街）/ 星ヶ丘（文教地区＆カフェ）/ 大須（サブカル＆下町文化のミックス）/ 熱田（歴史的名所＆名古屋めし）",
-  traits:["堅実派🔧","コスパ重視💰","ものづくり好き🏭","地元愛💛","実利主義📊"]},
-H:{name:"広島",emoji:"🍁",bg:"linear-gradient(135deg,#e74c3c,#8e44ad)",
-  desc:"あなたにピッタリなのは広島！世界遺産の原爆ドームと厳島神社を擁するこの街は、平和への祈りと瀬戸内海の穏やかな美しさが調和した唯一無二の場所です。お好み焼き・牡蠣・もみじ饅頭など独自の食文化も豊かで、温暖な瀬戸内の気候のもと穏やかで心豊かな日々を送ることができます。地元のカープ愛に象徴される強いコミュニティ意識があり、人のつながりを大切にする温かい街です。歴史と平和を重んじ、穏やかで文化的な暮らしを望むあなたにとって、これ以上の街はないでしょう。",
-  spot:"📍 おすすめエリア：紙屋町・八丁堀（都心＆ショッピング）/ 宮島・廿日市（世界遺産＆海の絶景）/ 尾道（坂の街＆映画のロケ地）/ 鉄砲町・流川（グルメ＆ナイトタウン）/ 西条（日本酒の聖地・酒蔵通り）",
-  traits:["平和主義🕊️","歴史好き📚","穏やか🌊","コミュニティ重視🤝","文化的🍁"]}
+T:{emoji:"🗼",bg:"linear-gradient(135deg,#e74c3c,#c0392b)",
+  name:{ja:"東京（都心エリア）",en:"Tokyo (Central Area)",zh:"东京（都心区域）",ko:"도쿄 (도심 에리어)"},
+  desc:{ja:"あなたにピッタリなのは東京！最先端のトレンド、ビジネスチャンス、エンタメ、グルメ…すべてが集まる日本の中心地です。渋谷・新宿・六本木など個性の異なるエリアが無数にあり、自分のスタイルに合った街を見つけられるのも大きな魅力。世界中から人が集まるダイバーシティな環境で、刺激的なキャリアと出会いに満ちた毎日を送りたいあなたにとって、これ以上の街はありません。常に進化し続けるこの街で、あなたの可能性も無限に広がるでしょう。",en:"Tokyo is perfect for you! It's Japan's epicenter of cutting-edge trends, business opportunities, entertainment, and gourmet dining. With countless distinct neighborhoods like Shibuya, Shinjuku, and Roppongi, you can find one that matches your style perfectly. In this diverse, globally-connected city full of exciting career options and encounters, your potential knows no limits.",zh:"最适合你的是东京！这里是日本的中心，汇聚了最前沿的潮流、商业机会、娱乐和美食。涩谷、新宿、六本木等各具特色的区域数不胜数，你一定能找到符合自己风格的地方。在这座充满多样性的城市中，你的可能性将无限延伸。",ko:"당신에게 딱 맞는 곳은 도쿄! 최첨단 트렌드, 비즈니스 기회, 엔터테인먼트, 미식... 모든 것이 모이는 일본의 중심지입니다. 시부야, 신주쿠, 롯폰기 등 개성이 다른 지역이 무수히 있어 자신의 스타일에 맞는 거리를 찾을 수 있습니다. 끊임없이 진화하는 이 도시에서 당신의 가능성도 무한히 펼쳐질 것입니다."},
+  spot:{ja:"📍 おすすめエリア：渋谷・恵比寿（トレンド＆グルメの激戦区）/ 下北沢（サブカルチャーの聖地）/ 中目黒（大人のおしゃれタウン）/ 吉祥寺（住みやすさNo.1の人気エリア）/ 品川・大崎（再開発で注目の新拠点）",en:"Shibuya & Ebisu (trend & food hotspot) / Shimokitazawa (subculture mecca) / Nakameguro (chic adult town) / Kichijoji (most livable area) / Shinagawa & Osaki (redevelopment hub)",zh:"涩谷・惠比寿（潮流美食激战区）/ 下北�的（亚文化圣地）/ 中目黑（大人的时尚小镇）/ 吉祥寺（最宜居人气区域）/ 品川・大崎（再开发新据点）",ko:"시부야・에비스 (트렌드&미식 격전지) / 시모키타자와 (서브컬처 성지) / 나카메구로 (세련된 타운) / 키치조지 (살기 좋은 인기 에리어) / 시나가와・오사키 (재개발 신거점)"},
+  traits:{ja:["刺激的✨","キャリア志向📈","トレンド好き🔥","アクティブ⚡","多様性🌐"],en:["Exciting✨","Career-driven📈","Trend lover🔥","Active⚡","Diverse🌐"],zh:["刺激✨","事业导向📈","追逐潮流🔥","活力⚡","多元化🌐"],ko:["자극적✨","커리어 지향📈","트렌드 좋아함🔥","액티브⚡","다양성🌐"]}},
+K:{emoji:"⛩️",bg:"linear-gradient(135deg,#8e44ad,#6c3483)",
+  name:{ja:"京都",en:"Kyoto",zh:"京都",ko:"교토"},
+  desc:{ja:"あなたにピッタリなのは京都！千年の歴史と伝統が息づくこの街では、日常の中に日本文化の美しさを感じながら暮らすことができます。世界遺産の寺社仏閣が生活圏内にあり、四季折々の風景が心を潤してくれるのは京都ならではの贅沢です。大学が多く若い世代も活気にあふれており、古い伝統と新しい感性が融合した独特の文化圏を形成しています。知的好奇心が旺盛で、深みのある暮らしを求めるあなたに最適な街です。",en:"Kyoto is perfect for you! In this city where a thousand years of history and tradition live on, you can experience the beauty of Japanese culture in everyday life. Having World Heritage temples within your neighborhood and seasonal scenery that soothes the soul is a luxury only Kyoto offers. With many universities keeping youthful energy alive, it blends old tradition with fresh creativity. Ideal for the intellectually curious seeking a life of depth.",zh:"最适合你的是京都！在这座传承千年历史与传统的城市里，你可以在日常生活中感受日本文化之美。世界遗产的寺庙就在生活圈内，四季变换的风景润泽心灵，这是京都独有的奢侈。这里大学众多，年轻一代充满活力，古老传统与新锐感性融合出独特的文化圈。最适合求知欲旺盛、追求有深度生活的你。",ko:"당신에게 딱 맞는 곳은 교토! 천년의 역사와 전통이 살아 숨 쉬는 이 도시에서는 일상 속에서 일본 문화의 아름다움을 느끼며 살 수 있습니다. 세계유산 사찰이 생활권 내에 있고, 사계절 풍경이 마음을 적셔주는 것은 교토만의 사치입니다. 지적 호기심이 왕성하고 깊이 있는 삶을 추구하는 당신에게 최적의 도시입니다."},
+  spot:{ja:"📍 おすすめエリア：出町柳（学生街＆鴨川デルタの癒し）/ 嵐山（竹林と渡月橋の風情）/ 河原町・烏丸（都心の利便性）/ 北白川（閑静な文教地区）/ 一乗寺（ラーメン激戦区＆書店街）",en:"Demachiyanagi (student town & Kamo River delta) / Arashiyama (bamboo groves & Togetsukyo Bridge) / Kawaramachi & Karasuma (city center convenience) / Kitashirakawa (quiet academic district) / Ichijoji (ramen battleground & bookshops)",zh:"出町柳（学生街&�的川三角洲的治愈）/ 岚山（竹林与渡月桥的风情）/ 河原町・乌丸（市中心的便利性）/ 北白川（安静的文教区）/ 一乘寺（拉面激战区&书店街）",ko:"데마치야나기 (학생가&가모가와 델타 힐링) / 아라시야마 (대나무숲과 도게츠교) / 가와라마치・카라스마 (도심 편리성) / 키타시라카와 (조용한 문교지구) / 이치죠지 (라멘 격전지&서점거리)"},
+  traits:{ja:["文化的🏛️","知的好奇心🧠","和の美意識🍵","落ち着いてる🌙","独自の世界観🔮"],en:["Cultural🏛️","Curious mind🧠","Wabi-sabi🍵","Calm🌙","Unique worldview🔮"],zh:["文化🏛️","求知欲🧠","和之美🍵","沉稳🌙","独特世界观🔮"],ko:["문화적🏛️","지적 호기심🧠","와비사비🍵","차분함🌙","독자적 세계관🔮"]}},
+F:{emoji:"🍜",bg:"linear-gradient(135deg,#e67e22,#d35400)",
+  name:{ja:"福岡",en:"Fukuoka",zh:"福冈",ko:"후쿠오카"},
+  desc:{ja:"あなたにピッタリなのは福岡！食の美味しさは全国トップクラスで、博多ラーメン・もつ鍋・明太子をはじめとしたグルメの宝庫です。人は温かくフレンドリーで、都市機能と自然が驚くほどコンパクトにまとまっているのが最大の魅力。生活コストも東京に比べて格段にリーズナブルで、空港から市街地まで地下鉄でわずか10分というアクセスの良さも見逃せません。QOLの高さと暮らしやすさを重視するあなたにとって、福岡はまさにベストチョイスです。",en:"Fukuoka is perfect for you! Its food scene ranks among the best nationwide — Hakata ramen, motsunabe hot pot, mentaiko, and more make it a foodie paradise. The people are warm and friendly, and the city's greatest charm is how compactly urban amenities and nature coexist. Living costs are far more affordable than Tokyo, and the subway takes just 10 minutes from the airport to downtown. For anyone who values quality of life and livability, Fukuoka is the ultimate choice.",zh:"最适合你的是福冈！这里的美食水平全国顶级，博多拉面、牛杂锅、明太子等美食宝库。人们热情友好，城市功能和自然惊人地紧凑融合是最大魅力。生活成本比东京便宜很多，从机场到市中心坐地铁仅需10分钟。对于重视生活质量和宜居性的你来说，福冈就是最佳选择。",ko:"당신에게 딱 맞는 곳은 후쿠오카! 전국 최고 수준의 맛집 천국으로 하카타 라멘, 모츠나베, 멘타이코 등 미식의 보고입니다. 사람들은 따뜻하고 친근하며, 도시 기능과 자연이 놀랍도록 컴팩트하게 모여 있는 것이 최대 매력입니다. 생활비도 도쿄에 비해 훨씬 합리적이며, 공항에서 시내까지 지하철로 단 10분이라는 접근성도 놓칠 수 없습니다."},
+  spot:{ja:"📍 おすすめエリア：天神・大名（九州一の繁華街＆グルメ天国）/ 薬院・平尾（おしゃれカフェが集まる住宅街）/ 百道・西新（海沿いファミリー向け）/ 糸島（海と山の自然＆こだわりカフェ）/ 春吉（夜の屋台文化の中心地）",en:"Tenjin & Daimyo (Kyushu's busiest district & food heaven) / Yakuin & Hirao (stylish cafe-filled residential area) / Momochi & Nishijin (seaside, family-friendly) / Itoshima (nature & artisan cafes) / Haruyoshi (night food stall culture hub)",zh:"天神・大名（九州第一繁华街&美食天堂）/ 药院・平尾（时尚咖啡馆聚集的住宅区）/ 百道・西新（海边家庭向）/ 系岛（海山自然&特色咖啡馆）/ 春吉（夜间屋台文化中心）",ko:"텐진・다이묘 (규슈 최대 번화가&미식 천국) / 야쿠인・히라오 (세련된 카페가 모인 주택가) / 모모치・니시진 (바닷가 패밀리 지역) / 이토시마 (바다와 산의 자연&카페) / 하루요시 (야타이 문화 중심지)"},
+  traits:{ja:["グルメ好き🍖","コスパ重視💰","温かい人柄🤗","バランス型⚖️","QOL重視💎"],en:["Foodie🍖","Value seeker💰","Warm-hearted🤗","Balanced⚖️","QOL-focused💎"],zh:["美食家🍖","重视性价比💰","热情🤗","平衡型⚖️","重视生活质量💎"],ko:["미식가🍖","가성비 중시💰","따뜻한 성격🤗","밸런스형⚖️","QOL 중시💎"]}},
+O:{emoji:"🌺",bg:"linear-gradient(135deg,#00b894,#00cec9)",
+  name:{ja:"沖縄",en:"Okinawa",zh:"冲绳",ko:"오키나와"},
+  desc:{ja:"あなたにピッタリなのは沖縄！エメラルドグリーンの美しい海と温暖な亜熱帯気候の中で、「うちなータイム」と呼ばれるゆったりとした時間の流れに身を委ねることができます。都会の喧騒から離れ、自然と共に自分らしいペースで生きることの素晴らしさを実感できる場所です。独自の琉球文化や芸能、島料理など本土とは異なる豊かな文化体験も日常の一部になります。リモートワーク拠点としても人気が急上昇しており、新しいライフスタイルを模索するあなたにぴったりの選択です。",en:"Okinawa is perfect for you! Surrounded by emerald-green seas and a warm subtropical climate, you can surrender to the gentle pace of 'Uchiná Time.' Away from the urban hustle, it's a place where you can truly live at your own pace in harmony with nature. The unique Ryukyu culture, performing arts, and island cuisine offer rich cultural experiences found nowhere else in Japan. With its rising popularity as a remote work base, it's the ideal choice for anyone seeking a new lifestyle.",zh:"最适合你的是冲绳！在翡翠绿的美丽大海和温暖的亚热带气候中，你可以沉浸在被称为"冲绳时间"的悠闲时光里。远离都市喧嚣，在大自然中以自己的节奏生活。独特的琉球文化、岛屿料理等丰富的文化体验也将成为日常的一部分。作为远程办公基地也越来越受欢迎，非常适合探索新生活方式的你。",ko:"당신에게 딱 맞는 곳은 오키나와! 에메랄드빛 아름다운 바다와 온난한 아열대 기후 속에서 '우치나 타임'이라 불리는 느긋한 시간의 흐름에 몸을 맡길 수 있습니다. 도시의 소음에서 벗어나 자연과 함께 자신만의 페이스로 살아가는 멋진 곳입니다. 독자적인 류큐 문화와 섬 요리 등 본토와는 다른 풍부한 문화 체험도 일상의 일부가 됩니다."},
+  spot:{ja:"📍 おすすめエリア：那覇・国際通り周辺（利便性＆琉球文化の入口）/ 北谷（アメリカンビレッジ＆海沿い）/ 読谷（やちむんの里＆のんびり暮らし）/ 宮古島（日本屈指の絶景ビーチ）/ 恩納村（リゾート＆サーフィン天国）",en:"Naha & Kokusai Street (convenience & gateway to Ryukyu culture) / Chatan (American Village & seaside) / Yomitan (pottery village & laid-back living) / Miyako Island (Japan's most stunning beaches) / Onna Village (resort & surfing paradise)",zh:"那霸・国际通周边（便利性&琉球文化入口）/ 北谷（美国村&海边）/ 读谷（陶艺之乡&悠闲生活）/ 宫古岛（日本顶级绝景海滩）/ 恩纳村（度假&冲浪天堂）",ko:"나하・코쿠사이도리 주변 (편리성&류큐 문화 입구) / 차탄 (아메리칸 빌리지&바닷가) / 요미탄 (도자기 마을&느긋한 생활) / 미야코지마 (일본 최고의 절경 비치) / 온나촌 (리조트&서핑 천국)"},
+  traits:{ja:["自然派🌊","のんびり😌","癒やし重視💚","自分らしさ🌙","ストレスフリー🕊"],en:["Nature lover🌊","Laid-back😌","Healing-focused💚","Authentic🌙","Stress-free🕊"],zh:["自然派🌊","悠闲😌","重视治愈💚","做自己🌙","无压力🕊"],ko:["자연파🌊","느긋함😌","힐링 중시💚","나다움🌙","스트레스 프리🕊"]}},
+S:{emoji:"⛄",bg:"linear-gradient(135deg,#2980b9,#2c3e50)",
+  name:{ja:"札幌",en:"Sapporo",zh:"札幌",ko:"삿포로"},
+  desc:{ja:"あなたにピッタリなのは札幌！雄大な北海道の自然と200万都市の利便性が見事に両立した、全国屈指の住みやすい街です。夏は爽やかで涼しく、冬は一面の銀世界でウィンタースポーツを存分に楽しめる四季のメリハリが魅力。ジンギスカン・海鮮・スープカレー・ラーメンなど食のレベルは圧倒的で、「食の宝庫」の名にふさわしいグルメ体験が日常になります。豊かな自然の中でアクティブに暮らしながらも、都市の快適さを手放したくないあなたに最適な街です。",en:"Sapporo is perfect for you! This city of two million beautifully balances Hokkaido's grand nature with urban convenience, making it one of Japan's most livable cities. Cool, refreshing summers and snowy wonderland winters offer dramatic seasonal contrast. The food scene is overwhelming — Genghis Khan lamb, fresh seafood, soup curry, and ramen make it a true food paradise. Perfect for those who want an active outdoor life without giving up city comforts.",zh:"最适合你的是札幌！雄伟的北海道自然与200万人口城市的便利性完美结合，是全国数一数二的宜居城市。夏天凉爽，冬天银装素裹可以尽情享受冬季运动，四季分明是最大魅力。成吉思汗烤肉、海鲜、汤咖喱、拉面等美食水平压倒性地高。最适合想在丰富的自然中活跃生活同时又不想放弃城市便利的你。",ko:"당신에게 딱 맞는 곳은 삿포로! 웅대한 홋카이도의 자연과 200만 도시의 편리함이 훌륭하게 양립하는, 전국 최고의 살기 좋은 도시입니다. 여름은 상쾌하고 시원하며, 겨울은 은빛 세계에서 윈터스포츠를 마음껏 즐길 수 있는 사계절의 매력이 있습니다. 징기스칸, 해산물, 수프카레, 라멘 등 압도적인 미식 체험이 일상이 됩니다."},
+  spot:{ja:"📍 おすすめエリア：円山・宮の森（緑豊かな高級住宅街）/ 大通・狸小路（都心の利便性＆グルメ）/ 琴似（コスパ良好な生活圏）/ 小樽（レトロな港町・日帰り圏内）/ ニセコ（世界級パウダースノー）",en:"Maruyama & Miyanomori (lush upscale residential area) / Odori & Tanukikoji (downtown convenience & food) / Kotoni (great value living area) / Otaru (retro port town, day-trip distance) / Niseko (world-class powder snow)",zh:"圆山・宫之森（绿意盎然的高级住宅区）/ 大通・狸小路（市中心便利性&美食）/ �的似（高性价比生活圈）/ 小樽（复古港町・一日游范围）/ 二世谷（世界级粉雪）",ko:"마루야마・미야노모리 (녹음이 풍부한 고급 주택가) / 오도리・타누키코지 (도심 편리성&미식) / 코토니 (가성비 좋은 생활권) / 오타루 (레트로 항구 도시・당일치기 권내) / 니세코 (세계급 파우더 스노)"},
+  traits:{ja:["自然好き⛰️","食通🦀","四季を楽しむ❄️","アウトドア派🏕️","おおらか🐻"],en:["Nature lover⛰️","Gourmet🦀","Loves seasons❄️","Outdoorsy🏕️","Easygoing🐻"],zh:["热爱自然⛰️","美食家🦀","享受四季❄️","户外派🏕️","豁达🐻"],ko:["자연 좋아함⛰️","미식가🦀","사계절을 즐김❄️","아웃도어파🏕️","너그러움🐻"]}},
+Y:{emoji:"🚢",bg:"linear-gradient(135deg,#3498db,#2ecc71)",
+  name:{ja:"横浜",en:"Yokohama",zh:"横滨",ko:"요코하마"},
+  desc:{ja:"あなたにピッタリなのは横浜！港町ならではの開放的でおしゃれな雰囲気と、東京都心への抜群のアクセスを兼ね備えた理想的な街です。みなとみらいの近未来的な景観から、元町・山手の異国情緒あふれるレトロな街並みまで、多彩な表情を持っています。東京に比べて家賃がリーズナブルでありながら、ショッピング・グルメ・文化施設が充実しており、都会的な暮らしを望むあなたにちょうどいいバランスを提供してくれます。海風を感じながらスタイリッシュに暮らしたい人にぴったりの港町です。",en:"Yokohama is perfect for you! This ideal port city combines an open, stylish atmosphere with excellent access to central Tokyo. From the futuristic Minato Mirai waterfront to the exotic retro streets of Motomachi and Yamate, it has many faces. With more affordable rent than Tokyo yet rich shopping, dining, and cultural facilities, it offers just the right balance for urban living. A perfect port town for those who want to live stylishly with the sea breeze.",zh:"最适合你的是横滨！这座港口城市兼具开放时尚的氛围和通往东京都心的绝佳交通。从未来感十足的港未来景观到元町・山手充满异国情调的复古街道，拥有多彩面貌。房租比东京便宜但购物、美食、文化设施一应俱全，为你提供恰到好处的城市生活平衡。最适合想感受海风、时尚生活的你。",ko:"당신에게 딱 맞는 곳은 요코하마! 항구 도시 특유의 개방적이고 세련된 분위기와 도쿄 도심으로의 뛰어난 접근성을 겸비한 이상적인 도시입니다. 미나토미라이의 근미래적 경관부터 모토마치・야마테의 이국적 레트로 거리까지 다채로운 표정을 가지고 있습니다. 도쿄보다 집세가 합리적이면서도 쇼핑, 미식, 문화시설이 충실하여 도시적인 생활을 원하는 당신에게 딱 맞는 밸런스를 제공합니다."},
+  spot:{ja:"📍 おすすめエリア：みなとみらい（近未来的ウォーターフロント）/ 元町・中華街（異国情緒＆グルメ）/ 日吉・綱島（東横線で都心直結）/ 山手（洋館が並ぶ高台の住宅街）/ 横浜駅周辺（大型商業施設集積地）",en:"Minato Mirai (futuristic waterfront) / Motomachi & Chinatown (exotic vibes & food) / Hiyoshi & Tsunashima (direct Tokyu line to Tokyo) / Yamate (hilltop Western-style residences) / Yokohama Station area (major commercial hub)",zh:"港未来（未来感滨水区）/ 元町・中华街（异国情调&美食）/ 日吉・纲岛（东横线直通都心）/ 山手（洋馆林立的高台住宅区）/ 横滨站周边（大型商业设施集中地）",ko:"미나토미라이 (근미래적 워터프론트) / 모토마치・차이나타운 (이국 정취&미식) / 히요시・쓰나시마 (도큐선으로 도심 직결) / 야마테 (양관이 늘어선 고대 주택가) / 요코하마역 주변 (대형 상업시설 집적지)"},
+  traits:{ja:["おしゃれ🎨","港町好き🚢","バランス感覚⚖️","都会派🌃","開放的🌅"],en:["Stylish🎨","Port town lover🚢","Well-balanced⚖️","Urban🌃","Open-minded🌅"],zh:["时尚🎨","喜欢港口城市🚢","平衡感⚖️","都会派🌃","开放🌅"],ko:["세련됨🎨","항구 도시 좋아함🚢","밸런스 감각⚖️","도시파🌃","개방적🌅"]}},
+N:{emoji:"🏯",bg:"linear-gradient(135deg,#f39c12,#e74c3c)",
+  name:{ja:"名古屋",en:"Nagoya",zh:"名古屋",ko:"나고야"},
+  desc:{ja:"あなたにピッタリなのは名古屋！日本のものづくりの中心地として、トヨタをはじめとする世界的企業が集積するこの街は、堅実なキャリアと安定した暮らしを同時に叶えてくれます。名古屋めしに代表される独自の食文化は一度ハマると抜け出せないほど個性的で奥深いものがあります。東京・大阪の中間に位置する地理的優位性と、大都市でありながらリーズナブルな生活コストも大きな魅力。実利を大切にしながらも地元愛にあふれた、コスパ最強の暮らしを求めるあなたにおすすめの街です。",en:"Nagoya is perfect for you! As Japan's manufacturing heartland, home to Toyota and other global companies, this city delivers both solid careers and stable living. The unique local food culture — known as Nagoya-meshi — is so distinctive and deep that once you try it, there's no going back. Its prime location between Tokyo and Osaka and affordable living costs despite being a major city are huge pluses. Ideal for those who value practicality, local pride, and the best cost-performance lifestyle.",zh:"最适合你的是名古屋！作为日本制造业中心，以丰田为首的世界级企业云集于此，能同时实现稳健的职业发展和安定的生活。以名古屋料理为代表的独特饮食文化，一旦爱上就无法自拔。地处东京和大阪之间的地理优势，加上大城市却合理的生活成本也是巨大魅力。最适合重视实际又充满地方自豪感、追求最高性价比生活的你。",ko:"당신에게 딱 맞는 곳은 나고야! 일본 모노즈쿠리의 중심지로서 도요타를 비롯한 세계적 기업이 집적된 이 도시는 견실한 커리어와 안정된 생활을 동시에 이룰 수 있습니다. 나고야메시로 대표되는 독자적인 식문화는 한번 빠지면 헤어나올 수 없을 만큼 개성적이고 깊이 있습니다. 도쿄와 오사카 사이의 지리적 이점과 대도시이면서도 합리적인 생활비가 큰 매력입니다."},
+  spot:{ja:"📍 おすすめエリア：栄・名駅（都心の利便性＆ショッピング）/ 覚王山（おしゃれで落ち着いた住宅街）/ 星ヶ丘（文教地区＆カフェ）/ 大須（サブカル＆下町文化のミックス）/ 熱田（歴史的名所＆名古屋めし）",en:"Sakae & Meieki (downtown convenience & shopping) / Kakuozan (chic, calm residential area) / Hoshigaoka (academic district & cafes) / Osu (subculture & downtown culture mix) / Atsuta (historic sites & Nagoya-meshi)",zh:"荣・名站（市中心便利性&购物）/ �的王山（时尚安静的住宅区）/ 星丘（文教区&咖啡馆）/ 大须（亚文化&老城区文化混搭）/ 热田（历史名胜&名古屋料理）",ko:"사카에・메이에키 (도심 편리성&쇼핑) / 카쿠오잔 (세련되고 차분한 주택가) / 호시가오카 (문교지구&카페) / 오스 (서브컬처&시타마치 문화 믹스) / 아츠타 (역사적 명소&나고야메시)"},
+  traits:{ja:["堅実派🔧","コスパ重視💰","ものづくり好き🏭","地元愛💛","実利主義📊"],en:["Practical🔧","Value-driven💰","Maker spirit🏭","Local pride💛","Pragmatist📊"],zh:["务实派🔧","重视性价比💰","热爱制造🏭","地方爱💛","实利主义📊"],ko:["견실파🔧","가성비 중시💰","모노즈쿠리 좋아함🏭","지역 사랑💛","실리주의📊"]}},
+H:{emoji:"🍁",bg:"linear-gradient(135deg,#e74c3c,#8e44ad)",
+  name:{ja:"広島",en:"Hiroshima",zh:"广岛",ko:"히로시마"},
+  desc:{ja:"あなたにピッタリなのは広島！世界遺産の原爆ドームと厳島神社を擁するこの街は、平和への祈りと瀬戸内海の穏やかな美しさが調和した唯一無二の場所です。お好み焼き・牡蠣・もみじ饅頭など独自の食文化も豊かで、温暖な瀬戸内の気候のもと穏やかで心豊かな日々を送ることができます。地元のカープ愛に象徴される強いコミュニティ意識があり、人のつながりを大切にする温かい街です。歴史と平和を重んじ、穏やかで文化的な暮らしを望むあなたにとって、これ以上の街はないでしょう。",en:"Hiroshima is perfect for you! Home to the World Heritage Atomic Bomb Dome and Itsukushima Shrine, this city uniquely harmonizes prayers for peace with the serene beauty of the Seto Inland Sea. Rich local food culture — okonomiyaki, oysters, momiji manju — and the warm Seto Inland Sea climate make for peaceful, fulfilling days. With strong community spirit symbolized by local Carp fandom, it's a warm city that values human connections. There's no better place for those who cherish history, peace, and a culturally rich life.",zh:"最适合你的是广岛！这座拥有世界遗产原爆穹顶和严岛神社的城市，是和平祈愿与濑户内海宁静之美和谐共存的独一无二之地。御好烧、牡蛎、红叶馒头等独特的饮食文化丰富多彩，在温暖的濑户内海气候下可以度过平和而充实的日子。以当地广岛鲤鱼队的热爱为象征的强烈社区意识，是一座珍视人与人之间联系的温暖城市。最适合重视历史与和平、向往平和文化生活的你。",ko:"당신에게 딱 맞는 곳은 히로시마! 세계유산 원폭 돔과 이쓰쿠시마 신사를 품은 이 도시는 평화에 대한 기도와 세토내해의 고요한 아름다움이 조화를 이루는 유일무이한 곳입니다. 오코노미야키, 굴, 모미지 만주 등 독자적인 식문화도 풍부하며, 온난한 세토내해 기후 아래 평온하고 풍요로운 나날을 보낼 수 있습니다. 지역 카프 사랑으로 상징되는 강한 커뮤니티 의식이 있는 따뜻한 도시입니다."},
+  spot:{ja:"📍 おすすめエリア：紙屋町・八丁堀（都心＆ショッピング）/ 宮島・廿日市（世界遺産＆海の絶景）/ 尾道（坂の街＆映画のロケ地）/ 鉄砲町・流川（グルメ＆ナイトタウン）/ 西条（日本酒の聖地・酒蔵通り）",en:"Kamiyacho & Hatchobori (downtown & shopping) / Miyajima & Hatsukaichi (World Heritage & ocean views) / Onomichi (hillside town & film locations) / Teppocho & Nagarekawa (food & nightlife) / Saijo (sake holy land, brewery street)",zh:"纸屋町・八丁堀（市中心&购物）/ 宫岛・�的日市（世界遗产&海景绝佳）/ 尾道（坡道之城&电影取景地）/ 铁炮町・流川（美食&夜生活）/ 西条（日本酒圣地・酒窖街）",ko:"카미야초・핫초보리 (도심&쇼핑) / 미야지마・하쓰카이치 (세계유산&바다 절경) / 오노미치 (언덕 도시&영화 촬영지) / 텟포초・나가레카와 (미식&나이트 타운) / 사이조 (일본술 성지・양조장 거리)"},
+  traits:{ja:["平和主義🕊️","歴史好き📚","穏やか🌊","コミュニティ重視🤝","文化的🍁"],en:["Peaceful🕊️","History lover📚","Calm🌊","Community-minded🤝","Cultural🍁"],zh:["和平主义🕊️","热爱历史📚","温和🌊","重视社区🤝","文化🍁"],ko:["평화주의🕊️","역사 좋아함📚","온화함🌊","커뮤니티 중시🤝","문화적🍁"]}}
 };
 const allTypes=[
-{key:'T',emoji:'🗼',name:'東京（都心エリア）'},{key:'K',emoji:'⛩️',name:'京都'},
-{key:'F',emoji:'🍜',name:'福岡'},{key:'O',emoji:'🌺',name:'沖縄'},
-{key:'S',emoji:'⛄',name:'札幌'},{key:'Y',emoji:'🚢',name:'横浜'},
-{key:'N',emoji:'🏯',name:'名古屋'},{key:'H',emoji:'🍁',name:'広島'}
+{key:'T',emoji:'🗼',name:{ja:'東京（都心エリア）',en:'Tokyo (Central)',zh:'东京（都心）',ko:'도쿄 (도심)'}},
+{key:'K',emoji:'⛩️',name:{ja:'京都',en:'Kyoto',zh:'京都',ko:'교토'}},
+{key:'F',emoji:'🍜',name:{ja:'福岡',en:'Fukuoka',zh:'福冈',ko:'후쿠오카'}},
+{key:'O',emoji:'🌺',name:{ja:'沖縄',en:'Okinawa',zh:'冲绳',ko:'오키나와'}},
+{key:'S',emoji:'⛄',name:{ja:'札幌',en:'Sapporo',zh:'札幌',ko:'삿포로'}},
+{key:'Y',emoji:'🚢',name:{ja:'横浜',en:'Yokohama',zh:'横滨',ko:'요코하마'}},
+{key:'N',emoji:'🏯',name:{ja:'名古屋',en:'Nagoya',zh:'名古屋',ko:'나고야'}},
+{key:'H',emoji:'🍁',name:{ja:'広島',en:'Hiroshima',zh:'广岛',ko:'히로시마'}}
 ];
 let current=0,scores={T:0,K:0,F:0,O:0,S:0,Y:0,N:0,H:0};
 function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
 function render(){
-  const q=questions[current];
+  const q=questions[current],L=curLang;
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
   document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qText').textContent=q.q[L];
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t[L];b.onclick=()=>answer(opt.s);o.appendChild(b);});
 }
 function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
 function showResult(){
+  const L=curLang;
   let max='T',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
   const r=results[max];
   document.getElementById('quiz').classList.remove('active');
   const hero=document.getElementById('resultHero');hero.style.background=r.bg;
   document.getElementById('resultEmoji').textContent=r.emoji;
-  document.getElementById('resultName').textContent=r.name;
+  document.getElementById('resultLabel').textContent=ui[L].resultLabel;
+  document.getElementById('resultName').textContent=r.name[L];
   const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
-  document.getElementById('spotBox').innerHTML='<h3>📍 おすすめエリア</h3><p>'+r.spot+'</p>';
+  r.traits[L].forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc[L];
+  document.getElementById('spotBox').innerHTML='<h3>'+ui[L].spotHead+'</h3><p>'+r.spot[L]+'</p>';
+  document.getElementById('allTypesHead').textContent=ui[L].allTypesHead;
   const ag=document.getElementById('allGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name[L]}</div>${t.key===max?'<div class="tc-me">'+ui[L].you+'</div>':''}</div></div>`;});
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私が住むべき街は「'+n+'」でした！🏙️\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareTpl[curLang](n)+location.href)}`,'_blank');}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.dataset.lang===lang);});
+  const L=lang;
+  document.getElementById('badge').innerHTML=ui[L].badge;
+  document.getElementById('title').innerHTML=ui[L].title;
+  document.getElementById('subtitle').innerHTML=ui[L].subtitle;
+  document.getElementById('startBtn').textContent=ui[L].start;
+  document.getElementById('hint').textContent=ui[L].hint;
+  document.getElementById('shareXBtn').textContent=ui[L].shareX;
+  document.getElementById('shareLineBtn').textContent=ui[L].shareLine;
+  document.getElementById('retryBtn').textContent=ui[L].retry;
+  document.getElementById('resultLabel').textContent=ui[L].resultLabel;
+  document.getElementById('allTypesHead').textContent=ui[L].allTypesHead;
+  if(document.getElementById('quiz').classList.contains('active'))render();
+}
+setLang(curLang);
 </script>
 </body>
 </html>
