@@ -71,10 +71,10 @@ h1{font-size:1.55em;font-weight:900;color:#1a0010;line-height:1.4;margin-bottom:
 <div class="container">
 
 <div class="lang-bar" id="langBar">
-  <button class="lang-btn active" onclick="switchLang('ja')">🇯🇵</button>
-  <button class="lang-btn" onclick="switchLang('en')">🇺🇸</button>
-  <button class="lang-btn" onclick="switchLang('zh')">🇨🇳</button>
-  <button class="lang-btn" onclick="switchLang('ko')">🇰🇷</button>
+  <button class="lang-btn active" onclick="setLang('ja')" data-lang="ja">🇯🇵</button>
+  <button class="lang-btn" onclick="setLang('en')" data-lang="en">🇺🇸</button>
+  <button class="lang-btn" onclick="setLang('zh')" data-lang="zh">🇨🇳</button>
+  <button class="lang-btn" onclick="setLang('ko')" data-lang="ko">🇰🇷</button>
 </div>
 
 <div class="hero-card" id="start">
@@ -118,7 +118,17 @@ h1{font-size:1.55em;font-weight:900;color:#1a0010;line-height:1.4;margin-bottom:
 
 </div>
 <script>
-const questions=[
+let curLang='ja';
+
+const ui={
+ja:{badge:"💰 副業診断",title:"あなたに向いてる<br>副業診断",subtitle:"10の質問で、あなたの強みと性格に<br>合った副業タイプがわかる！",startBtn:"💡 診断スタート！",hint:"全10問・約1分で完了",resultLabel:"あなたに向いてる副業は…",sectionHead:"🗺 全タイプ一覧",shareX:"𝕏 シェア",shareLine:"LINE シェア",retry:"🔄 もう一度診断する",youLabel:"← あなた！",tipTitle:"📌 おすすめ副業"},
+en:{badge:"💰 Side Job Quiz",title:"Find Your Ideal<br>Side Business",subtitle:"Answer 10 questions to discover<br>the side business that fits you!",startBtn:"💡 Start the Quiz!",hint:"10 questions, about 1 minute",resultLabel:"Your ideal side business is...",sectionHead:"🗺 All Types",shareX:"𝕏 Share",shareLine:"LINE Share",retry:"🔄 Try Again",youLabel:"← You!",tipTitle:"📌 Recommended Side Jobs"},
+zh:{badge:"💰 副业测试",title:"找到适合你的<br>副业类型",subtitle:"通过10道题，根据你的优势和性格<br>找到最适合你的副业类型！",startBtn:"💡 开始测试！",hint:"共10题，约1分钟完成",resultLabel:"适合你的副业是…",sectionHead:"🗺 全部类型一览",shareX:"𝕏 分享",shareLine:"LINE 分享",retry:"🔄 重新测试",youLabel:"← 就是你！",tipTitle:"📌 推荐副业"},
+ko:{badge:"💰 부업 진단",title:"나에게 맞는<br>부업 찾기",subtitle:"10개의 질문으로 당신의 강점과 성격에<br>맞는 부업 유형을 알아보세요!",startBtn:"💡 진단 시작!",hint:"총 10문항, 약 1분 소요",resultLabel:"당신에게 맞는 부업은…",sectionHead:"🗺 전체 유형 목록",shareX:"𝕏 공유",shareLine:"LINE 공유",retry:"🔄 다시 진단하기",youLabel:"← 바로 당신!",tipTitle:"📌 추천 부업"}
+};
+
+const questions={
+ja:[
 {q:"自分の強みに一番近いのは？",opts:[
 {t:"🎨 センスやアイデアを活かしたコンテンツ作成",s:{C:3}},
 {t:"💬 人と関わり、相談に乗ったり教えたりすること",s:{K:2,T:1}},
@@ -179,8 +189,197 @@ const questions=[
 {t:"🏢 ビジネスオーナーとして仕組みで稼ぎたい",s:{I:2,E:1}},
 {t:"🤖 AI・テクノロジーの最前線で活躍したい",s:{D:2,S:1}}
 ]}
-];
+],
+en:[
+{q:"Which best describes your strength?",opts:[
+{t:"🎨 Creating content with your own sense and ideas",s:{C:3}},
+{t:"💬 Connecting with people, giving advice and teaching",s:{K:2,T:1}},
+{t:"📊 Data analysis, strategy planning, and number crunching",s:{I:2,D:1}},
+{t:"💻 Hands-on specialized skills (programming, design, etc.)",s:{S:3}}
+]},
+{q:"How much time can you dedicate to a side job?",opts:[
+{t:"⏰ A little bit every day, steady and consistent",s:{C:2,W:1}},
+{t:"📅 A few hours a week, working in bursts",s:{K:2,E:1}},
+{t:"🌙 Larger chunks of time (weekends, etc.)",s:{I:2,T:1}},
+{t:"💻 I want to devote all my free time to it",s:{S:2,D:1}}
+]},
+{q:"Income stability vs. growth potential — which matters more?",opts:[
+{t:"📈 Small at first is fine if it grows big later",s:{C:2,I:1}},
+{t:"🤝 I want stable, reliable monthly income",s:{K:2,W:1}},
+{t:"🎰 I can take risks for a big return",s:{I:2,E:1}},
+{t:"🎯 I want to earn reliably per project",s:{S:2,D:1}}
+]},
+{q:"What work style do you prefer?",opts:[
+{t:"✨ Creating my own original content",s:{C:3}},
+{t:"👥 Working one-on-one with clients or students",s:{K:2,T:1}},
+{t:"📦 Sourcing and selling products",s:{E:3}},
+{t:"📝 Writing to share information",s:{W:3}}
+]},
+{q:"What matters most to you in a side business?",opts:[
+{t:"💡 Expressing my own worldview and personality",s:{C:3}},
+{t:"🌟 Being helpful and appreciated by others",s:{K:2,T:1}},
+{t:"🔢 Growing assets efficiently",s:{I:2,D:1}},
+{t:"🏆 Honing skills and being recognized as a pro",s:{S:2,W:1}}
+]},
+{q:"How would you prefer to start your side business?",opts:[
+{t:"📱 Start posting on social media or a blog",s:{C:2,W:1}},
+{t:"👋 Reach out to people I know",s:{K:2,T:1}},
+{t:"📖 Study thoroughly through books and videos first",s:{I:2,D:1}},
+{t:"💼 Go find gigs on freelance platforms",s:{S:2,E:1}}
+]},
+{q:"What concerns you most about balancing with your main job?",opts:[
+{t:"⏱️ Whether I can work at my own pace",s:{C:2,W:1}},
+{t:"📞 Whether client communication will be too much",s:{K:3}},
+{t:"🖥️ Whether I can work from anywhere with just a PC",s:{D:2,I:1}},
+{t:"📈 Whether I can earn while growing my skills",s:{S:2,T:1}}
+]},
+{q:"Which field interests you the most?",opts:[
+{t:"🛒 Selling on online shops or marketplace apps",s:{E:3}},
+{t:"📝 Web writing or publishing e-books",s:{W:3}},
+{t:"🎓 Hosting online courses or seminars",s:{T:3}},
+{t:"🤖 Efficiency through AI and data analysis",s:{D:3}}
+]},
+{q:"Which personality trait fits you best?",opts:[
+{t:"🔍 I spot trends quickly and act fast",s:{E:2,C:1}},
+{t:"✍️ I'm good at moving people with words",s:{W:2,K:1}},
+{t:"👨‍🏫 I love explaining things clearly to others",s:{T:2,K:1}},
+{t:"⚙️ I enjoy building systems and automating things",s:{D:2,I:1}}
+]},
+{q:"What's your ideal side business style in 5 years?",opts:[
+{t:"🌐 I want to own my own brand or media",s:{C:2,E:1}},
+{t:"📚 I want to spread knowledge through books and courses",s:{W:2,T:1}},
+{t:"🏢 I want to earn through systems as a business owner",s:{I:2,E:1}},
+{t:"🤖 I want to be at the forefront of AI and tech",s:{D:2,S:1}}
+]}
+],
+zh:[
+{q:"最接近你优势的是？",opts:[
+{t:"🎨 利用创意和审美制作原创内容",s:{C:3}},
+{t:"💬 与人交流，提供咨询和指导",s:{K:2,T:1}},
+{t:"📊 数据分析、战略规划和数字运用",s:{I:2,D:1}},
+{t:"💻 专业技能（编程、设计等）的实际操作",s:{S:3}}
+]},
+{q:"你能用于副业的时间有多少？",opts:[
+{t:"⏰ 每天都能抽出一点时间踏实投入",s:{C:2,W:1}},
+{t:"📅 每周几个小时，灵活安排",s:{K:2,E:1}},
+{t:"🌙 可以集中大块时间（比如周末）",s:{I:2,T:1}},
+{t:"💻 想把所有空闲时间都用于副业",s:{S:2,D:1}}
+]},
+{q:"收入稳定性和成长潜力，你更看重哪个？",opts:[
+{t:"📈 开始少一点没关系，将来能做大就行",s:{C:2,I:1}},
+{t:"🤝 希望每月有稳定可靠的收入",s:{K:2,W:1}},
+{t:"🎰 为了高回报愿意承担风险",s:{I:2,E:1}},
+{t:"🎯 想按项目稳稳地赚钱",s:{S:2,D:1}}
+]},
+{q:"你喜欢什么样的工作方式？",opts:[
+{t:"✨ 制作自己的原创内容",s:{C:3}},
+{t:"👥 与客户或学生一对一互动",s:{K:2,T:1}},
+{t:"📦 采购和销售商品",s:{E:3}},
+{t:"📝 通过写作传递信息",s:{W:3}}
+]},
+{q:"做副业时你最看重什么？",opts:[
+{t:"💡 能表达自己的世界观和个性",s:{C:3}},
+{t:"🌟 能帮助到别人、被感谢",s:{K:2,T:1}},
+{t:"🔢 高效地增加资产",s:{I:2,D:1}},
+{t:"🏆 磨炼技能，获得专业认可",s:{S:2,W:1}}
+]},
+{q:"哪种方式最适合你开始副业？",opts:[
+{t:"📱 先在社交媒体或博客上开始发布内容",s:{C:2,W:1}},
+{t:"👋 先向认识的人打招呼试试看",s:{K:2,T:1}},
+{t:"📖 通过书籍和视频彻底学习后再开始",s:{I:2,D:1}},
+{t:"💼 去自由职业平台接单",s:{S:2,E:1}}
+]},
+{q:"兼顾主业时你最担心什么？",opts:[
+{t:"⏱️ 能不能按自己的节奏安排时间",s:{C:2,W:1}},
+{t:"📞 与客户的沟通会不会太多",s:{K:3}},
+{t:"🖥️ 只要有电脑是否到哪都能做",s:{D:2,I:1}},
+{t:"📈 能不能边提升技能边赚钱",s:{S:2,T:1}}
+]},
+{q:"你最感兴趣的领域是？",opts:[
+{t:"🛒 在网店或二手平台做电商",s:{E:3}},
+{t:"📝 网络写作或出版电子书",s:{W:3}},
+{t:"🎓 举办线上课程或研讨会",s:{T:3}},
+{t:"🤖 利用AI和数据分析提高效率",s:{D:3}}
+]},
+{q:"最符合你性格的是？",opts:[
+{t:"🔍 能快速发现趋势并迅速行动",s:{E:2,C:1}},
+{t:"✍️ 擅长用文字打动人心",s:{W:2,K:1}},
+{t:"👨‍🏫 喜欢把事情讲解得通俗易懂",s:{T:2,K:1}},
+{t:"⚙️ 喜欢搭建系统和自动化流程",s:{D:2,I:1}}
+]},
+{q:"5年后你理想的副业状态是？",opts:[
+{t:"🌐 拥有自己的品牌或媒体",s:{C:2,E:1}},
+{t:"📚 通过书籍和课程传播知识",s:{W:2,T:1}},
+{t:"🏢 作为企业主通过系统化赚钱",s:{I:2,E:1}},
+{t:"🤖 在AI和科技前沿大展身手",s:{D:2,S:1}}
+]}
+],
+ko:[
+{q:"자신의 강점에 가장 가까운 것은?",opts:[
+{t:"🎨 센스와 아이디어를 살린 콘텐츠 제작",s:{C:3}},
+{t:"💬 사람들과 소통하며 상담하고 가르치기",s:{K:2,T:1}},
+{t:"📊 숫자 분석, 전략 수립, 데이터 활용",s:{I:2,D:1}},
+{t:"💻 전문 기술(프로그래밍, 디자인 등) 실무",s:{S:3}}
+]},
+{q:"부업에 쓸 수 있는 시간은 얼마나 되나요?",opts:[
+{t:"⏰ 매일 조금씩 꾸준히 할 수 있다",s:{C:2,W:1}},
+{t:"📅 일주일에 몇 시간, 간헐적으로 가능",s:{K:2,E:1}},
+{t:"🌙 주말 등에 한꺼번에 시간을 낼 수 있다",s:{I:2,T:1}},
+{t:"💻 여유 시간을 전부 부업에 쓰고 싶다",s:{S:2,D:1}}
+]},
+{q:"수입의 안정성과 성장 가능성, 어느 쪽을 우선하나요?",opts:[
+{t:"📈 처음엔 적어도 나중에 크게 키우고 싶다",s:{C:2,I:1}},
+{t:"🤝 매달 안정적인 수입이 좋다",s:{K:2,W:1}},
+{t:"🎰 큰 수익을 위해 리스크도 감수할 수 있다",s:{I:2,E:1}},
+{t:"🎯 건건이 확실하게 벌고 싶다",s:{S:2,D:1}}
+]},
+{q:"선호하는 작업 스타일은?",opts:[
+{t:"✨ 나만의 오리지널 콘텐츠를 만든다",s:{C:3}},
+{t:"👥 고객이나 학생과 일대일로 소통한다",s:{K:2,T:1}},
+{t:"📦 상품을 매입하고 판매한다",s:{E:3}},
+{t:"📝 글을 써서 정보를 전달한다",s:{W:3}}
+]},
+{q:"부업에서 가장 중요하게 생각하는 것은?",opts:[
+{t:"💡 자신만의 세계관과 개성을 표현할 수 있는 것",s:{C:3}},
+{t:"🌟 누군가에게 도움이 되고 감사받는 것",s:{K:2,T:1}},
+{t:"🔢 효율적으로 자산을 늘릴 수 있는 것",s:{I:2,D:1}},
+{t:"🏆 실력을 키워 전문가로 인정받는 것",s:{S:2,W:1}}
+]},
+{q:"부업을 시작하는 방법으로 자신에게 맞는 것은?",opts:[
+{t:"📱 먼저 SNS나 블로그에서 콘텐츠 발행 시작",s:{C:2,W:1}},
+{t:"👋 아는 사람에게 먼저 연락해 보기",s:{K:2,T:1}},
+{t:"📖 책이나 영상으로 철저히 공부한 후 시작",s:{I:2,D:1}},
+{t:"💼 프리랜서 플랫폼에서 일감 찾기",s:{S:2,E:1}}
+]},
+{q:"본업과 병행할 때 가장 신경 쓰이는 것은?",opts:[
+{t:"⏱️ 내 페이스대로 시간을 쓸 수 있는지",s:{C:2,W:1}},
+{t:"📞 고객과의 소통이 너무 많아지지 않을지",s:{K:3}},
+{t:"🖥️ PC만 있으면 어디서든 할 수 있는지",s:{D:2,I:1}},
+{t:"📈 스킬을 키우면서 돈을 벌 수 있는지",s:{S:2,T:1}}
+]},
+{q:"가장 관심 있는 분야는?",opts:[
+{t:"🛒 온라인 쇼핑몰이나 중고 앱에서 물건 판매",s:{E:3}},
+{t:"📝 웹 라이팅이나 전자책 집필",s:{W:3}},
+{t:"🎓 온라인 강좌나 세미나 개최",s:{T:3}},
+{t:"🤖 AI와 데이터 분석을 활용한 효율화",s:{D:3}}
+]},
+{q:"자신의 성격에 가장 맞는 것은?",opts:[
+{t:"🔍 트렌드를 빠르게 발견하고 즉시 행동한다",s:{E:2,C:1}},
+{t:"✍️ 글로 사람의 마음을 움직이는 데 능하다",s:{W:2,K:1}},
+{t:"👨‍🏫 사람들에게 알기 쉽게 가르치는 걸 좋아한다",s:{T:2,K:1}},
+{t:"⚙️ 시스템을 만들고 자동화하는 게 즐겁다",s:{D:2,I:1}}
+]},
+{q:"5년 후 이상적인 부업 스타일은?",opts:[
+{t:"🌐 나만의 브랜드나 미디어를 갖고 싶다",s:{C:2,E:1}},
+{t:"📚 책이나 강좌로 지식을 널리 전하고 싶다",s:{W:2,T:1}},
+{t:"🏢 사업주로서 시스템으로 수익을 내고 싶다",s:{I:2,E:1}},
+{t:"🤖 AI·기술의 최전선에서 활약하고 싶다",s:{D:2,S:1}}
+]}
+]
+};
+
 const results={
+ja:{
 C:{name:"クリエイター型副業",emoji:"🎨",bg:"linear-gradient(135deg,#f5576c,#f093fb)",
   desc:"あなたは自分のセンスやアイデアを活かしてオリジナルコンテンツを生み出すのが向いています。動画・イラスト・写真など、自分ならではの表現で人の心を動かし、ファンを獲得していくスタイルが最適です。最初は収益化に時間がかかりますが、コンテンツが蓄積するほど資産となり、継続的な収入源に成長していきます。自分のペースで取り組めるので、本業とのバランスも取りやすいのが大きな魅力です。",
   example:"📌 おすすめ副業：YouTube / ブログ・アフィリエイト / Instagram運用 / デザイン受託 / ハンドメイド販売 / 写真販売（ストックフォト） / TikTok運用 / ポッドキャスト配信",
@@ -213,42 +412,202 @@ D:{name:"データ・AI活用型副業",emoji:"🤖",bg:"linear-gradient(135deg,
   desc:"あなたはデータ分析やAI技術を活用して課題を解決するのが向いているタイプです。企業が抱えるデータの可視化・分析から、AIツールを駆使した業務効率化まで、今最も需要が伸びている分野で活躍できます。プログラミングスキルと分析力を組み合わせることで、他の副業者と大きく差別化でき、高単価の案件を獲得しやすいのが特徴です。AI技術の進化とともに市場が急拡大しているため、早期参入のメリットが非常に大きい注目の副業領域です。",
   example:"📌 おすすめ副業：データ分析コンサル / AI活用アドバイザー / RPA・自動化構築 / Pythonスクリプト開発 / ChatGPTプロンプト設計 / BIダッシュボード構築 / 機械学習モデル開発",
   traits:["論理的思考🧠","技術力⚙️","好奇心旺盛🔬","問題解決力🎯","先見の明🔮"]}
+},
+en:{
+C:{name:"Creator-Type Side Business",emoji:"🎨",bg:"linear-gradient(135deg,#f5576c,#f093fb)",
+  desc:"You're best suited to creating original content using your own sense and ideas. Whether it's video, illustration, or photography, your unique style of expression will captivate people and build a loyal following. It takes time to monetize at first, but as your content accumulates, it becomes an asset that grows into a sustainable income stream. Working at your own pace makes it easy to balance with your main job.",
+  example:"📌 Recommended: YouTube / Blog & Affiliate / Instagram / Design Work / Handmade Sales / Stock Photography / TikTok / Podcast",
+  traits:["Creative✨","Steady & Consistent📝","Own Pace🌙","Influence📢","Originality💡"]},
+K:{name:"Consulting & Support Side Business",emoji:"🤝",bg:"linear-gradient(135deg,#e17055,#fdcb6e)",
+  desc:"You excel at deeply engaging with people and solving their problems to provide real value. You find great fulfillment in supporting others' growth and addressing their concerns. Because trust directly leads to income, your client base naturally expands through word of mouth and referrals. With your people skills and communication ability, you can build a stable, long-term income foundation.",
+  example:"📌 Recommended: Coaching / Career Consulting / Social Media Management / Community Management / Virtual Assistant / Marketing Consulting / Relationship Advising",
+  traits:["Great Communicator💬","Empathetic🤗","Trustworthy🙏","Good Teacher👨‍🏫","Well-Connected🌐"]},
+I:{name:"Investment & Systems Side Business",emoji:"📈",bg:"linear-gradient(135deg,#6c5ce7,#a29bfe)",
+  desc:"You're skilled at data analysis and strategy, and you thrive when money and systems work for you. Your strength lies in investing time and effort upfront to build systems that run automatically. You prioritize long-term wealth building over short-term gains, steadily growing your assets through the power of compound returns. With your risk management and analytical skills, you can carve a path to financial freedom.",
+  example:"📌 Recommended: Stock & Forex Trading / Real Estate (Including REITs) / Automated Business / Digital Content Sales / App Development & SaaS / Real Estate Crowdfunding / Cryptocurrency",
+  traits:["Analytical📊","Strategic🎯","Long-Term Vision🔭","Efficiency-Focused⚡","Number-Savvy🔢"]},
+S:{name:"Skill-Based Side Business",emoji:"🛠️",bg:"linear-gradient(135deg,#00b894,#00cec9)",
+  desc:"You're the type who thrives by leveraging professional skills for reliable income. With pay-per-project work, income is predictable, and as your skills improve, so does your rate. Skills from your main job directly apply to your side work, and side job experience boosts your main job performance — a virtuous cycle. You can steadily build your career with an eye toward going independent as a freelancer.",
+  example:"📌 Recommended: Freelance Programming / Web Design / Video Editing / Translation / Illustration / UI/UX Design / System Development / Audio Editing & Narration",
+  traits:["Highly Specialized🏆","Eager Learner📚","Reliability-Focused✅","Professional💼","Growth-Oriented📈"]},
+E:{name:"E-Commerce & Resale Side Business",emoji:"🛒",bg:"linear-gradient(135deg,#fd79a8,#e84393)",
+  desc:"You're suited to the product selling business, quickly catching trends and finding items to sell. By using online shops and marketplace apps to cycle through sourcing, listing, and shipping, you can steadily build profits. From launching your own handmade brand to importing products from overseas, creativity can dramatically boost your revenue. Once you systematize inventory management and logistics, scaling up efficiently becomes very achievable.",
+  example:"📌 Recommended: Marketplace Reselling / Amazon Resale / Handmade Sales (Etsy) / Import Sales / Shopify Store / Dropshipping / Online Storefront",
+  traits:["Trend-Savvy🔍","Action-Oriented🏃","Business Sense💰","Efficient📦","Research Skills🔎"]},
+W:{name:"Writer & Editor Side Business",emoji:"✍️",bg:"linear-gradient(135deg,#0984e3,#74b9ff)",
+  desc:"You're the type who excels at conveying information and moving hearts through the power of words. From web article writing to e-book publishing and corporate copywriting, there are incredibly diverse fields where writing skills shine. Once written, your content continues to be read for a long time, functioning as a stock-type asset. Since writing skills form the foundation of every business, the synergy with other side businesses is a major strength.",
+  example:"📌 Recommended: Web Writing / SEO Articles / E-Book Publishing (Kindle) / Copywriting / Newsletter Ghostwriting / Interview Writing / Scriptwriting",
+  traits:["Writing Skill✍️","Logical Thinking🧠","Research Skills🔍","Meets Deadlines⏰","Expressive📖"]},
+T:{name:"Education & Teaching Side Business",emoji:"🎓",bg:"linear-gradient(135deg,#fdcb6e,#f39c12)",
+  desc:"You're suited to the education business, systematizing your knowledge and experience to teach others. Through online courses, seminars, and mentoring, directly supporting your students' growth is the greatest reward. Course content you create once can be sold repeatedly, and the more students you gain, the more leverage you get. By combining expertise with a passion for teaching, you can gain both social influence and income.",
+  example:"📌 Recommended: Udemy Courses / Online School / Seminars & Workshops / Personal Mentoring / Corporate Training / Teaching Platform / Tutoring",
+  traits:["Great Teacher🎓","Systematic📋","Patient💪","Presentation Skills🎤","Growth-Minded🌱"]},
+D:{name:"Data & AI Side Business",emoji:"🤖",bg:"linear-gradient(135deg,#636e72,#2d3436)",
+  desc:"You're the type who excels at solving problems using data analysis and AI technology. From data visualization and analysis to AI-powered business optimization, you can thrive in the fastest-growing field today. By combining programming skills with analytical ability, you can strongly differentiate yourself and land high-paying projects. As AI technology evolves and the market rapidly expands, early entry offers enormous advantages in this promising side business domain.",
+  example:"📌 Recommended: Data Analysis Consulting / AI Advisory / RPA & Automation / Python Development / ChatGPT Prompt Design / BI Dashboard Building / Machine Learning Development",
+  traits:["Logical Thinking🧠","Technical Skills⚙️","Curious🔬","Problem-Solver🎯","Visionary🔮"]}
+},
+zh:{
+C:{name:"创作者型副业",emoji:"🎨",bg:"linear-gradient(135deg,#f5576c,#f093fb)",
+  desc:"你适合利用自己的审美和创意来创造原创内容。无论是视频、插画还是摄影，你独特的表达方式能打动人心，吸引粉丝。虽然一开始变现需要时间，但随着内容积累，它会成为持续增长的收入来源。按自己的节奏工作，与主业的平衡也很容易掌控。",
+  example:"📌 推荐副业：YouTube / 博客·联盟营销 / Instagram运营 / 设计接单 / 手工品销售 / 图片库销售 / TikTok运营 / 播客",
+  traits:["有创意✨","踏实型📝","自己的节奏🌙","传播力📢","原创性💡"]},
+K:{name:"咨询·支持型副业",emoji:"🤝",bg:"linear-gradient(135deg,#e17055,#fdcb6e)",
+  desc:"你擅长与人深入交流，解决对方的问题并提供价值。帮助他人解决烦恼、支持他人成长，会给你带来巨大的成就感。由于信任关系直接转化为收入，客户会通过口碑和推荐自然增长。凭借人脉和沟通能力，你能建立长期稳定的收入基础。",
+  example:"📌 推荐副业：教练辅导 / 职业咨询 / 社交媒体代运营 / 社群运营 / 行政助理·秘书服务 / 营销咨询 / 情感·婚恋顾问",
+  traits:["沟通力强💬","共情力🤗","值得信赖🙏","善于教导👨‍🏫","人脉广泛🌐"]},
+I:{name:"投资·系统化型副业",emoji:"📈",bg:"linear-gradient(135deg,#6c5ce7,#a29bfe)",
+  desc:"你擅长数据分析和战略规划，让钱和系统替你工作。你的优势在于前期投入时间和精力，然后构建自动运转的系统。你重视长期资产积累而非短期利益，能利用复利稳步增加资产。凭借风险管理和分析能力，你能开辟通向财务自由的道路。",
+  example:"📌 推荐副业：股票·外汇投资 / 房地产投资(含REITs) / 自动化业务 / 数字内容销售 / 应用开发·SaaS / 房产众筹 / 加密货币投资",
+  traits:["分析力📊","战略思维🎯","长远眼光🔭","注重效率⚡","擅长数字🔢"]},
+S:{name:"技能销售型副业",emoji:"🛠️",bg:"linear-gradient(135deg,#00b894,#00cec9)",
+  desc:"你适合利用专业技能稳定赚取报酬。按项目收费使收入可预测，技能越强单价越高。主业积累的技术直接用于副业，副业经验又能提升主业表现，形成良性循环。你可以在考虑独立为自由职业者的同时，稳步构建职业道路。",
+  example:"📌 推荐副业：程序开发接单 / 网页设计 / 视频剪辑 / 翻译·口译 / 插画制作 / UI/UX设计 / 系统开发 / 音频剪辑·配音",
+  traits:["专业性强🏆","学习欲强📚","重视确定性✅","职业素养💼","追求成长📈"]},
+E:{name:"电商·物销型副业",emoji:"🛒",bg:"linear-gradient(135deg,#fd79a8,#e84393)",
+  desc:"你适合快速捕捉潮流、找到商品并销售的电商生意。利用网店和二手平台，通过进货、上架、发货的循环稳定积累利润。从手工原创品牌到海外进口销售，创意能大幅提升收益。一旦系统化库存管理和物流，就能高效扩展规模。",
+  example:"📌 推荐副业：二手平台物销 / 亚马逊转卖 / 手工品销售 / 海外进口销售 / Shopify网店 / 独立在线商店 / 代发货",
+  traits:["潮流敏锐🔍","行动力强🏃","商业头脑💰","善于效率化📦","调研能力🔎"]},
+W:{name:"写作·编辑型副业",emoji:"✍️",bg:"linear-gradient(135deg,#0984e3,#74b9ff)",
+  desc:"你适合用文字的力量传递信息、打动人心。从网络媒体文章到电子书出版、企业文案，能发挥文字功力的领域非常广泛。写过的文章会长期被阅读，作为积累型资产发挥作用。写作技能是所有商业的基础，与其他副业的协同效应也是一大优势。",
+  example:"📌 推荐副业：网络写作 / SEO文章撰写 / 电子书出版(Kindle) / 文案写作 / 邮件营销代写 / 采访写作 / 剧本撰写",
+  traits:["文笔好✍️","逻辑思维🧠","调研能力🔍","守时⏰","表达丰富📖"]},
+T:{name:"教育·讲师型副业",emoji:"🎓",bg:"linear-gradient(135deg,#fdcb6e,#f39c12)",
+  desc:"你适合将知识和经验系统化后传授给他人的教育事业。通过在线课程、研讨会和辅导，直接支持学员成长是最大的成就感来源。一次制作的课程可反复销售，学员越多杠杆效应越强。将专业知识与教学热情结合，你能同时收获社会影响力和收入。",
+  example:"📌 推荐副业：Udemy课程制作 / 在线学校运营 / 研讨会·工作坊 / 一对一辅导 / 企业培训讲师 / 在线教学平台 / 家教·补习班",
+  traits:["善于教导🎓","系统化能力📋","有耐心💪","演讲力🎤","追求成长🌱"]},
+D:{name:"数据·AI活用型副业",emoji:"🤖",bg:"linear-gradient(135deg,#636e72,#2d3436)",
+  desc:"你适合利用数据分析和AI技术来解决问题。从企业数据可视化分析到AI工具驱动的业务效率提升，你能在当前需求增长最快的领域大展身手。将编程技能与分析能力结合，能与其他副业者形成显著差异化，更容易获得高单价项目。随着AI技术进步和市场快速扩张，早期进入的优势非常大。",
+  example:"📌 推荐副业：数据分析咨询 / AI应用顾问 / RPA·自动化搭建 / Python开发 / ChatGPT提示词设计 / BI看板搭建 / 机器学习模型开发",
+  traits:["逻辑思维🧠","技术实力⚙️","求知欲强🔬","解决问题🎯","有远见🔮"]}
+},
+ko:{
+C:{name:"크리에이터형 부업",emoji:"🎨",bg:"linear-gradient(135deg,#f5576c,#f093fb)",
+  desc:"당신은 자신만의 센스와 아이디어로 오리지널 콘텐츠를 만드는 것이 적합합니다. 영상, 일러스트, 사진 등 자기만의 표현으로 사람들의 마음을 움직이고 팬을 확보하는 스타일이 최적입니다. 처음에는 수익화에 시간이 걸리지만, 콘텐츠가 쌓일수록 자산이 되어 지속적인 수입원으로 성장합니다. 자신의 페이스로 진행할 수 있어 본업과의 균형도 잡기 쉽습니다.",
+  example:"📌 추천 부업: YouTube / 블로그·제휴 마케팅 / Instagram 운영 / 디자인 수주 / 핸드메이드 판매 / 사진 판매(스톡포토) / TikTok 운영 / 팟캐스트",
+  traits:["크리에이티브✨","꾸준한 유형📝","나만의 페이스🌙","전달력📢","독창성💡"]},
+K:{name:"컨설팅·서포트형 부업",emoji:"🤝",bg:"linear-gradient(135deg,#e17055,#fdcb6e)",
+  desc:"당신은 사람들과 깊이 소통하며 상대방의 문제를 해결하고 가치를 제공하는 데 뛰어난 유형입니다. 누군가의 고민에 공감하고 성장을 도우면서 큰 보람을 느낄 수 있습니다. 신뢰 관계가 곧 수입으로 이어지기 때문에, 입소문과 소개로 고객이 자연스럽게 늘어납니다. 인맥과 커뮤니케이션 능력을 무기로 장기적으로 안정된 수입 기반을 구축할 수 있습니다.",
+  example:"📌 추천 부업: 코칭 / 커리어 상담 / SNS 운영 대행 / 커뮤니티 운영 / 사무 대행·비서 서비스 / 마케팅 컨설팅 / 연애·결혼 어드바이저",
+  traits:["소통력💬","공감 능력🤗","신뢰감🙏","잘 가르침👨‍🏫","넓은 인맥🌐"]},
+I:{name:"투자·시스템화형 부업",emoji:"📈",bg:"linear-gradient(135deg,#6c5ce7,#a29bfe)",
+  desc:"당신은 데이터 분석과 전략 수립에 능숙하며, 돈과 시스템이 대신 일하도록 하는 스타일이 최적입니다. 처음에 시간과 노력을 투자한 뒤 자동으로 돌아가는 시스템을 구축하는 것이 강점입니다. 단기 이익보다 장기 자산 형성을 중시하며, 복리의 힘으로 꾸준히 자산을 늘려갈 수 있습니다. 리스크 관리와 분석력으로 경제적 자유의 길을 열어갈 수 있는 유형입니다.",
+  example:"📌 추천 부업: 주식·외환 투자 / 부동산 투자(REITs 포함) / 자동화 비즈니스 / 디지털 콘텐츠 판매 / 앱 개발·SaaS / 부동산 크라우드펀딩 / 암호화폐 투자",
+  traits:["분석력📊","전략적 사고🎯","장기적 시야🔭","효율 중시⚡","숫자에 강함🔢"]},
+S:{name:"스킬 판매형 부업",emoji:"🛠️",bg:"linear-gradient(135deg,#00b894,#00cec9)",
+  desc:"당신은 전문 스킬을 활용해 확실하게 보수를 받는 것이 적합한 유형입니다. 건별 보수가 발생하므로 수입 전망을 세우기 쉽고, 스킬이 향상될수록 단가도 올라갑니다. 본업에서 쌓은 기술이 부업에 그대로 활용되고, 부업 경험이 본업 성과 향상으로 이어지는 선순환이 생깁니다. 프리랜서 독립도 시야에 넣으면서 착실히 커리어를 쌓아갈 수 있습니다.",
+  example:"📌 추천 부업: 프로그래밍 수주 / 웹 디자인 / 영상 편집 / 번역·통역 / 일러스트 제작 / UI/UX 디자인 / 시스템 개발 / 음성 편집·내레이션",
+  traits:["전문성🏆","학습 의욕📚","확실성 중시✅","프로 의식💼","스킬업 지향📈"]},
+E:{name:"이커머스·물판형 부업",emoji:"🛒",bg:"linear-gradient(135deg,#fd79a8,#e84393)",
+  desc:"당신은 트렌드를 빠르게 포착하고 상품을 찾아 판매하는 물판 비즈니스에 적합합니다. 온라인 쇼핑몰과 중고 앱을 활용해 매입·출품·배송 사이클을 돌리며 착실히 이익을 쌓아가는 스타일입니다. 핸드메이드 브랜드 전개부터 해외 수입 판매까지, 아이디어에 따라 수익을 크게 늘릴 수 있습니다. 재고 관리와 물류 시스템화가 되면 효율적으로 규모를 키울 수 있습니다.",
+  example:"📌 추천 부업: 중고 플랫폼 물판 / 아마존 리셀 / 핸드메이드 판매 / 해외 수입 판매 / Shopify 쇼핑몰 / 독립 온라인 스토어 / 드롭쉬핑",
+  traits:["트렌드 감각🔍","행동력🏃","장사 센스💰","효율화📦","리서치력🔎"]},
+W:{name:"라이터·편집형 부업",emoji:"✍️",bg:"linear-gradient(135deg,#0984e3,#74b9ff)",
+  desc:"당신은 글의 힘으로 정보를 전달하고 사람의 마음을 움직이는 라이팅에 적합한 유형입니다. 웹 미디어 기사 집필부터 전자책 출판, 기업 카피라이팅까지, 문장력을 활용할 수 있는 분야가 매우 넓습니다. 한번 쓴 글은 오랫동안 읽히며 스톡형 자산으로 기능합니다. 글쓰기 스킬은 모든 비즈니스의 기반이 되므로, 다른 부업과의 시너지 효과도 기대할 수 있습니다.",
+  example:"📌 추천 부업: 웹 라이팅 / SEO 기사 집필 / 전자책 출판(Kindle) / 카피라이팅 / 뉴스레터 대필 / 취재·인터뷰 라이터 / 시나리오 집필",
+  traits:["문장력✍️","논리적 사고🧠","리서치력🔍","마감 준수⏰","표현력📖"]},
+T:{name:"교육·강사형 부업",emoji:"🎓",bg:"linear-gradient(135deg,#fdcb6e,#f39c12)",
+  desc:"당신은 자신의 지식과 경험을 체계화하여 사람들에게 전달하는 교육·강사 비즈니스에 적합합니다. 온라인 강좌, 세미나, 멘토링을 통해 수강생의 성장을 직접 서포트하는 것이 가장 큰 보람입니다. 한번 만든 강좌 콘텐츠는 반복 판매할 수 있고, 수강생이 늘수록 레버리지가 커집니다. 전문 지식과 가르치려는 열정을 결합하면 사회적 영향력과 수입 모두를 얻을 수 있습니다.",
+  example:"📌 추천 부업: Udemy 강좌 제작 / 온라인 스쿨 운영 / 세미나·워크숍 개최 / 개인 멘토링 / 기업 연수 강사 / 온라인 교육 플랫폼 / 과외·학원",
+  traits:["잘 가르침🎓","체계화 능력📋","인내력💪","프레젠테이션🎤","성장 지향🌱"]},
+D:{name:"데이터·AI 활용형 부업",emoji:"🤖",bg:"linear-gradient(135deg,#636e72,#2d3436)",
+  desc:"당신은 데이터 분석과 AI 기술을 활용해 문제를 해결하는 데 적합한 유형입니다. 기업 데이터 시각화·분석부터 AI 도구를 활용한 업무 효율화까지, 현재 수요가 가장 빠르게 성장하는 분야에서 활약할 수 있습니다. 프로그래밍 스킬과 분석력을 결합하면 다른 부업자와 크게 차별화되어 고단가 프로젝트를 확보하기 쉽습니다. AI 기술 발전과 시장 급성장으로 조기 진입의 이점이 매우 큰 주목받는 부업 영역입니다.",
+  example:"📌 추천 부업: 데이터 분석 컨설팅 / AI 활용 어드바이저 / RPA·자동화 구축 / Python 개발 / ChatGPT 프롬프트 설계 / BI 대시보드 구축 / 머신러닝 모델 개발",
+  traits:["논리적 사고🧠","기술력⚙️","호기심🔬","문제 해결력🎯","선견지명🔮"]}
+}
 };
-const allTypes=[
+
+const allTypes={
+ja:[
 {key:'C',emoji:'🎨',name:'クリエイター型'},{key:'K',emoji:'🤝',name:'コンサル・サポート型'},
 {key:'I',emoji:'📈',name:'投資・仕組み化型'},{key:'S',emoji:'🛠️',name:'スキル販売型'},
 {key:'E',emoji:'🛒',name:'EC・物販型'},{key:'W',emoji:'✍️',name:'ライター・編集型'},
 {key:'T',emoji:'🎓',name:'教育・講師型'},{key:'D',emoji:'🤖',name:'データ・AI活用型'}
-];
+],
+en:[
+{key:'C',emoji:'🎨',name:'Creator'},{key:'K',emoji:'🤝',name:'Consulting & Support'},
+{key:'I',emoji:'📈',name:'Investment & Systems'},{key:'S',emoji:'🛠️',name:'Skill-Based'},
+{key:'E',emoji:'🛒',name:'E-Commerce & Resale'},{key:'W',emoji:'✍️',name:'Writer & Editor'},
+{key:'T',emoji:'🎓',name:'Education & Teaching'},{key:'D',emoji:'🤖',name:'Data & AI'}
+],
+zh:[
+{key:'C',emoji:'🎨',name:'创作者型'},{key:'K',emoji:'🤝',name:'咨询·支持型'},
+{key:'I',emoji:'📈',name:'投资·系统化型'},{key:'S',emoji:'🛠️',name:'技能销售型'},
+{key:'E',emoji:'🛒',name:'电商·物销型'},{key:'W',emoji:'✍️',name:'写作·编辑型'},
+{key:'T',emoji:'🎓',name:'教育·讲师型'},{key:'D',emoji:'🤖',name:'数据·AI活用型'}
+],
+ko:[
+{key:'C',emoji:'🎨',name:'크리에이터형'},{key:'K',emoji:'🤝',name:'컨설팅·서포트형'},
+{key:'I',emoji:'📈',name:'투자·시스템화형'},{key:'S',emoji:'🛠️',name:'스킬 판매형'},
+{key:'E',emoji:'🛒',name:'이커머스·물판형'},{key:'W',emoji:'✍️',name:'라이터·편집형'},
+{key:'T',emoji:'🎓',name:'교육·강사형'},{key:'D',emoji:'🤖',name:'데이터·AI 활용형'}
+]
+};
+
+const shareTpl={
+ja:function(name){return '私に向いてる副業は「'+name+'」でした！💰\nあなたも診断してみて👇\n'+location.href;},
+en:function(name){return 'My ideal side business is "'+name+'"! 💰\nTry the quiz yourself 👇\n'+location.href;},
+zh:function(name){return '适合我的副业是"'+name+'"！💰\n你也来测测吧👇\n'+location.href;},
+ko:function(name){return '나에게 맞는 부업은 "'+name+'"이었어요! 💰\n당신도 진단해 보세요 👇\n'+location.href;}
+};
+
 let current=0,scores={C:0,K:0,I:0,S:0,E:0,W:0,T:0,D:0};
-function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+
+function setLang(lang){
+  curLang=lang;
+  const u=ui[lang];
+  document.getElementById('heroBadge').textContent=u.badge;
+  document.getElementById('heroTitle').innerHTML=u.title;
+  document.getElementById('heroSubtitle').innerHTML=u.subtitle;
+  document.getElementById('startBtn').textContent=u.startBtn;
+  document.getElementById('heroHint').textContent=u.hint;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('sectionHead').textContent=u.sectionHead;
+  document.getElementById('shareXBtn').textContent=u.shareX;
+  document.getElementById('shareLineBtn').textContent=u.shareLine;
+  document.getElementById('retryBtn').textContent=u.retry;
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-lang')===lang);});
+  if(document.getElementById('quiz').classList.contains('active'))render();
+  if(document.getElementById('result').classList.contains('active'))showResult();
+}
+
+function startQuiz(){current=0;scores={C:0,K:0,I:0,S:0,E:0,W:0,T:0,D:0};document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+
 function render(){
-  const q=questions[current];
-  document.getElementById('progress').style.width=(current/questions.length*100)+'%';
-  document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
+  const qs=questions[curLang];
+  const q=qs[current];
+  document.getElementById('progress').style.width=(current/qs.length*100)+'%';
+  document.getElementById('qCount').textContent=(current+1)+'/'+qs.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
   document.getElementById('qText').textContent=q.q;
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(function(opt){var b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=function(){answer(opt.s);};o.appendChild(b);});
 }
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+
+function answer(s){for(var k in s)scores[k]+=s[k];current++;if(current<questions[curLang].length)render();else showResult();}
+
 function showResult(){
-  let max='C',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
+  var max='C',maxVal=0;for(var k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  const r=results[curLang][max];
+  const u=ui[curLang];
   document.getElementById('quiz').classList.remove('active');
-  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  var hero=document.getElementById('resultHero');hero.style.background=r.bg;
   document.getElementById('resultEmoji').textContent=r.emoji;
   document.getElementById('resultName').textContent=r.name;
-  const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  var tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits.forEach(function(t){var s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
   document.getElementById('resultDesc').textContent=r.desc;
-  document.getElementById('exampleBox').innerHTML='<h3>📌 おすすめ副業</h3><p>'+r.example+'</p>';
-  const ag=document.getElementById('allGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  document.getElementById('exampleBox').innerHTML='<h3>'+u.tipTitle+'</h3><p>'+r.example+'</p>';
+  var ag=document.getElementById('allGrid');ag.innerHTML='';
+  allTypes[curLang].forEach(function(t){ag.innerHTML+='<div class="type-chip'+(t.key===max?' me':'')+'"><span class="tc-icon">'+t.emoji+'</span><div><div class="tc-name">'+t.name+'</div>'+(t.key===max?'<div class="tc-me">'+u.youLabel+'</div>':'')+'</div></div>';});
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私に向いてる副業は「'+n+'」でした！💰\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+
+function shareX(){var n=document.getElementById('resultName').textContent;window.open('https://x.com/intent/tweet?text='+encodeURIComponent(shareTpl[curLang](n)),'_blank');}
+function shareLine(){window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href),'_blank');}
+
+setLang(curLang);
+
 </script>
 </body>
 </html>
