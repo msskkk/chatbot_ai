@@ -149,172 +149,214 @@ h1{font-size:1.55em;font-weight:900;color:#1a0533;line-height:1.4;margin-bottom:
 
 </div>
 <script>
+let curLang='ja';
+const ui={
+ja:{badge:"⚔️ 異世界診断",title:"異世界転生<br>スキル診断",subtitle:"もし異世界に転生したら…あなたのジョブとスキルを10の質問で診断！",start:"⚡ 転生する！",hint:"全10問・約2分で転生完了",resultLabel:"あなたの異世界ジョブは…",statusHead:"📊 ステータス",skillHead:"🔮 固有スキル",allTypesHead:"🗺 全ジョブ一覧",shareX:"𝕏 シェア",shareLine:"LINE シェア",retry:"🔄 もう一度転生する",you:"← あなた！"},
+en:{badge:"⚔️ Isekai Quiz",title:"Isekai Reincarnation<br>Skill Quiz",subtitle:"If you were reincarnated in another world… find your job &amp; skills in 10 questions!",start:"⚡ Reincarnate!",hint:"10 questions · about 2 min",resultLabel:"Your isekai job is…",statusHead:"📊 Stats",skillHead:"🔮 Unique Skills",allTypesHead:"🗺 All Jobs",shareX:"𝕏 Share",shareLine:"LINE Share",retry:"🔄 Reincarnate Again",you:"← You!"},
+zh:{badge:"⚔️ 异世界诊断",title:"异世界转生<br>技能诊断",subtitle:"如果转生到异世界……用10道题诊断你的职业和技能！",start:"⚡ 开始转生！",hint:"共10题・约2分钟完成",resultLabel:"你的异世界职业是…",statusHead:"📊 属性值",skillHead:"🔮 固有技能",allTypesHead:"🗺 全部职业一览",shareX:"𝕏 分享",shareLine:"LINE 分享",retry:"🔄 重新转生",you:"← 就是你！"},
+ko:{badge:"⚔️ 이세계 진단",title:"이세계 전생<br>스킬 진단",subtitle:"만약 이세계에 전생한다면… 10가지 질문으로 당신의 직업과 스킬을 진단!",start:"⚡ 전생하기!",hint:"총 10문항・약 2분 소요",resultLabel:"당신의 이세계 직업은…",statusHead:"📊 스테이터스",skillHead:"🔮 고유 스킬",allTypesHead:"🗺 전체 직업 목록",shareX:"𝕏 공유",shareLine:"LINE 공유",retry:"🔄 다시 전생하기",you:"← 당신!"}
+};
+const shareTpl={
+ja:n=>`異世界転生したら「${n}」でした！⚔️
+あなたも転生してみて👇
+${location.href}`,
+en:n=>`I got "${n}" in the Isekai Reincarnation Quiz! ⚔️
+Try it yourself 👇
+${location.href}`,
+zh:n=>`异世界转生后我是「${n}」！⚔️
+你也来转生看看👇
+${location.href}`,
+ko:n=>`이세계 전생 결과 "${n}"이었습니다! ⚔️
+당신도 전생해 보세요 👇
+${location.href}`
+};
 const questions=[
-{q:"異世界で最初に欲しいものは？",opts:[
-{t:"⚔️ 最強の聖剣",s:{W:3}},
-{t:"📖 禁断の魔導書",s:{M:3}},
-{t:"🗡️ 影に溶ける短剣",s:{R:3}},
-{t:"💖 全てを癒やす聖杯",s:{P:3}}
+{q:{ja:"異世界で最初に欲しいものは？",en:"What do you want first in another world?",zh:"穿越异世界后最先想要的东西是？",ko:"이세계에서 가장 먼저 갖고 싶은 것은?"},opts:[
+{t:{ja:"⚔️ 最強の聖剣",en:"⚔️ The mightiest holy sword",zh:"⚔️ 最强的圣剑",ko:"⚔️ 최강의 성검"},s:{W:3}},
+{t:{ja:"📖 禁断の魔導書",en:"📖 A forbidden grimoire",zh:"📖 禁忌的魔导书",ko:"📖 금단의 마도서"},s:{M:3}},
+{t:{ja:"🗡️ 影に溶ける短剣",en:"🗡️ A dagger that melts into shadows",zh:"🗡️ 融入影子的短剑",ko:"🗡️ 그림자에 녹아드는 단검"},s:{R:3}},
+{t:{ja:"💖 全てを癒やす聖杯",en:"💖 A holy grail that heals all",zh:"💖 治愈一切的圣杯",ko:"💖 모든 것을 치유하는 성배"},s:{P:3}}
 ]},
-{q:"危険なダンジョンで一番大事なのは？",opts:[
-{t:"💪 力でねじ伏せる圧倒的な突破力",s:{B:3}},
-{t:"🧠 罠を見抜く知識と冷静な判断力",s:{E:3}},
-{t:"🔓 鍵開けやトラップ解除の技術",s:{R:2,A:1}},
-{t:"🐉 頼れる召喚獣と共に進む安心感",s:{S:3}}
+{q:{ja:"危険なダンジョンで一番大事なのは？",en:"What matters most in a dangerous dungeon?",zh:"在危险的地下城中最重要的是？",ko:"위험한 던전에서 가장 중요한 것은?"},opts:[
+{t:{ja:"💪 力でねじ伏せる圧倒的な突破力",en:"💪 Overwhelming power to break through by force",zh:"💪 以力量压制的压倒性突破力",ko:"💪 힘으로 제압하는 압도적인 돌파력"},s:{B:3}},
+{t:{ja:"🧠 罠を見抜く知識と冷静な判断力",en:"🧠 Knowledge to spot traps and calm judgment",zh:"🧠 识破陷阱的知识和冷静的判断力",ko:"🧠 함정을 간파하는 지식과 냉정한 판단력"},s:{E:3}},
+{t:{ja:"🔓 鍵開けやトラップ解除の技術",en:"🔓 Lock-picking and trap-disabling skills",zh:"🔓 开锁和解除陷阱的技术",ko:"🔓 자물쇠 따기와 트랩 해제 기술"},s:{R:2,A:1}},
+{t:{ja:"🐉 頼れる召喚獣と共に進む安心感",en:"🐉 The security of advancing with a reliable summon",zh:"🐉 和可靠的召唤兽一起前进的安心感",ko:"🐉 믿을 수 있는 소환수와 함께하는 안심감"},s:{S:3}}
 ]},
-{q:"現実世界での得意分野は？",opts:[
-{t:"🏃 体育・格闘技など体を動かすこと",s:{W:2,B:1}},
-{t:"🔬 理科・数学など理論的な思考",s:{M:2,E:1}},
-{t:"🎨 技術・美術などものづくり全般",s:{A:3}},
-{t:"🐾 動物の世話やコミュニケーション",s:{S:2,P:1}}
+{q:{ja:"現実世界での得意分野は？",en:"What's your strong suit in the real world?",zh:"在现实世界中你擅长什么？",ko:"현실 세계에서 잘하는 분야는?"},opts:[
+{t:{ja:"🏃 体育・格闘技など体を動かすこと",en:"🏃 Sports, martial arts — anything physical",zh:"🏃 体育、格斗技等活动身体的事",ko:"🏃 체육・격투기 등 몸을 움직이는 것"},s:{W:2,B:1}},
+{t:{ja:"🔬 理科・数学など理論的な思考",en:"🔬 Science, math — logical thinking",zh:"🔬 理科、数学等理论性思考",ko:"🔬 과학・수학 등 이론적 사고"},s:{M:2,E:1}},
+{t:{ja:"🎨 技術・美術などものづくり全般",en:"🎨 Tech, art — crafting and creating",zh:"🎨 技术、美术等制作创造",ko:"🎨 기술・미술 등 만들기 전반"},s:{A:3}},
+{t:{ja:"🐾 動物の世話やコミュニケーション",en:"🐾 Caring for animals and communication",zh:"🐾 照顾动物和沟通交流",ko:"🐾 동물 돌보기와 커뮤니케이션"},s:{S:2,P:1}}
 ]},
-{q:"チームでの自分のポジションは？",opts:[
-{t:"🦅 先頭に立って道を切り開くエース",s:{W:2,B:1}},
-{t:"📋 作戦を考える参謀・ブレイン",s:{E:2,M:1}},
-{t:"🔧 裏方で仕組みを整える縁の下の力持ち",s:{A:2,R:1}},
-{t:"🌟 みんなを支え鼓舞するサポーター",s:{P:2,S:1}}
+{q:{ja:"チームでの自分のポジションは？",en:"What's your position on a team?",zh:"你在团队中的定位是？",ko:"팀에서 당신의 포지션은?"},opts:[
+{t:{ja:"🦅 先頭に立って道を切り開くエース",en:"🦅 The ace who leads from the front",zh:"🦅 站在最前面开路的王牌",ko:"🦅 선두에서 길을 여는 에이스"},s:{W:2,B:1}},
+{t:{ja:"📋 作戦を考える参謀・ブレイン",en:"📋 The strategist and brain of the team",zh:"📋 制定作战计划的参谋・智囊",ko:"📋 작전을 세우는 참모・브레인"},s:{E:2,M:1}},
+{t:{ja:"🔧 裏方で仕組みを整える縁の下の力持ち",en:"🔧 The behind-the-scenes supporter",zh:"🔧 在幕后整理机制的幕后功臣",ko:"🔧 뒤에서 체계를 다지는 숨은 공로자"},s:{A:2,R:1}},
+{t:{ja:"🌟 みんなを支え鼓舞するサポーター",en:"🌟 The supporter who inspires everyone",zh:"🌟 支持和鼓舞大家的支援者",ko:"🌟 모두를 지지하고 격려하는 서포터"},s:{P:2,S:1}}
 ]},
-{q:"異世界での理想の生活は？",opts:[
-{t:"🗺️ 強敵を求めて世界中を旅する冒険者",s:{W:2,R:1}},
-{t:"🏰 塔に籠もって魔法の研究に没頭する日々",s:{M:3}},
-{t:"⚒️ 工房を開いて伝説のアイテムを生み出す職人",s:{A:3}},
-{t:"🌿 精霊の森で使い魔たちと静かに暮らす",s:{S:3}}
+{q:{ja:"異世界での理想の生活は？",en:"What's your ideal life in another world?",zh:"在异世界中理想的生活是？",ko:"이세계에서의 이상적인 생활은?"},opts:[
+{t:{ja:"🗺️ 強敵を求めて世界中を旅する冒険者",en:"🗺️ An adventurer traveling the world seeking strong foes",zh:"🗺️ 寻找强敌周游世界的冒险者",ko:"🗺️ 강적을 찾아 세계를 여행하는 모험가"},s:{W:2,R:1}},
+{t:{ja:"🏰 塔に籠もって魔法の研究に没頭する日々",en:"🏰 Days in a tower immersed in magic research",zh:"🏰 在塔中沉浸于魔法研究的日子",ko:"🏰 탑에 틀어박혀 마법 연구에 몰두하는 나날"},s:{M:3}},
+{t:{ja:"⚒️ 工房を開いて伝説のアイテムを生み出す職人",en:"⚒️ A craftsman creating legendary items in a workshop",zh:"⚒️ 开工坊制造传说级物品的工匠",ko:"⚒️ 공방을 열어 전설의 아이템을 만드는 장인"},s:{A:3}},
+{t:{ja:"🌿 精霊の森で使い魔たちと静かに暮らす",en:"🌿 Living peacefully with familiars in the spirit forest",zh:"🌿 在精灵之森与使魔们安静地生活",ko:"🌿 정령의 숲에서 사역마들과 조용히 살기"},s:{S:3}}
 ]},
-{q:"ピンチのとき、あなたはどうする？",opts:[
-{t:"🔥 怒りを力に変えて暴れまくる！",s:{B:3}},
-{t:"🧩 冷静に分析して最適な対処法を見つける",s:{E:2,M:1}},
-{t:"💨 素早く撤退して体勢を立て直す",s:{R:2,A:1}},
-{t:"🤝 仲間を信じて協力して乗り越える",s:{P:2,S:1}}
+{q:{ja:"ピンチのとき、あなたはどうする？",en:"What do you do in a pinch?",zh:"遇到危机时，你会怎么做？",ko:"위기 상황에서 어떻게 하나요?"},opts:[
+{t:{ja:"🔥 怒りを力に変えて暴れまくる！",en:"🔥 Turn rage into power and go wild!",zh:"🔥 把愤怒化为力量大闹一场！",ko:"🔥 분노를 힘으로 바꿔 날뛴다!"},s:{B:3}},
+{t:{ja:"🧩 冷静に分析して最適な対処法を見つける",en:"🧩 Stay calm, analyze, and find the best solution",zh:"🧩 冷静分析找到最佳应对方法",ko:"🧩 냉정하게 분석해 최적의 대처법을 찾는다"},s:{E:2,M:1}},
+{t:{ja:"💨 素早く撤退して体勢を立て直す",en:"💨 Retreat swiftly and regroup",zh:"💨 迅速撤退重整态势",ko:"💨 빠르게 후퇴해 태세를 정비한다"},s:{R:2,A:1}},
+{t:{ja:"🤝 仲間を信じて協力して乗り越える",en:"🤝 Trust your allies and overcome it together",zh:"🤝 相信同伴合力克服",ko:"🤝 동료를 믿고 협력해서 극복한다"},s:{P:2,S:1}}
 ]},
-{q:"異世界の神様に一つだけお願いできるなら？",opts:[
-{t:"💪「無限の体力と最強の身体能力をくれ」",s:{B:2,W:1}},
-{t:"✨「全属性の魔法を使えるようにしてくれ」",s:{M:2,E:1}},
-{t:"🔨「どんな素材でも加工できる技術をくれ」",s:{A:2,R:1}},
-{t:"💖「全ての生命を癒やし守る力をくれ」",s:{P:2,S:1}}
+{q:{ja:"異世界の神様に一つだけお願いできるなら？",en:"If you could make one wish to an isekai god?",zh:"如果能向异世界的神许一个愿望？",ko:"이세계의 신에게 하나만 부탁할 수 있다면?"},opts:[
+{t:{ja:"💪「無限の体力と最強の身体能力をくれ」",en:'💪 "Give me infinite stamina and supreme physical ability"',zh:"💪「给我无限体力和最强身体能力」",ko:'💪 "무한 체력과 최강 신체 능력을 줘"'},s:{B:2,W:1}},
+{t:{ja:"✨「全属性の魔法を使えるようにしてくれ」",en:'✨ "Let me use magic of every element"',zh:"✨「让我能使用全属性魔法」",ko:'✨ "모든 속성의 마법을 쓸 수 있게 해줘"'},s:{M:2,E:1}},
+{t:{ja:"🔨「どんな素材でも加工できる技術をくれ」",en:'🔨 "Give me the skill to craft any material"',zh:"🔨「给我能加工任何素材的技术」",ko:'🔨 "어떤 소재든 가공할 수 있는 기술을 줘"'},s:{A:2,R:1}},
+{t:{ja:"💖「全ての生命を癒やし守る力をくれ」",en:'💖 "Give me the power to heal and protect all life"',zh:"💖「给我治愈和守护所有生命的力量」",ko:'💖 "모든 생명을 치유하고 지키는 힘을 줘"'},s:{P:2,S:1}}
 ]},
-{q:"異世界で遭遇した魔王軍の幹部！どう戦う？",opts:[
-{t:"⚔️ 一騎打ちを挑んで正々堂々と斬り伏せる",s:{W:3}},
-{t:"🌀 大魔法で遠距離から一撃で消し飛ばす",s:{M:2,B:1}},
-{t:"🎭 闇に潜んで急所を突く暗殺戦術",s:{R:3}},
-{t:"📚 弱点を見抜いてパーティー全体で連携する",s:{E:2,P:1}}
+{q:{ja:"異世界で遭遇した魔王軍の幹部！どう戦う？",en:"You encounter a Demon Lord's general! How do you fight?",zh:"遭遇了魔王军的干部！怎么战斗？",ko:"마왕군 간부와 조우! 어떻게 싸울까?"},opts:[
+{t:{ja:"⚔️ 一騎打ちを挑んで正々堂々と斬り伏せる",en:"⚔️ Challenge them to a duel and cut them down honorably",zh:"⚔️ 发起一对一决斗堂堂正正地斩杀",ko:"⚔️ 일기토를 걸어 정정당당하게 베어 쓰러뜨린다"},s:{W:3}},
+{t:{ja:"🌀 大魔法で遠距離から一撃で消し飛ばす",en:"🌀 Annihilate them with a grand spell from afar",zh:"🌀 用大魔法从远处一击消灭",ko:"🌀 대마법으로 원거리에서 일격에 날려버린다"},s:{M:2,B:1}},
+{t:{ja:"🎭 闇に潜んで急所を突く暗殺戦術",en:"🎭 Lurk in darkness and strike their weak point",zh:"🎭 潜伏在黑暗中突袭要害的暗杀战术",ko:"🎭 어둠에 숨어 급소를 찌르는 암살 전술"},s:{R:3}},
+{t:{ja:"📚 弱点を見抜いてパーティー全体で連携する",en:"📚 Identify weakness and coordinate the whole party",zh:"📚 看破弱点全队协同作战",ko:"📚 약점을 간파해 파티 전체로 연계한다"},s:{E:2,P:1}}
 ]},
-{q:"異世界で手に入れた秘宝、何に使う？",opts:[
-{t:"🐲 強力な幻獣を召喚する触媒にする",s:{S:3}},
-{t:"💊 究極のポーションや装備の素材にする",s:{A:2,E:1}},
-{t:"👹 自分の限界を超える力の源にする",s:{B:2,W:1}},
-{t:"🛡️ 街の人々を守る結界の核にする",s:{P:2,S:1}}
+{q:{ja:"異世界で手に入れた秘宝、何に使う？",en:"You found a secret treasure! What do you use it for?",zh:"在异世界得到的秘宝，用来做什么？",ko:"이세계에서 얻은 비보, 무엇에 쓸까?"},opts:[
+{t:{ja:"🐲 強力な幻獣を召喚する触媒にする",en:"🐲 Use it as a catalyst to summon a powerful beast",zh:"🐲 当作召唤强力幻兽的催化剂",ko:"🐲 강력한 환수를 소환하는 촉매로 쓴다"},s:{S:3}},
+{t:{ja:"💊 究極のポーションや装備の素材にする",en:"💊 Use it as material for ultimate potions or gear",zh:"💊 当作终极药水或装备的素材",ko:"💊 궁극의 포션이나 장비의 소재로 쓴다"},s:{A:2,E:1}},
+{t:{ja:"👹 自分の限界を超える力の源にする",en:"👹 Use it to exceed your own limits",zh:"👹 当作突破自身极限的力量之源",ko:"👹 자신의 한계를 뛰어넘는 힘의 원천으로 쓴다"},s:{B:2,W:1}},
+{t:{ja:"🛡️ 街の人々を守る結界の核にする",en:"🛡️ Use it as the core of a barrier to protect the town",zh:"🛡️ 当作守护城镇的结界核心",ko:"🛡️ 마을 사람들을 지키는 결계의 핵으로 쓴다"},s:{P:2,S:1}}
 ]},
-{q:"転生先で最初に出会った仲間はどんな存在？",opts:[
-{t:"🐺 言葉を話す伝説の聖獣",s:{S:3}},
-{t:"🧝 古代の知識を持つ不老のエルフ賢者",s:{E:3}},
-{t:"🔥 血の気が多いけど情に厚い獣人戦士",s:{B:2,W:1}},
-{t:"🦊 いたずら好きだけど腕のいい盗賊キツネ",s:{R:2,A:1}}
+{q:{ja:"転生先で最初に出会った仲間はどんな存在？",en:"What companion do you first meet after reincarnation?",zh:"转生后最先遇到的同伴是什么样的存在？",ko:"전생한 곳에서 처음 만난 동료는 어떤 존재?"},opts:[
+{t:{ja:"🐺 言葉を話す伝説の聖獣",en:"🐺 A legendary sacred beast that speaks",zh:"🐺 会说话的传说圣兽",ko:"🐺 말을 하는 전설의 성수"},s:{S:3}},
+{t:{ja:"🧝 古代の知識を持つ不老のエルフ賢者",en:"🧝 An immortal elf sage with ancient knowledge",zh:"🧝 拥有古代知识的不老精灵贤者",ko:"🧝 고대 지식을 가진 불로의 엘프 현자"},s:{E:3}},
+{t:{ja:"🔥 血の気が多いけど情に厚い獣人戦士",en:"🔥 A hot-blooded but loyal beastfolk warrior",zh:"🔥 虽然好斗但重情义的兽人战士",ko:"🔥 혈기왕성하지만 정이 깊은 수인 전사"},s:{B:2,W:1}},
+{t:{ja:"🦊 いたずら好きだけど腕のいい盗賊キツネ",en:"🦊 A mischievous but skilled fox thief",zh:"🦊 爱恶作剧但手艺精湛的盗贼狐狸",ko:"🦊 장난을 좋아하지만 실력 좋은 도적 여우"},s:{R:2,A:1}}
 ]}
 ];
-
 const results={
-W:{name:"剣聖（ソードマスター）",emoji:"⚔️",
+W:{name:{ja:"剣聖（ソードマスター）",en:"Sword Master",zh:"剑圣",ko:"검성(소드 마스터)"},emoji:"⚔️",
   bg:"linear-gradient(135deg,#c0392b,#e74c3c)",
-  traits:["最強アタッカー⚔️","前衛特化💪","カリスマ🔥","鋼の意志✊","正義の刃🦅"],
-  desc:"あなたは剣聖として異世界に転生！圧倒的な身体能力と神速の剣技で、どんな強敵も一刀のもとに斬り伏せる最強の剣士です。仲間の先頭に立ち、その背中で皆を導くカリスマ性は、まさに生まれながらの英雄と言えるでしょう。戦場では百人の兵士にも勝る力を発揮し、その勇姿は吟遊詩人たちによって大陸中で語り継がれます。いつか魔王すら凌駕する「剣神」の境地へ至ることが、あなたの運命なのかもしれません。",
+  traits:{ja:["最強アタッカー⚔️","前衛特化💪","カリスマ🔥","鋼の意志✊","正義の刃🦅"],en:["Top Attacker ⚔️","Frontline Specialist 💪","Charismatic 🔥","Iron Will ✊","Blade of Justice 🦅"],zh:["最强攻击手⚔️","前卫特化💪","领袖气质🔥","钢铁意志✊","正义之刃🦅"],ko:["최강 어태커⚔️","전위 특화💪","카리스마🔥","강철 의지✊","정의의 칼날🦅"]},
+  desc:{ja:"あなたは剣聖として異世界に転生！圧倒的な身体能力と神速の剣技で、どんな強敵も一刀のもとに斬り伏せる最強の剣士です。仲間の先頭に立ち、その背中で皆を導くカリスマ性は、まさに生まれながらの英雄と言えるでしょう。戦場では百人の兵士にも勝る力を発揮し、その勇姿は吟遊詩人たちによって大陸中で語り継がれます。いつか魔王すら凌駕する「剣神」の境地へ至ることが、あなたの運命なのかもしれません。",en:"You reincarnated as a Sword Master! With overwhelming physical prowess and godspeed swordsmanship, you cut down any foe in a single strike. Leading from the front with charisma, you're a born hero. On the battlefield you equal a hundred soldiers, and bards across the continent sing of your valor. Perhaps your destiny is to reach the realm of the 'Sword God,' surpassing even the Demon Lord.",zh:"你以剑圣身份转生到了异世界！凭借压倒性的身体素质和神速剑技，能将任何强敌一刀斩杀的最强剑士。站在同伴最前方，用背影引导众人的领袖气质，堪称天生的英雄。在战场上展现出胜过百名士兵的力量，英姿被吟游诗人传唱于整个大陆。终有一天超越魔王到达「剑神」之境，或许就是你的命运。",ko:"당신은 검성으로 이세계에 전생했습니다! 압도적인 신체 능력과 신속의 검기로 어떤 강적이라도 일도양단하는 최강의 검사입니다. 동료의 선두에 서서 그 뒷모습으로 모두를 이끄는 카리스마는 타고난 영웅이라 할 수 있습니다. 전장에서 백 명의 병사에 필적하는 힘을 발휘하며, 그 용맹한 모습은 음유시인들에 의해 대륙 전역에서 전해집니다. 언젠가 마왕마저 능가하는 '검신'의 경지에 이르는 것이 당신의 운명일지도 모릅니다."},
   stats:{HP:95,MP:30,ATK:98,DEF:75,SPD:85,INT:40},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"天閃・無双剣",desc:"光速で繰り出される究極の剣技。一振りで空間すら断ち切る"},{name:"覇王の気迫",desc:"周囲の敵を威圧し戦意を完全に喪失させるオーラ"},{name:"不屈の闘志",desc:"HP10%以下で攻撃力と速度が3倍になる逆境覚醒スキル"}]},
-M:{name:"大魔導士（アークメイジ）",emoji:"🧙",
+  skills:[{name:{ja:"天閃・無双剣",en:"Celestial Flash — Peerless Blade",zh:"天闪・无双剑",ko:"천섬・무쌍검"},desc:{ja:"光速で繰り出される究極の剣技。一振りで空間すら断ち切る",en:"The ultimate sword technique at light speed. A single swing that can sever space itself.",zh:"以光速施展的究极剑技。一挥连空间都能斩断",ko:"광속으로 펼치는 궁극의 검기. 한 번의 휘두름으로 공간마저 베어낸다"}},{name:{ja:"覇王の気迫",en:"Conqueror's Aura",zh:"霸王气魄",ko:"패왕의 기백"},desc:{ja:"周囲の敵を威圧し戦意を完全に喪失させるオーラ",en:"An aura that intimidates surrounding enemies, completely shattering their will to fight.",zh:"威压周围敌人使其完全丧失战意的气场",ko:"주위의 적을 위압하여 전의를 완전히 상실시키는 오라"}},{name:{ja:"不屈の闘志",en:"Indomitable Spirit",zh:"不屈斗志",ko:"불굴의 투지"},desc:{ja:"HP10%以下で攻撃力と速度が3倍になる逆境覚醒スキル",en:"When HP drops below 10%, attack and speed triple — an adversity awakening skill.",zh:"HP低于10%时攻击力和速度变为3倍的逆境觉醒技能",ko:"HP 10% 이하에서 공격력과 속도가 3배가 되는 역경 각성 스킬"}}]},
+M:{name:{ja:"大魔導士（アークメイジ）",en:"Archmage",zh:"大魔导士",ko:"대마도사(아크 메이지)"},emoji:"🧙",
   bg:"linear-gradient(135deg,#6c3baa,#c850c0)",
-  traits:["最強魔法🔮","頭脳派🧠","戦略家📋","研究者🔬","圧倒的火力💥"],
-  desc:"あなたは大魔導士として異世界に転生！火・水・風・土・光・闇の全属性を自在に操り、戦略的に戦場を支配する知の覇者です。その魔力は底なしの泉のごとく、一人で軍勢に匹敵する破壊力を秘めています。古代魔法の研究にも精通しており、失われた禁術すら復元可能な天才的頭脳の持ち主。魔導士の頂点「大賢魔」の称号を得る日もそう遠くはないでしょう。",
+  traits:{ja:["最強魔法🔮","頭脳派🧠","戦略家📋","研究者🔬","圧倒的火力💥"],en:["Supreme Magic 🔮","Intellectual 🧠","Strategist 📋","Researcher 🔬","Overwhelming Firepower 💥"],zh:["最强魔法🔮","头脑派🧠","战略家📋","研究者🔬","压倒性火力💥"],ko:["최강 마법🔮","두뇌파🧠","전략가📋","연구자🔬","압도적 화력💥"]},
+  desc:{ja:"あなたは大魔導士として異世界に転生！火・水・風・土・光・闇の全属性を自在に操り、戦略的に戦場を支配する知の覇者です。その魔力は底なしの泉のごとく、一人で軍勢に匹敵する破壊力を秘めています。古代魔法の研究にも精通しており、失われた禁術すら復元可能な天才的頭脳の持ち主。魔導士の頂点「大賢魔」の称号を得る日もそう遠くはないでしょう。",en:"You reincarnated as an Archmage! Commanding all elements — fire, water, wind, earth, light, and dark — you strategically dominate the battlefield as a lord of intellect. Your mana is a bottomless spring, rivaling an army's destructive power. Versed in ancient magic, you can even restore lost forbidden arts. The title of 'Grand Sage' is surely within reach.",zh:"你以大魔导士身份转生到了异世界！自如操控火・水・风・土・光・暗全属性，战略性地支配战场的知识霸主。魔力如同无底之泉，一人便拥有匹敌军队的破坏力。精通古代魔法研究，甚至能复原失落的禁术。获得魔导士巅峰「大贤魔」称号的那天应该不远了。",ko:"당신은 대마도사로 이세계에 전생했습니다! 화・수・풍・토・광・암 전 속성을 자유자재로 다루며 전략적으로 전장을 지배하는 지의 패자입니다. 마력은 밑바닥 없는 샘처럼 무한하여, 혼자서 군세에 필적하는 파괴력을 지니고 있습니다. 고대 마법 연구에도 정통하여 잃어버린 금술마저 복원 가능한 천재적 두뇌의 소유자. 마도사의 정점 '대현마'의 칭호를 얻을 날도 머지않았을 것입니다."},
   stats:{HP:45,MP:99,ATK:30,DEF:35,SPD:50,INT:99},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"メテオストライク",desc:"天空から巨大隕石を召喚し広範囲を殲滅する最終魔法"},{name:"次元転送",desc:"空間を歪曲させ瞬時に任意の場所へ移動する転移魔法"},{name:"魔力暴走",desc:"MP消費3倍と引き換えに威力を10倍に引き上げる禁断の詠唱"}]},
-A:{name:"錬金術師（アルケミスト）",emoji:"⚗️",
+  skills:[{name:{ja:"メテオストライク",en:"Meteor Strike",zh:"陨石打击",ko:"메테오 스트라이크"},desc:{ja:"天空から巨大隕石を召喚し広範囲を殲滅する最終魔法",en:"Summons a massive meteor from the sky to annihilate a wide area — the ultimate spell.",zh:"从天空召唤巨大陨石歼灭大范围的终极魔法",ko:"하늘에서 거대한 운석을 소환해 광범위를 섬멸하는 최종 마법"}},{name:{ja:"次元転送",en:"Dimensional Transfer",zh:"次元传送",ko:"차원 전송"},desc:{ja:"空間を歪曲させ瞬時に任意の場所へ移動する転移魔法",en:"Warps space to instantly teleport to any location.",zh:"扭曲空间瞬间移动到任意位置的传送魔法",ko:"공간을 왜곡시켜 순식간에 원하는 장소로 이동하는 전이 마법"}},{name:{ja:"魔力暴走",en:"Mana Overload",zh:"魔力暴走",ko:"마력 폭주"},desc:{ja:"MP消費3倍と引き換えに威力を10倍に引き上げる禁断の詠唱",en:"Triples MP cost in exchange for tenfold power — a forbidden incantation.",zh:"以3倍MP消耗为代价将威力提升10倍的禁断咏唱",ko:"MP 소모 3배와 맞바꿔 위력을 10배로 끌어올리는 금단의 영창"}}]},
+A:{name:{ja:"錬金術師（アルケミスト）",en:"Alchemist",zh:"炼金术师",ko:"연금술사(알케미스트)"},emoji:"⚗️",
   bg:"linear-gradient(135deg,#e67e22,#f39c12)",
-  traits:["ものづくり天才⚒️","サポート特化💎","金策最強💰","器用万能🔧","発明王💡"],
-  desc:"あなたは錬金術師として異世界に転生！あらゆる素材を自在に分解・再構築し、伝説級のアイテムを次々と生み出す天才職人です。直接戦闘こそ得意ではないものの、十分な準備さえあれば事実上の最強クラス。経済力も抜群に高く、王国の商業ギルドや冒険者組合からは常にスカウトが殺到します。あなたの作った装備が、いつか世界を救う英雄たちの手に渡ることでしょう。",
+  traits:{ja:["ものづくり天才⚒️","サポート特化💎","金策最強💰","器用万能🔧","発明王💡"],en:["Crafting Genius ⚒️","Support Specialist 💎","Top Earner 💰","Versatile 🔧","Inventor 💡"],zh:["制造天才⚒️","辅助特化💎","最强赚钱💰","灵巧万能🔧","发明王💡"],ko:["제작 천재⚒️","서포트 특화💎","최강 금전력💰","기용만능🔧","발명왕💡"]},
+  desc:{ja:"あなたは錬金術師として異世界に転生！あらゆる素材を自在に分解・再構築し、伝説級のアイテムを次々と生み出す天才職人です。直接戦闘こそ得意ではないものの、十分な準備さえあれば事実上の最強クラス。経済力も抜群に高く、王国の商業ギルドや冒険者組合からは常にスカウトが殺到します。あなたの作った装備が、いつか世界を救う英雄たちの手に渡ることでしょう。",en:"You reincarnated as an Alchemist! Freely deconstructing and reconstructing any material, you're a genius artisan who creates legendary items. While direct combat isn't your forte, with enough preparation you're virtually the strongest. With top-tier economic power, royal guilds constantly recruit you. Your equipment may one day end up in the hands of world-saving heroes.",zh:"你以炼金术师身份转生到了异世界！能自如地分解・重构任何素材，接连创造传说级物品的天才工匠。虽然不擅长直接战斗，但只要有充分的准备就是事实上的最强。经济实力也极为出色，王国商业公会和冒险者工会的邀请络绎不绝。你制作的装备，终将传到拯救世界的英雄们手中。",ko:"당신은 연금술사로 이세계에 전생했습니다! 모든 소재를 자유자재로 분해・재구축하여 전설급 아이템을 만들어내는 천재 장인입니다. 직접 전투는 득의가 아니지만, 충분한 준비만 있다면 사실상 최강 클래스. 경제력도 발군이어서 왕국의 상업 길드와 모험자 조합에서 끊임없이 스카우트가 쏟아집니다. 당신이 만든 장비가 언젠가 세계를 구하는 영웅들의 손에 전해질 것입니다."},
   stats:{HP:55,MP:65,ATK:40,DEF:50,SPD:45,INT:90},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"万物錬成",desc:"あらゆる物質を原子レベルで組み替える究極の錬金術"},{name:"エリクサー調合",desc:"どんな傷も状態異常も完治させる伝説の万能薬を精製"},{name:"自動人形・起動",desc:"自律戦闘型ゴーレムを錬成し軍団として従える技術"}]},
-P:{name:"聖職者（ハイプリースト）",emoji:"✨",
+  skills:[{name:{ja:"万物錬成",en:"Universal Transmutation",zh:"万物炼成",ko:"만물 연성"},desc:{ja:"あらゆる物質を原子レベルで組み替える究極の錬金術",en:"The ultimate alchemy that restructures any matter at the atomic level.",zh:"在原子层面重组一切物质的究极炼金术",ko:"모든 물질을 원자 수준에서 재구성하는 궁극의 연금술"}},{name:{ja:"エリクサー調合",en:"Elixir Synthesis",zh:"万灵药调合",ko:"엘릭서 조합"},desc:{ja:"どんな傷も状態異常も完治させる伝説の万能薬を精製",en:"Synthesizes a legendary panacea that heals any wound or ailment.",zh:"精制能完治任何伤和状态异常的传说万能药",ko:"어떤 상처도 상태이상도 완치시키는 전설의 만능약을 정제"}},{name:{ja:"自動人形・起動",en:"Automaton Activation",zh:"自动人偶・启动",ko:"자동 인형・기동"},desc:{ja:"自律戦闘型ゴーレムを錬成し軍団として従える技術",en:"Creates autonomous combat golems and commands them as an army.",zh:"炼成自律战斗型魔像并作为军团使役的技术",ko:"자율 전투형 골렘을 연성해 군단으로 부리는 기술"}}]},
+P:{name:{ja:"聖職者（ハイプリースト）",en:"High Priest",zh:"圣职者",ko:"성직자(하이 프리스트)"},emoji:"✨",
   bg:"linear-gradient(135deg,#27ae60,#2ecc71)",
-  traits:["最強ヒーラー💚","慈悲の心🌸","不可欠な存在👑","鉄壁防御🛡️","パーティーの要🌟"],
-  desc:"あなたは聖職者として異世界に転生！神々に愛された聖なる力で、仲間を癒やし守り抜くパーティーの生命線です。あなたがいるだけで全員の生存率が劇的に跳ね上がり、絶望的な戦いでも希望を灯すことができます。その慈悲深い心は人々だけでなく精霊や聖獣をも惹きつけ、あなたの周りには常に温かな光が満ちています。大聖堂の最高司祭として、大陸に平和をもたらす存在となるでしょう。",
+  traits:{ja:["最強ヒーラー💚","慈悲の心🌸","不可欠な存在👑","鉄壁防御🛡️","パーティーの要🌟"],en:["Supreme Healer 💚","Compassionate 🌸","Indispensable 👑","Iron Defense 🛡️","Party Pillar 🌟"],zh:["最强治疗💚","慈悲之心🌸","不可或缺👑","铁壁防御🛡️","队伍核心🌟"],ko:["최강 힐러💚","자비의 마음🌸","필수 존재👑","철벽 방어🛡️","파티의 핵심🌟"]},
+  desc:{ja:"あなたは聖職者として異世界に転生！神々に愛された聖なる力で、仲間を癒やし守り抜くパーティーの生命線です。あなたがいるだけで全員の生存率が劇的に跳ね上がり、絶望的な戦いでも希望を灯すことができます。その慈悲深い心は人々だけでなく精霊や聖獣をも惹きつけ、あなたの周りには常に温かな光が満ちています。大聖堂の最高司祭として、大陸に平和をもたらす存在となるでしょう。",en:"You reincarnated as a High Priest! Blessed with divine power loved by the gods, you're the lifeline who heals and shields your allies. Your presence dramatically raises everyone's survival rate, kindling hope even in desperate battles. Your compassionate heart attracts spirits and sacred beasts, and warm light always fills your surroundings. As supreme pontiff, you shall bring peace to the continent.",zh:"你以圣职者身份转生到了异世界！凭借受众神眷顾的神圣之力，治愈并守护同伴的队伍生命线。只要有你在，全员生存率就会急剧提升，即使在绝望的战斗中也能点燃希望。慈悲的心不仅吸引人们，连精灵和圣兽也被吸引，周围始终充满温暖的光芒。作为大圣堂的最高司祭，你将成为为大陆带来和平的存在。",ko:"당신은 성직자로 이세계에 전생했습니다! 신들에게 사랑받는 신성한 힘으로 동료를 치유하고 지켜내는 파티의 생명선입니다. 당신이 있는 것만으로 전원의 생존율이 극적으로 상승하며, 절망적인 전투에서도 희망을 밝힐 수 있습니다. 자비로운 마음은 정령과 성수까지 끌어당기며, 당신 주위에는 항상 따뜻한 빛이 가득합니다. 대성당의 최고 사제로서 대륙에 평화를 가져다줄 존재가 될 것입니다."},
   stats:{HP:70,MP:90,ATK:25,DEF:60,SPD:55,INT:80},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"リザレクション",desc:"味方全体のHPと状態異常を完全回復する大聖女の奇跡"},{name:"聖域展開",desc:"絶対防御の光の結界を張り、範囲内の全ダメージを無効化"},{name:"裁きの聖光",desc:"不死者・悪魔に超特効の浄化ダメージを与える討魔の光"}]},
-R:{name:"盗賊（ファントムシーフ）",emoji:"🗡️",
+  skills:[{name:{ja:"リザレクション",en:"Resurrection",zh:"复活术",ko:"리저렉션"},desc:{ja:"味方全体のHPと状態異常を完全回復する大聖女の奇跡",en:"A miracle that fully restores all allies' HP and cures all ailments.",zh:"完全回复全体同伴HP和状态异常的大圣女奇迹",ko:"아군 전체의 HP와 상태이상을 완전 회복하는 대성녀의 기적"}},{name:{ja:"聖域展開",en:"Sacred Domain",zh:"圣域展开",ko:"성역 전개"},desc:{ja:"絶対防御の光の結界を張り、範囲内の全ダメージを無効化",en:"Deploys an absolute defense barrier of light, nullifying all damage within range.",zh:"展开绝对防御的光之结界，无效化范围内全部伤害",ko:"절대 방어의 빛의 결계를 펼쳐 범위 내 모든 데미지를 무효화"}},{name:{ja:"裁きの聖光",en:"Holy Judgment",zh:"审判圣光",ko:"심판의 성광"},desc:{ja:"不死者・悪魔に超特効の浄化ダメージを与える討魔の光",en:"Purifying light that deals massive bonus damage to undead and demons.",zh:"对不死者・恶魔造成超特效净化伤害的讨魔之光",ko:"언데드・악마에게 초특효 정화 데미지를 주는 토마의 빛"}}]},
+R:{name:{ja:"盗賊（ファントムシーフ）",en:"Phantom Thief",zh:"盗贼",ko:"도적(팬텀 시프)"},emoji:"🗡️",
   bg:"linear-gradient(135deg,#2c3e50,#4a6741)",
-  traits:["神速の足🏃","隠密のプロ🌑","トラップマスター🔓","情報通👁️","お宝ハンター💎"],
-  desc:"あなたは盗賊として異世界に転生！闇に溶け込む隠密スキルと、光を超える素早さで敵の懐に潜り込む影の実力者です。ダンジョン攻略においては罠の解除や鍵開け、偵察と不可欠な役割を担い、パーティーの生存に直結する重要人物。戦闘ではクリティカルヒットを連発し、相手が気づいた頃にはすべて終わっています。裏社会の情報網にも精通しており、他のジョブでは手に入らない貴重な情報を入手できるのも大きな強みです。",
+  traits:{ja:["神速の足🏃","隠密のプロ🌑","トラップマスター🔓","情報通👁️","お宝ハンター💎"],en:["Godspeed 🏃","Stealth Pro 🌑","Trap Master 🔓","Intel Expert 👁️","Treasure Hunter 💎"],zh:["神速之足🏃","隐密专家🌑","陷阱大师🔓","情报通👁️","宝物猎人💎"],ko:["신속의 발🏃","은밀의 프로🌑","트랩 마스터🔓","정보통👁️","보물 헌터💎"]},
+  desc:{ja:"あなたは盗賊として異世界に転生！闇に溶け込む隠密スキルと、光を超える素早さで敵の懐に潜り込む影の実力者です。ダンジョン攻略においては罠の解除や鍵開け、偵察と不可欠な役割を担い、パーティーの生存に直結する重要人物。戦闘ではクリティカルヒットを連発し、相手が気づいた頃にはすべて終わっています。裏社会の情報網にも精通しており、他のジョブでは手に入らない貴重な情報を入手できるのも大きな強みです。",en:"You reincarnated as a Phantom Thief! Melting into shadows with stealth and infiltrating with speed beyond light, you're a shadow-dwelling powerhouse. In dungeon raids you handle traps, locks, and recon — vital roles for party survival. In combat you chain critical hits, and by the time foes notice, it's over. With deep underworld connections, you obtain rare intel unavailable to any other class.",zh:"你以盗贼身份转生到了异世界！融入黑暗的隐密技能和超越光速的敏捷潜入敌人怀中的暗影实力者。在地下城攻略中承担解除陷阱、开锁、侦察等不可或缺的角色，直接关系到队伍的生存。战斗中连续暴击，等对手反应过来时一切已经结束。精通地下世界的情报网，能获取其他职业无法得到的珍贵情报也是一大优势。",ko:"당신은 도적으로 이세계에 전생했습니다! 어둠에 녹아드는 은밀 스킬과 빛을 초월하는 빠르기로 적의 품에 파고드는 그림자의 실력자입니다. 던전 공략에서는 함정 해제, 자물쇠 따기, 정찰 등 필수적인 역할을 맡아 파티의 생존에 직결되는 중요 인물. 전투에서는 크리티컬 히트를 연발하며, 상대가 알아챘을 때는 이미 끝나 있습니다. 뒷세계의 정보망에도 정통하여 다른 직업으로는 얻을 수 없는 귀중한 정보를 입수할 수 있는 것도 큰 강점입니다."},
   stats:{HP:60,MP:40,ATK:75,DEF:40,SPD:99,INT:65},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"影縫い",desc:"相手の影を貫いて動きを完全に封じる拘束暗殺術"},{name:"ファントムステップ",desc:"五感から完全に消える究極の隠密移動スキル"},{name:"バックスタブ・零",desc:"背後から急所を突き通常の10倍ダメージを与える必殺技"}]},
-S:{name:"召喚士（サモナー）",emoji:"🐉",
+  skills:[{name:{ja:"影縫い",en:"Shadow Stitch",zh:"影缝",ko:"그림자 꿰기"},desc:{ja:"相手の影を貫いて動きを完全に封じる拘束暗殺術",en:"Pierces the target's shadow to completely immobilize them.",zh:"贯穿对手的影子将其完全封锁的拘束暗杀术",ko:"상대의 그림자를 꿰뚫어 움직임을 완전히 봉쇄하는 구속 암살술"}},{name:{ja:"ファントムステップ",en:"Phantom Step",zh:"幻影步",ko:"팬텀 스텝"},desc:{ja:"五感から完全に消える究極の隠密移動スキル",en:"The ultimate stealth movement that erases all presence from the five senses.",zh:"从五感中完全消失的究极隐密移动技能",ko:"오감에서 완전히 사라지는 궁극의 은밀 이동 스킬"}},{name:{ja:"バックスタブ・零",en:"Backstab Zero",zh:"背刺・零",ko:"백스탭・제로"},desc:{ja:"背後から急所を突き通常の10倍ダメージを与える必殺技",en:"Strikes vital points from behind, dealing 10x normal damage.",zh:"从背后突刺要害造成通常10倍伤害的必杀技",ko:"뒤에서 급소를 찔러 통상 10배 데미지를 주는 필살기"}}]},
+S:{name:{ja:"召喚士（サモナー）",en:"Summoner",zh:"召唤士",ko:"소환사(서모너)"},emoji:"🐉",
   bg:"linear-gradient(135deg,#1abc9c,#16a085)",
-  traits:["使い魔の王👑","精霊契約🌿","多彩な戦術🎭","絆の力🤝","ロマン砲🐲"],
-  desc:"あなたは召喚士として異世界に転生！精霊や幻獣、果ては古代竜まで呼び出して従える、絆の魔術師です。一人でありながら軍団のような戦力を展開でき、状況に応じて最適な召喚獣を使い分ける戦術眼も秀逸。召喚した存在との間には深い信頼関係が生まれ、単なる主従を超えた家族のような絆で結ばれています。いつか伝説の神獣すら契約し、その力で世界の均衡を守る「契約王」となるでしょう。",
+  traits:{ja:["使い魔の王👑","精霊契約🌿","多彩な戦術🎭","絆の力🤝","ロマン砲🐲"],en:["Lord of Familiars 👑","Spirit Pact 🌿","Versatile Tactics 🎭","Power of Bonds 🤝","Dream Cannon 🐲"],zh:["使魔之王👑","精灵契约🌿","多彩战术🎭","羁绊之力🤝","浪漫炮🐲"],ko:["사역마의 왕👑","정령 계약🌿","다채로운 전술🎭","유대의 힘🤝","로망포🐲"]},
+  desc:{ja:"あなたは召喚士として異世界に転生！精霊や幻獣、果ては古代竜まで呼び出して従える、絆の魔術師です。一人でありながら軍団のような戦力を展開でき、状況に応じて最適な召喚獣を使い分ける戦術眼も秀逸。召喚した存在との間には深い信頼関係が生まれ、単なる主従を超えた家族のような絆で結ばれています。いつか伝説の神獣すら契約し、その力で世界の均衡を守る「契約王」となるでしょう。",en:"You reincarnated as a Summoner! From spirits to phantasmal beasts to ancient dragons, you call forth and command them — a mage of bonds. Though alone, you deploy army-like forces with superb tactical judgment. Deep trust forms between you and your summons, a bond like family. Someday you'll contract with legendary divine beasts and become the 'Covenant King.'",zh:"你以召唤士身份转生到了异世界！从精灵到幻兽甚至古代龙，都能召唤并驾驭的羁绊魔术师。虽然只身一人却能展开如同军团的战力，根据情况选择最适合召唤兽的战术眼光也极为出色。与召唤的存在之间建立了超越主从的如同家人般的羁绊。终有一天甚至与传说中的神兽缔约，成为「契约王」吧。",ko:"당신은 소환사로 이세계에 전생했습니다! 정령이나 환수, 나아가 고대 용까지 불러내어 부리는 인연의 마술사입니다. 혼자이면서도 군단과 같은 전력을 전개할 수 있으며, 상황에 맞게 최적의 소환수를 구사하는 전술안도 탁월합니다. 소환한 존재와의 사이에는 주종을 넘어선 가족 같은 유대로 맺어져 있습니다. 언젠가 전설의 신수와도 계약하여 '계약왕'이 될 것입니다."},
   stats:{HP:60,MP:92,ATK:35,DEF:45,SPD:55,INT:85},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"幻獣召喚・龍王",desc:"古代竜を召喚し広範囲を灼熱のブレスで焼き尽くす"},{name:"精霊融合",desc:"精霊と一体化し属性を纏った強化形態に変身する"},{name:"無限召喚陣",desc:"複数の召喚獣を同時展開し全方位から敵を包囲殲滅する"}]},
-B:{name:"狂戦士（バーサーカー）",emoji:"👹",
+  skills:[{name:{ja:"幻獣召喚・龍王",en:"Summon Dragon King",zh:"幻兽召唤・龙王",ko:"환수 소환・용왕"},desc:{ja:"古代竜を召喚し広範囲を灼熱のブレスで焼き尽くす",en:"Summons an ancient dragon that scorches a wide area with blazing breath.",zh:"召唤古代龙用灼热吐息烧尽大范围",ko:"고대 용을 소환해 광범위를 작열의 브레스로 태워버린다"}},{name:{ja:"精霊融合",en:"Spirit Fusion",zh:"精灵融合",ko:"정령 융합"},desc:{ja:"精霊と一体化し属性を纏った強化形態に変身する",en:"Merges with a spirit to enter an element-clad enhanced form.",zh:"与精灵合为一体变身为属性强化形态",ko:"정령과 일체화하여 속성을 두른 강화 형태로 변신한다"}},{name:{ja:"無限召喚陣",en:"Infinite Summoning Circle",zh:"无限召唤阵",ko:"무한 소환진"},desc:{ja:"複数の召喚獣を同時展開し全方位から敵を包囲殲滅する",en:"Deploys multiple summons simultaneously, surrounding and annihilating enemies from all directions.",zh:"同时展开多个召唤兽从全方位包围歼灭敌人",ko:"복수의 소환수를 동시 전개해 전방위에서 적을 포위 섬멸한다"}}]},
+B:{name:{ja:"狂戦士（バーサーカー）",en:"Berserker",zh:"狂战士",ko:"광전사(버서커)"},emoji:"👹",
   bg:"linear-gradient(135deg,#8e0000,#c0392b)",
-  traits:["圧倒的パワー💥","不屈の肉体🦴","恐怖の化身😈","本能の戦士🐺","暴風の如し🌪️"],
-  desc:"あなたは狂戦士として異世界に転生！理性を超えた狂気と圧倒的な筋力で、目の前の全てを粉砕する戦場の暴風です。一度戦闘に入れば痛みすら感じず、傷を負うほどに強くなる異常な戦闘体質の持ち主。通常なら即死級の攻撃すら気合で耐え抜き、満身創痍でなお立ち上がるその姿は、敵味方問わず畏怖の対象です。魔王軍からは「歩く災害」として最も警戒されており、あなた一人で戦局を覆す力を持っています。",
+  traits:{ja:["圧倒的パワー💥","不屈の肉体🦴","恐怖の化身😈","本能の戦士🐺","暴風の如し🌪️"],en:["Overwhelming Power 💥","Indestructible Body 🦴","Avatar of Fear 😈","Instinct Warrior 🐺","Like a Storm 🌪️"],zh:["压倒性力量💥","不屈之躯🦴","恐惧化身😈","本能战士🐺","如暴风般🌪️"],ko:["압도적 파워💥","불굴의 육체🦴","공포의 화신😈","본능의 전사🐺","폭풍과 같은🌪️"]},
+  desc:{ja:"あなたは狂戦士として異世界に転生！理性を超えた狂気と圧倒的な筋力で、目の前の全てを粉砕する戦場の暴風です。一度戦闘に入れば痛みすら感じず、傷を負うほどに強くなる異常な戦闘体質の持ち主。通常なら即死級の攻撃すら気合で耐え抜き、満身創痍でなお立ち上がるその姿は、敵味方問わず畏怖の対象です。魔王軍からは「歩く災害」として最も警戒されており、あなた一人で戦局を覆す力を持っています。",en:"You reincarnated as a Berserker! With madness beyond reason and overwhelming muscle, you're a battlefield storm that crushes everything. Once in combat you feel no pain, growing stronger with every wound. You endure lethal attacks through sheer willpower, and your battered yet standing figure inspires awe in all. The Demon Lord's army calls you a 'Walking Disaster' — you alone can turn the tide of war.",zh:"你以狂战士身份转生到了异世界！以超越理性的狂气和压倒性的肌肉力量粉碎眼前一切的战场暴风。一旦进入战斗便感觉不到疼痛，越是受伤越变得强大的异常战斗体质。即使是即死级的攻击也能凭气合撑过，满身创伤仍然站起来的身姿令敌我双方都心生敬畏。被魔王军视为「行走的灾害」，你一人便拥有扭转战局的力量。",ko:"당신은 광전사로 이세계에 전생했습니다! 이성을 초월한 광기와 압도적인 근력으로 눈앞의 모든 것을 분쇄하는 전장의 폭풍입니다. 한번 전투에 돌입하면 고통조차 느끼지 못하며, 부상을 입을수록 강해지는 이상한 전투 체질의 소유자. 즉사급 공격마저 기합으로 버텨내며, 만신창이에도 다시 일어서는 모습은 적과 아군 모두에게 경외의 대상입니다. 마왕군으로부터 '걸어다니는 재해'로 가장 경계받고 있으며, 당신 한 명으로 전세를 뒤집는 힘을 지니고 있습니다."},
   stats:{HP:99,MP:20,ATK:97,DEF:55,SPD:70,INT:25},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"狂乱・血の咆哮",desc:"咆哮と共に全能力が2倍になるが制御不能になる暴走技"},{name:"不死身の肉体",desc:"HPが0になっても30秒間戦闘を継続できる生存本能"},{name:"破壊衝撃波",desc:"拳で大地を砕き周囲一帯を壊滅させる超破壊技"}]},
-E:{name:"賢者（セージ）",emoji:"📚",
+  skills:[{name:{ja:"狂乱・血の咆哮",en:"Frenzy — Blood Roar",zh:"狂乱・血之咆哮",ko:"광란・피의 포효"},desc:{ja:"咆哮と共に全能力が2倍になるが制御不能になる暴走技",en:"A roar that doubles all abilities at the cost of losing control.",zh:"伴随咆哮全能力翻倍但变得无法控制的暴走技",ko:"포효와 함께 전 능력이 2배가 되지만 제어 불능이 되는 폭주기"}},{name:{ja:"不死身の肉体",en:"Immortal Body",zh:"不死之躯",ko:"불사신의 육체"},desc:{ja:"HPが0になっても30秒間戦闘を継続できる生存本能",en:"A survival instinct that allows fighting for 30 seconds even after HP hits zero.",zh:"HP变为0后仍可继续战斗30秒的生存本能",ko:"HP가 0이 되어도 30초간 전투를 계속할 수 있는 생존 본능"}},{name:{ja:"破壊衝撃波",en:"Destructive Shockwave",zh:"破坏冲击波",ko:"파괴 충격파"},desc:{ja:"拳で大地を砕き周囲一帯を壊滅させる超破壊技",en:"Shatters the earth with a fist, devastating the entire surrounding area.",zh:"用拳头粉碎大地将周围一带化为废墟的超破坏技",ko:"주먹으로 대지를 부숴 주위 일대를 궤멸시키는 초파괴기"}}]},
+E:{name:{ja:"賢者（セージ）",en:"Sage",zh:"贤者",ko:"현자(세이지)"},emoji:"📚",
   bg:"linear-gradient(135deg,#2980b9,#6c3baa)",
-  traits:["全知の瞳👁️","万能型🌐","助言者🦉","古代知識📜","バランスの極み⚖️"],
-  desc:"あなたは賢者として異世界に転生！魔法・剣術・錬金術・治癒術など、あらゆる分野に精通した万能の知者です。特化型には一歩及ばないものの、どんな状況にも対応できる圧倒的な引き出しの多さが最大の武器。戦闘では仲間への的確な指示と多彩な補助魔法で勝利を引き寄せ、日常では古代文明の解読や戦略立案で絶大な信頼を得ています。いずれ「全知の賢者」として王宮の最高顧問に迎えられ、国の運命すら左右する存在になるでしょう。",
+  traits:{ja:["全知の瞳👁️","万能型🌐","助言者🦉","古代知識📜","バランスの極み⚖️"],en:["All-Seeing Eye 👁️","All-Rounder 🌐","Advisor 🦉","Ancient Lore 📜","Perfect Balance ⚖️"],zh:["全知之瞳👁️","万能型🌐","顾问🦉","古代知识📜","平衡极致⚖️"],ko:["전지의 눈👁️","만능형🌐","조언자🦉","고대 지식📜","밸런스의 극치⚖️"]},
+  desc:{ja:"あなたは賢者として異世界に転生！魔法・剣術・錬金術・治癒術など、あらゆる分野に精通した万能の知者です。特化型には一歩及ばないものの、どんな状況にも対応できる圧倒的な引き出しの多さが最大の武器。戦闘では仲間への的確な指示と多彩な補助魔法で勝利を引き寄せ、日常では古代文明の解読や戦略立案で絶大な信頼を得ています。いずれ「全知の賢者」として王宮の最高顧問に迎えられ、国の運命すら左右する存在になるでしょう。",en:"You reincarnated as a Sage! Versed in magic, swordsmanship, alchemy, and healing, you're an all-knowing polymath. While not quite matching specialists, your overwhelming breadth makes you adaptable to any situation. In battle you guide allies with precise commands and versatile support magic; in daily life your ancient text deciphering and strategic planning earn immense trust. Eventually as the 'Omniscient Sage,' you'll become the royal court's supreme advisor, shaping nations' fates.",zh:"你以贤者身份转生到了异世界！精通魔法・剑术・炼金术・治愈术等所有领域的万能智者。虽然比不上各专精型，但能应对任何状况的压倒性知识储备是最大的武器。战斗中以精准的指挥和多彩的辅助魔法引导胜利，日常中凭借古代文明解读和战略策划获得绝大信赖。终将作为「全知的贤者」被迎入王宫担任最高顾问，成为左右国家命运的存在。",ko:"당신은 현자로 이세계에 전생했습니다! 마법・검술・연금술・치유술 등 모든 분야에 정통한 만능의 지자입니다. 특화형에는 한 발 미치지 못하지만, 어떤 상황에도 대응할 수 있는 압도적인 지식의 폭이 최대 무기. 전투에서는 동료에게 정확한 지시와 다채로운 보조 마법으로 승리를 이끌고, 일상에서는 고대 문명 해독과 전략 수립으로 절대적인 신뢰를 얻고 있습니다. 머지않아 '전지의 현자'로서 왕궁의 최고 고문으로 맞이하게 되어 나라의 운명마저 좌우하는 존재가 될 것입니다."},
   stats:{HP:65,MP:80,ATK:55,DEF:60,SPD:60,INT:95},
   statColors:{HP:'#e74c3c',MP:'#3498db',ATK:'#e67e22',DEF:'#95a5a6',SPD:'#2ecc71',INT:'#9b59b6'},
-  skills:[{name:"全知の眼",desc:"敵の弱点・ステータス・隠し属性を全て見抜く解析魔法"},{name:"万象の書",desc:"状況に応じて攻撃・回復・補助を自在に切り替える適応魔法"},{name:"叡智の結界",desc:"範囲内の味方全員の全ステータスを30%上昇させる強化陣"}]}
+  skills:[{name:{ja:"全知の眼",en:"All-Seeing Eye",zh:"全知之眼",ko:"전지의 눈"},desc:{ja:"敵の弱点・ステータス・隠し属性を全て見抜く解析魔法",en:"An analysis spell that reveals all enemy weaknesses, stats, and hidden attributes.",zh:"看穿敌人弱点・属性・隐藏属性的解析魔法",ko:"적의 약점・스테이터스・숨겨진 속성을 모두 꿰뚫어 보는 해석 마법"}},{name:{ja:"万象の書",en:"Tome of All Creation",zh:"万象之书",ko:"만상의 서"},desc:{ja:"状況に応じて攻撃・回復・補助を自在に切り替える適応魔法",en:"An adaptive spell that freely switches between attack, healing, and support.",zh:"根据情况自由切换攻击・回复・辅助的适应魔法",ko:"상황에 따라 공격・회복・보조를 자재로 전환하는 적응 마법"}},{name:{ja:"叡智の結界",en:"Barrier of Wisdom",zh:"睿智结界",ko:"예지의 결계"},desc:{ja:"範囲内の味方全員の全ステータスを30%上昇させる強化陣",en:"An enhancement field that boosts all stats of every ally within range by 30%.",zh:"使范围内全体同伴全属性提升30%的强化阵",ko:"범위 내 아군 전원의 전 스테이터스를 30% 상승시키는 강화진"}}]}
 };
 const allTypes=[
-{key:'W',emoji:'⚔️',name:'剣聖（ソードマスター）'},
-{key:'M',emoji:'🧙',name:'大魔導士（アークメイジ）'},
-{key:'A',emoji:'⚗️',name:'錬金術師（アルケミスト）'},
-{key:'P',emoji:'✨',name:'聖職者（ハイプリースト）'},
-{key:'R',emoji:'🗡️',name:'盗賊（ファントムシーフ）'},
-{key:'S',emoji:'🐉',name:'召喚士（サモナー）'},
-{key:'B',emoji:'👹',name:'狂戦士（バーサーカー）'},
-{key:'E',emoji:'📚',name:'賢者（セージ）'}
+{key:'W',emoji:'⚔️',name:{ja:'剣聖（ソードマスター）',en:'Sword Master',zh:'剑圣',ko:'검성(소드 마스터)'}},
+{key:'M',emoji:'🧙',name:{ja:'大魔導士（アークメイジ）',en:'Archmage',zh:'大魔导士',ko:'대마도사(아크 메이지)'}},
+{key:'A',emoji:'⚗️',name:{ja:'錬金術師（アルケミスト）',en:'Alchemist',zh:'炼金术师',ko:'연금술사(알케미스트)'}},
+{key:'P',emoji:'✨',name:{ja:'聖職者（ハイプリースト）',en:'High Priest',zh:'圣职者',ko:'성직자(하이 프리스트)'}},
+{key:'R',emoji:'🗡️',name:{ja:'盗賊（ファントムシーフ）',en:'Phantom Thief',zh:'盗贼',ko:'도적(팬텀 시프)'}},
+{key:'S',emoji:'🐉',name:{ja:'召喚士（サモナー）',en:'Summoner',zh:'召唤士',ko:'소환사(서모너)'}},
+{key:'B',emoji:'👹',name:{ja:'狂戦士（バーサーカー）',en:'Berserker',zh:'狂战士',ko:'광전사(버서커)'}},
+{key:'E',emoji:'📚',name:{ja:'賢者（セージ）',en:'Sage',zh:'贤者',ko:'현자(세이지)'}}
 ];
 let current=0,scores={W:0,M:0,A:0,P:0,R:0,S:0,B:0,E:0};
-function startQuiz(){
-  document.getElementById('start').style.display='none';
-  document.getElementById('quiz').classList.add('active');render();
+
+/* ───── setLang ───── */
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  const u=ui[lang];
+  document.getElementById('badgeText').innerHTML=u.badge;
+  document.getElementById('titleText').innerHTML=u.title;
+  document.getElementById('subtitleText').innerHTML=u.subtitle;
+  document.getElementById('startBtn').textContent=u.start;
+  document.getElementById('hintText').textContent=u.hint;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('statusHead').textContent=u.statusHead;
+  document.getElementById('allTypesHead').textContent=u.allTypesHead;
+  document.getElementById('shareXBtn').textContent=u.shareX;
+  document.getElementById('shareLineBtn').textContent=u.shareLine;
+  document.getElementById('retryBtn').textContent=u.retry;
+  if(document.getElementById('quiz').classList.contains('active'))render();
+  if(document.getElementById('result').classList.contains('active'))showResult();
 }
+function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
 function render(){
   const q=questions[current];
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
   document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qText').textContent=q.q[curLang];
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t[curLang];b.onclick=()=>answer(opt.s);o.appendChild(b);});
 }
 function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
 function showResult(){
   let max='W',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
+  const r=results[max];const u=ui[curLang];
   document.getElementById('quiz').classList.remove('active');
   const hero=document.getElementById('resultHero');hero.style.background=r.bg;
   document.getElementById('resultEmoji').textContent=r.emoji;
-  document.getElementById('resultName').textContent=r.name;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('resultName').textContent=r.name[curLang];
   const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
+  r.traits[curLang].forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc[curLang];
   const sb=document.getElementById('statusBars');sb.innerHTML='';
+  document.getElementById('statusHead').textContent=u.statusHead;
   for(let k in r.stats){sb.innerHTML+=`<div class="stat-row"><span class="stat-name">${k}</span><div class="stat-track"><div class="stat-fill" style="width:${r.stats[k]}%;background:${r.statColors[k]}"></div></div><span class="stat-val">${r.stats[k]}</span></div>`;}
   const skb=document.getElementById('skillBox');
-  skb.innerHTML='<h3>🔮 固有スキル</h3>'+r.skills.map(s=>`<div class="skill-item"><span class="skill-name">【${s.name}】</span> ${s.desc}</div>`).join('');
+  skb.innerHTML='<h3>'+u.skillHead+'</h3>'+r.skills.map(s=>`<div class="skill-item"><span class="skill-name">【${s.name[curLang]}】</span> ${s.desc[curLang]}</div>`).join('');
+  document.getElementById('allTypesHead').textContent=u.allTypesHead;
   const ag=document.getElementById('allTypesGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name[curLang]}</div>${t.key===max?'<div class="tc-me">'+u.you+'</div>':''}</div></div>`;});
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('異世界転生したら「'+n+'」でした！⚔️\nあなたも転生してみて👇\n'+location.href)}`,'_blank');}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareTpl[curLang](n))}`,'_blank');}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+setLang(curLang);
+
 </script>
 </body>
 </html>

@@ -117,137 +117,185 @@ h1{font-size:1.55em;font-weight:900;color:#2D0030;line-height:1.4;margin-bottom:
 
 </div>
 <script>
+let curLang='ja';
+const ui={
+ja:{badge:"⭐ 推し活診断",title:"あなたの推し活<br>タイプ診断",subtitle:"10の質問で、あなたの推し活スタイルを診断！<br>布教マスター？ガチ恋？考察オタク？",start:"💫 診断スタート！",hint:"全10問・約2分で完了",resultLabel:"あなたの推し活タイプは…",adviceHead:"💡 推し活アドバイス",sectionHead:"🗺 全タイプ一覧",shareX:"𝕏 シェア",shareLine:"LINE シェア",retry:"🔄 もう一度診断する",you:"← あなた！"},
+en:{badge:"⭐ Fan Style Quiz",title:"Your Fan Activity<br>Type Quiz",subtitle:"10 questions to diagnose your fan style!<br>Evangelist? Devoted? Analyst?",start:"💫 Start the Quiz!",hint:"10 questions · about 2 min",resultLabel:"Your fan activity type is…",adviceHead:"💡 Fan Activity Advice",sectionHead:"🗺 All Types",shareX:"𝕏 Share",shareLine:"LINE Share",retry:"🔄 Try Again",you:"← You!"},
+zh:{badge:"⭐ 追星诊断",title:"你的追星<br>类型诊断",subtitle:"通过10道题诊断你的追星风格！<br>安利达人？唯粉？考据党？",start:"💫 开始诊断！",hint:"共10题・约2分钟完成",resultLabel:"你的追星类型是…",adviceHead:"💡 追星建议",sectionHead:"🗺 全部类型一览",shareX:"𝕏 分享",shareLine:"LINE 分享",retry:"🔄 重新诊断",you:"← 就是你！"},
+ko:{badge:"⭐ 덕질 진단",title:"당신의 덕질<br>유형 진단",subtitle:"10가지 질문으로 당신의 덕질 스타일을 진단!<br>포교 마스터? 갓사랑? 고찰 오타쿠?",start:"💫 진단 시작!",hint:"총 10문항・약 2분 소요",resultLabel:"당신의 덕질 유형은…",adviceHead:"💡 덕질 조언",sectionHead:"🗺 전체 유형 목록",shareX:"𝕏 공유",shareLine:"LINE 공유",retry:"🔄 다시 진단하기",you:"← 당신!"}
+};
+const shareTpl={
+ja:n=>`私の推し活タイプは「${n}」でした！⭐
+あなたも診断してみて👇
+${location.href}`,
+en:n=>`My fan activity type is "${n}"! ⭐
+Try it yourself 👇
+${location.href}`,
+zh:n=>`我的追星类型是「${n}」！⭐
+你也来测测看👇
+${location.href}`,
+ko:n=>`나의 덕질 유형은 "${n}"이었습니다! ⭐
+당신도 진단해 보세요 👇
+${location.href}`
+};
 const questions=[
-{q:"推しの新曲が出た！まず何をする？",opts:[
-{t:"📣 友達やSNSに布教しまくる！みんなに聴いてほしい",s:{B:3}},
-{t:"🎵 グループ全員のパートを聴き比べて良さを整理する",s:{H:3}},
-{t:"💘 推しのパートだけ何百回もリピートしちゃう",s:{G:3}},
-{t:"🔍 歌詞や演出の意味を徹底分析・考察する",s:{R:3}}
+{q:{ja:"推しの新曲が出た！まず何をする？",en:"Your fave just dropped a new song! What do you do first?",zh:"推的新歌出了！你第一件事做什么？",ko:"최애의 신곡이 나왔다! 먼저 뭘 할까?"},opts:[
+{t:{ja:"📣 友達やSNSに布教しまくる！みんなに聴いてほしい",en:"📣 Spread the word on SNS! Everyone needs to hear this",zh:"📣 在朋友和SNS上疯狂安利！想让大家都听到",ko:"📣 친구와 SNS에 포교! 모두에게 들려주고 싶어"},s:{B:3}},
+{t:{ja:"🎵 グループ全員のパートを聴き比べて良さを整理する",en:"🎵 Compare every member's part and organize their highlights",zh:"🎵 对比全员各部分整理各自的亮点",ko:"🎵 그룹 전원의 파트를 비교하며 장점을 정리한다"},s:{H:3}},
+{t:{ja:"💘 推しのパートだけ何百回もリピートしちゃう",en:"💘 Replay my fave's part hundreds of times",zh:"💘 只把推的部分反复听几百遍",ko:"💘 최애의 파트만 수백 번 반복 재생한다"},s:{G:3}},
+{t:{ja:"🔍 歌詞や演出の意味を徹底分析・考察する",en:"🔍 Deeply analyze the lyrics and performance meaning",zh:"🔍 彻底分析歌词和演出的含义",ko:"🔍 가사와 연출의 의미를 철저히 분석・고찰한다"},s:{R:3}}
 ]},
-{q:"推しのライブに行くとき、あなたのスタイルは？",opts:[
-{t:"🎤 現場の空気感が最高！生の推しを全身で浴びたい",s:{L:3}},
-{t:"📸 限定グッズを全種コンプして並べて写真撮りたい",s:{C:3}},
-{t:"🌈 グループ全員のメンカラを身につけて全力で応援",s:{H:2,L:1}},
-{t:"❤️ 推しだけをずっと目で追い続ける",s:{G:3}}
+{q:{ja:"推しのライブに行くとき、あなたのスタイルは？",en:"Your style when going to a live concert?",zh:"去看演唱会时，你的风格是？",ko:"최애의 라이브에 갈 때 당신의 스타일은?"},opts:[
+{t:{ja:"🎤 現場の空気感が最高！生の推しを全身で浴びたい",en:"🎤 The live atmosphere is everything! I want to soak it all in",zh:"🎤 现场的气氛最棒！想全身感受真实的偶像",ko:"🎤 현장 분위기가 최고! 생생한 최애를 온몸으로 느끼고 싶어"},s:{L:3}},
+{t:{ja:"📸 限定グッズを全種コンプして並べて写真撮りたい",en:"📸 Complete all limited merch and photograph my collection",zh:"📸 想收齐全部限定周边摆好拍照",ko:"📸 한정 굿즈를 전종 컴플하고 늘어놓고 사진 찍고 싶어"},s:{C:3}},
+{t:{ja:"🌈 グループ全員のメンカラを身につけて全力で応援",en:"🌈 Wear every member's color and cheer with all my heart",zh:"🌈 穿戴全员应援色全力应援",ko:"🌈 그룹 전원의 멤버 컬러를 착용하고 전력 응원"},s:{H:2,L:1}},
+{t:{ja:"❤️ 推しだけをずっと目で追い続ける",en:"❤️ Keep my eyes only on my fave the entire time",zh:"❤️ 一直只用眼睛追着推看",ko:"❤️ 최애만 계속 눈으로 쫓는다"},s:{G:3}}
 ]},
-{q:"推し活費用について、あなたの考えは？",opts:[
-{t:"💰 布教用のグッズやプレゼンを作る費用に使う",s:{B:3}},
-{t:"🛍️ グッズのコンプリートに全力投資！保存用と観賞用は別",s:{C:2,H:1}},
-{t:"💖 推し専用の推し活費を確保して全額つぎ込む",s:{G:2,P:1}},
-{t:"🎨 画材やデジタルツールなど創作活動に投資する",s:{A:3}}
+{q:{ja:"推し活費用について、あなたの考えは？",en:"Your thoughts on spending for fan activities?",zh:"关于追星费用，你的想法是？",ko:"덕질 비용에 대한 당신의 생각은?"},opts:[
+{t:{ja:"💰 布教用のグッズやプレゼンを作る費用に使う",en:"💰 Spend it on materials for evangelizing",zh:"💰 用在制作安利用的材料和展示上",ko:"💰 포교용 굿즈나 프레젠 만드는 비용에 쓴다"},s:{B:3}},
+{t:{ja:"🛍️ グッズのコンプリートに全力投資！保存用と観賞用は別",en:"🛍️ Go all in on completing merch! One to keep, one to display",zh:"🛍️ 全力投资收齐周边！收藏用和观赏用分开",ko:"🛍️ 굿즈 컴플리트에 전력 투자! 보관용과 감상용은 별도"},s:{C:2,H:1}},
+{t:{ja:"💖 推し専用の推し活費を確保して全額つぎ込む",en:"💖 Set aside a dedicated budget and pour it all in for my fave",zh:"💖 专门留出追星预算全部投入给推",ko:"💖 최애 전용 덕질비를 확보해 전액 투입"},s:{G:2,P:1}},
+{t:{ja:"🎨 画材やデジタルツールなど創作活動に投資する",en:"🎨 Invest in art supplies and digital tools for creating",zh:"🎨 投资画材和数字工具等创作活动",ko:"🎨 화재나 디지털 툴 등 창작 활동에 투자한다"},s:{A:3}}
 ]},
-{q:"推しが落ち込んでいるSNS投稿をした。あなたは？",opts:[
-{t:"📢「みんなで応援しよう！」と呼びかけて支援を広げる",s:{B:2,P:1}},
-{t:"😢 自分も一緒に落ち込んでしまう…推しの気持ちが痛い",s:{G:3}},
-{t:"🔍 なぜ落ち込んでいるか背景情報を徹底的に調べ始める",s:{R:3}},
-{t:"📈 推しの成長の一過程と捉えて温かく見守る",s:{P:3}}
+{q:{ja:"推しが落ち込んでいるSNS投稿をした。あなたは？",en:"Your fave posted something sad on SNS. You?",zh:"推发了一条消沉的SNS。你会？",ko:"최애가 우울한 SNS 게시물을 올렸다. 당신은?"},opts:[
+{t:{ja:"📢「みんなで応援しよう！」と呼びかけて支援を広げる",en:'📢 Rally fans: "Let\'s all support them together!"',zh:"📢 号召「大家一起应援吧！」扩大支持",ko:'📢 "다같이 응원하자!"라고 호소하며 지원을 넓힌다'},s:{B:2,P:1}},
+{t:{ja:"😢 自分も一緒に落ち込んでしまう…推しの気持ちが痛い",en:"😢 I feel down too… their pain is my pain",zh:"😢 自己也跟着难过……推的心情让我好心疼",ko:"😢 나도 같이 우울해진다… 최애의 마음이 아프다"},s:{G:3}},
+{t:{ja:"🔍 なぜ落ち込んでいるか背景情報を徹底的に調べ始める",en:"🔍 Start researching the background of why they're down",zh:"🔍 开始彻底调查为什么会消沉的背景信息",ko:"🔍 왜 우울한지 배경 정보를 철저히 조사하기 시작한다"},s:{R:3}},
+{t:{ja:"📈 推しの成長の一過程と捉えて温かく見守る",en:"📈 See it as part of their growth and watch over them warmly",zh:"📈 当作推的成长过程温暖地守护",ko:"📈 최애의 성장 과정으로 받아들이고 따뜻하게 지켜본다"},s:{P:3}}
 ]},
-{q:"推しに関するSNS、あなたの使い方は？",opts:[
-{t:"📣 推しの良さを語りつくす布教ツイートを連投する",s:{B:3}},
-{t:"🧵 長文考察スレッドを定期的に投稿する",s:{R:3}},
-{t:"🎨 描いたファンアートや作った動画を投稿する",s:{A:3}},
-{t:"📸 集めたグッズのコレクション写真を定期的にアップする",s:{C:3}}
+{q:{ja:"推しに関するSNS、あなたの使い方は？",en:"How do you use SNS regarding your fave?",zh:"关于推的SNS，你的使用方式是？",ko:"최애에 관한 SNS, 당신의 사용법은?"},opts:[
+{t:{ja:"📣 推しの良さを語りつくす布教ツイートを連投する",en:"📣 Post evangelizing tweets about my fave's greatness nonstop",zh:"📣 连发安利推文讲尽推的优点",ko:"📣 최애의 장점을 설파하는 포교 트윗을 연타한다"},s:{B:3}},
+{t:{ja:"🧵 長文考察スレッドを定期的に投稿する",en:"🧵 Regularly post long analysis threads",zh:"🧵 定期发布长文考据帖",ko:"🧵 장문 고찰 스레드를 정기적으로 올린다"},s:{R:3}},
+{t:{ja:"🎨 描いたファンアートや作った動画を投稿する",en:"🎨 Post fan art and fan-made videos",zh:"🎨 发布画的同人图和制作的视频",ko:"🎨 그린 팬아트나 만든 영상을 올린다"},s:{A:3}},
+{t:{ja:"📸 集めたグッズのコレクション写真を定期的にアップする",en:"📸 Regularly upload photos of my merch collection",zh:"📸 定期上传收集的周边合集照片",ko:"📸 모은 굿즈 컬렉션 사진을 정기적으로 올린다"},s:{C:3}}
 ]},
-{q:"推し活仲間に求めることは？",opts:[
-{t:"🔥 一緒に布教活動ができる同志感・仲間意識",s:{B:3}},
-{t:"🎪 一緒にライブやイベントの現場に行ける行動力",s:{L:3}},
-{t:"🎨 お互いの創作を見せ合って刺激し合える関係",s:{A:3}},
-{t:"🧠 一緒に考察・議論ができる知的な仲間",s:{R:2,P:1}}
+{q:{ja:"推し活仲間に求めることは？",en:"What do you look for in fan activity friends?",zh:"你对追星伙伴的期望是？",ko:"덕질 동료에게 바라는 것은?"},opts:[
+{t:{ja:"🔥 一緒に布教活動ができる同志感・仲間意識",en:"🔥 A sense of camaraderie for evangelizing together",zh:"🔥 一起安利的同志感和伙伴意识",ko:"🔥 함께 포교 활동을 할 수 있는 동지의식"},s:{B:3}},
+{t:{ja:"🎪 一緒にライブやイベントの現場に行ける行動力",en:"🎪 The energy to go to live events together",zh:"🎪 能一起去演唱会和活动现场的行动力",ko:"🎪 함께 라이브나 이벤트 현장에 갈 수 있는 행동력"},s:{L:3}},
+{t:{ja:"🎨 お互いの創作を見せ合って刺激し合える関係",en:"🎨 A relationship where we share and inspire each other's creations",zh:"🎨 互相展示创作互相激励的关系",ko:"🎨 서로의 창작을 보여주며 자극을 주고받는 관계"},s:{A:3}},
+{t:{ja:"🧠 一緒に考察・議論ができる知的な仲間",en:"🧠 Intellectual friends for analysis and discussion",zh:"🧠 能一起考据讨论的知性伙伴",ko:"🧠 함께 고찰・토론할 수 있는 지적인 동료"},s:{R:2,P:1}}
 ]},
-{q:"推しが新しいジャンルに挑戦すると聞いた！あなたの気持ちは？",opts:[
-{t:"📈 推しの成長が楽しみ！新しい一面を見守りたい",s:{P:3}},
-{t:"🎨 新ジャンルの推しを想像してファンアートを描きたい",s:{A:3}},
-{t:"🌈 グループ全体の方向性がどう変わるか気になる",s:{H:3}},
-{t:"🎟️ 新ジャンルのライブやイベントにすぐ駆けつけたい",s:{L:3}}
+{q:{ja:"推しが新しいジャンルに挑戦すると聞いた！あなたの気持ちは？",en:"Your fave is trying a new genre! How do you feel?",zh:"听说推要挑战新领域！你的心情是？",ko:"최애가 새로운 장르에 도전한다고! 당신의 기분은?"},opts:[
+{t:{ja:"📈 推しの成長が楽しみ！新しい一面を見守りたい",en:"📈 Excited for their growth! I want to see this new side",zh:"📈 期待推的成长！想见证新的一面",ko:"📈 최애의 성장이 기대! 새로운 면을 지켜보고 싶어"},s:{P:3}},
+{t:{ja:"🎨 新ジャンルの推しを想像してファンアートを描きたい",en:"🎨 I want to draw fan art imagining them in the new genre",zh:"🎨 想象新领域的推画同人图",ko:"🎨 새 장르의 최애를 상상하며 팬아트를 그리고 싶어"},s:{A:3}},
+{t:{ja:"🌈 グループ全体の方向性がどう変わるか気になる",en:"🌈 Curious how the group's direction will change",zh:"🌈 好奇团体整体方向会怎么变化",ko:"🌈 그룹 전체의 방향성이 어떻게 바뀔지 궁금하다"},s:{H:3}},
+{t:{ja:"🎟️ 新ジャンルのライブやイベントにすぐ駆けつけたい",en:"🎟️ I want to rush to new genre concerts and events ASAP",zh:"🎟️ 想马上赶去新领域的演出和活动",ko:"🎟️ 새 장르의 라이브나 이벤트에 바로 달려가고 싶어"},s:{L:3}}
 ]},
-{q:"推しのグッズが大量に発売された！あなたは？",opts:[
-{t:"🛒 全種類コンプリートは当然！保管方法も徹底的に考える",s:{C:3}},
-{t:"📣 推しグッズの魅力を写真つきでSNSにレビュー投稿する",s:{B:2,C:1}},
-{t:"💘 推しのグッズだけを厳選して大切にする",s:{G:2,C:1}},
-{t:"📈 グッズの売上が推しの評価に繋がると思って積極的に買い支える",s:{P:2,H:1}}
+{q:{ja:"推しのグッズが大量に発売された！あなたは？",en:"A ton of your fave's merch just dropped! You?",zh:"推的周边大量发售了！你会？",ko:"최애의 굿즈가 대량 발매됐다! 당신은?"},opts:[
+{t:{ja:"🛒 全種類コンプリートは当然！保管方法も徹底的に考える",en:"🛒 Complete set is a must! I carefully plan how to store them",zh:"🛒 全种类收齐理所当然！还要仔细考虑保管方法",ko:"🛒 전종 컴플리트는 당연! 보관 방법도 철저히 생각한다"},s:{C:3}},
+{t:{ja:"📣 推しグッズの魅力を写真つきでSNSにレビュー投稿する",en:"📣 Post SNS reviews with photos showing the merch's appeal",zh:"📣 在SNS上附照片发布周边魅力评测",ko:"📣 최애 굿즈의 매력을 사진과 함께 SNS에 리뷰 투고"},s:{B:2,C:1}},
+{t:{ja:"💘 推しのグッズだけを厳選して大切にする",en:"💘 Carefully select only my fave's items and treasure them",zh:"💘 只精选推的周边珍惜收藏",ko:"💘 최애의 굿즈만 엄선해서 소중히 한다"},s:{G:2,C:1}},
+{t:{ja:"📈 グッズの売上が推しの評価に繋がると思って積極的に買い支える",en:"📈 Buy actively knowing sales boost my fave's reputation",zh:"📈 认为周边销量关系到推的评价而积极购买支持",ko:"📈 굿즈 매출이 최애의 평가로 이어진다고 생각하며 적극 구매"},s:{P:2,H:1}}
 ]},
-{q:"推しについて一番テンションが上がる瞬間は？",opts:[
-{t:"🎤 ライブで推しが目の前にいる瞬間！現場の熱気が最高",s:{L:3}},
-{t:"💡 推しの作品に隠された伏線や意図を発見した瞬間",s:{R:3}},
-{t:"🎨 自分の創作が推しファンに共感されて広まった瞬間",s:{A:3}},
-{t:"📈 推しが目標を達成して成長を実感できた瞬間",s:{P:3}}
+{q:{ja:"推しについて一番テンションが上がる瞬間は？",en:"When do you get most excited about your fave?",zh:"关于推最让你兴奋的瞬间是？",ko:"최애에 대해 가장 텐션이 오르는 순간은?"},opts:[
+{t:{ja:"🎤 ライブで推しが目の前にいる瞬間！現場の熱気が最高",en:"🎤 When my fave is right in front of me at a concert! The energy is unmatched",zh:"🎤 演唱会上推就在眼前的瞬间！现场的热气最棒",ko:"🎤 라이브에서 최애가 눈앞에 있는 순간! 현장의 열기가 최고"},s:{L:3}},
+{t:{ja:"💡 推しの作品に隠された伏線や意図を発見した瞬間",en:"💡 When I discover hidden foreshadowing or intent in their work",zh:"💡 发现推的作品中隐藏的伏笔和意图的瞬间",ko:"💡 최애의 작품에 숨겨진 복선이나 의도를 발견한 순간"},s:{R:3}},
+{t:{ja:"🎨 自分の創作が推しファンに共感されて広まった瞬間",en:"🎨 When my creation resonates with other fans and spreads",zh:"🎨 自己的创作被推的粉丝共鸣并传播的瞬间",ko:"🎨 내 창작이 최애 팬들에게 공감받고 퍼진 순간"},s:{A:3}},
+{t:{ja:"📈 推しが目標を達成して成長を実感できた瞬間",en:"📈 When my fave achieves a goal and I can feel their growth",zh:"📈 推达成目标感受到成长的瞬间",ko:"📈 최애가 목표를 달성해 성장을 실감할 수 있는 순간"},s:{P:3}}
 ]},
-{q:"推しが発表した驚きのニュース（活動変更など）、あなたの反応は？",opts:[
-{t:"📣「みんな、これ見た！？」と速攻拡散する",s:{B:2,L:1}},
-{t:"🤔 グループ全体に与える影響を冷静に考える",s:{H:3}},
-{t:"😭 感情が溢れてしばらく立ち直れない",s:{G:3}},
-{t:"📊 背景や理由を徹底的に調べて考察をまとめ始める",s:{R:2,A:1}}
+{q:{ja:"推しが発表した驚きのニュース（活動変更など）、あなたの反応は？",en:"Your fave announces surprising news (activity change, etc.). Your reaction?",zh:"推发表了惊人消息（活动变更等），你的反应是？",ko:"최애가 깜짝 뉴스(활동 변경 등)를 발표! 당신의 반응은?"},opts:[
+{t:{ja:"📣「みんな、これ見た！？」と速攻拡散する",en:'📣 "Did everyone see this?!" — share it immediately',zh:"📣「大家看到了吗！？」立刻扩散",ko:'📣 "다들 이거 봤어!?" 하고 즉시 확산한다'},s:{B:2,L:1}},
+{t:{ja:"🤔 グループ全体に与える影響を冷静に考える",en:"🤔 Calmly consider the impact on the whole group",zh:"🤔 冷静思考对团体整体的影响",ko:"🤔 그룹 전체에 미치는 영향을 냉정하게 생각한다"},s:{H:3}},
+{t:{ja:"😭 感情が溢れてしばらく立ち直れない",en:"😭 Emotions overflow and I can't recover for a while",zh:"😭 感情溢出好一阵子缓不过来",ko:"😭 감정이 넘쳐서 한동안 수습이 안 된다"},s:{G:3}},
+{t:{ja:"📊 背景や理由を徹底的に調べて考察をまとめ始める",en:"📊 Thoroughly research the background and start writing analysis",zh:"📊 彻底调查背景和原因开始整理考据",ko:"📊 배경이나 이유를 철저히 조사해 고찰을 정리하기 시작한다"},s:{R:2,A:1}}
 ]}
 ];
 const results={
-B:{name:"布教マスタータイプ",emoji:"📢",bg:"linear-gradient(135deg,#e74c3c,#c0392b)",
-  desc:"あなたは推しの魅力を世界に広めることに命を懸けるタイプです！推しの良さを語り出すと止まらず、気づけば周りの人も推しのファンに染めてしまう天性の布教師。SNSでの発信力はピカイチで、推しの最新情報をいち早くキャッチして拡散するスピード感も持ち合わせています。あなたの情熱的なプレゼンで推しのファンが増えるたびに、まるで自分のことのように嬉しくなる——それがあなたの推し活の原動力です。",
-  advice:"💡 推し活アドバイス：布教する相手のペースも大事にしよう。あなたの情熱は素晴らしいけれど、押しすぎると逆効果になることもあります。「興味あったら教えてね」くらいの余裕を持つと、もっと自然に沼に引きずり込めるはず。布教用の資料やまとめを丁寧に作ると、より効果的に推しの魅力が伝わりますよ！",
-  traits:["布教力MAX📣","プレゼン上手🎤","情熱的🔥","コミュ力おばけ💬","推し愛が溢れる❤️"]},
-H:{name:"箱推しハーモニータイプ",emoji:"🌈",bg:"linear-gradient(135deg,#3498db,#1abc9c)",
-  desc:"あなたはグループ全体を愛する博愛タイプです！メンバーそれぞれの個性や才能を深く理解し、グループの関係性やケミストリーに胸を熱くします。「みんな違ってみんないい」がモットーで、メンバー間の絡みや成長を見守るのが最高に幸せな瞬間。ファン同士の争いを仲裁する平和の使者としても活躍し、コミュニティのバランスを保つ重要な存在です。",
-  advice:"💡 推し活アドバイス：全員を推すことで出費がかさみがちなので、予算管理はしっかりと行いましょう。全体を見渡せる視野の広さは、新規ファンにグループの魅力を教えるのに最適な才能です。メンバー間の関係性マップやグループの歴史をまとめると、あなたならではの素晴らしいコンテンツになりますよ！",
-  traits:["博愛主義🌈","全体を見渡す👀","平和主義🕊","関係性萌え💞","バランス感覚⚖️"]},
-G:{name:"ガチ恋一途タイプ",emoji:"💘",bg:"linear-gradient(135deg,#e91e63,#f06292)",
-  desc:"あなたは推し一人に全力で愛を注ぐ一途タイプです！推しの一挙一動にドキドキし、推しの笑顔が自分の生きる糧。感情の振れ幅が大きく、推しの活動に一喜一憂する日々ですが、その純粋で深い愛こそがあなたの推し活の最大の魅力です。推しへの想いは誰にも負けない——その熱量が推しに届いていると信じて応援し続ける姿は、まさにファンの鑑と言えるでしょう。",
-  advice:"💡 推し活アドバイス：推しとの「距離感」を大切にしましょう。推しはあなただけのものではないけれど、あなたの愛は本物です。推しの幸せ＝あなたの幸せという気持ちを軸に置くと、もっと穏やかに推し活を楽しめます。時には推し以外のことにも目を向けて、心のバランスを保つことも大切ですよ！",
-  traits:["一途💘","純粋🌸","感情豊か😭","献身的🙏","推しの幸せ第一❤️"]},
-R:{name:"研究者・考察オタクタイプ",emoji:"🔬",bg:"linear-gradient(135deg,#2ecc71,#27ae60)",
-  desc:"あなたは推しや作品を深く分析・考察するのが大好きな知的探究タイプです！裏設定、伏線、演出意図…表面だけでは満足できず、その奥にある意味を読み解くことに快感を覚えます。膨大な情報をインプットして独自の視点で考察を組み立てる能力は圧巻。あなたの考察はファンコミュニティの知識の宝庫であり、他のファンの推し活をより深く豊かにする貴重な存在です。",
-  advice:"💡 推し活アドバイス：考察にのめり込みすぎて「公式より詳しい」状態になることもしばしば。時には理屈を忘れて感情のままに推しを楽しむことも大切です。あなたの分析力はブログやYouTubeで発信すると大きな反響が得られるかも。考察は他のファンへの最高のギフトになりますよ！",
-  traits:["分析力🔍","知識量がヤバい📚","考察好き🧩","冷静🧊","探究心旺盛🌟"]},
-C:{name:"コレクター至上主義タイプ",emoji:"🏆",bg:"linear-gradient(135deg,#f39c12,#e67e22)",
-  desc:"あなたはグッズ収集に命を懸けるコレクタータイプです！限定品、レア物、コンプリートセット…推しに関するアイテムは全て手に入れないと気が済みません。保存用・観賞用・布教用と複数買いは当たり前で、コレクションの整理・陳列にもこだわりを持っています。あなたの部屋はまさに推しの博物館であり、その収集への情熱と管理能力はコレクター仲間からも一目置かれる存在です。",
-  advice:"💡 推し活アドバイス：収集欲は際限がないので、予算と保管スペースの管理は計画的に行いましょう。コレクションを美しく飾る方法を工夫すると、集める喜びがさらに倍増します。SNSでコレクション写真を共有すると、同じアイテムを探しているファン仲間と繋がれるチャンスも広がりますよ！",
-  traits:["収集欲MAX🛒","整理整頓🗄️","レア物ハンター💎","完璧主義✨","保管のプロ📦"]},
-P:{name:"プロデューサー応援タイプ",emoji:"📈",bg:"linear-gradient(135deg,#9b59b6,#8e44ad)",
-  desc:"あなたは推しの成長を見守り、応援することに生きがいを感じるプロデューサータイプです！推しの目標達成やスキルアップを自分のことのように喜び、時には厳しい目線で推しの将来を考えることも。投票企画やランキングでは戦略的に動き、推しの評価を高めるために全力を尽くします。まるで芸能事務所のマネージャーのように推しのキャリアを見守るあなたは、推しにとって最も頼もしいファンの一人です。",
-  advice:"💡 推し活アドバイス：推しの成長を見守る姿勢は素晴らしいですが、推しはあなたのプロデュース通りに動くとは限りません。推しの選択を尊重し、どんな道を選んでも応援する懐の深さを持ちましょう。投票や買い支えの戦略を共有すると、ファンコミュニティ全体の力を結集できますよ！",
-  traits:["戦略家🎯","見守り力💪","成長推し📈","マネージャー気質🗂️","長期的視野🔭"]},
-A:{name:"アート系二次創作タイプ",emoji:"🎨",bg:"linear-gradient(135deg,#e84393,#fd79a8)",
-  desc:"あなたは推しへの愛を創作活動で表現するアーティストタイプです！ファンアート、小説、動画編集、コスプレ…推しからインスピレーションを受けて作品を生み出すことが最高の推し活。推しの存在があなたの創作意欲に火をつけ、あなたの作品が他のファンの心を動かすという素晴らしい循環を生み出しています。創作を通じて推しへの愛を形にできるあなたは、ファンコミュニティの文化を支える重要な存在です。",
-  advice:"💡 推し活アドバイス：創作活動は素晴らしい推し活ですが、完成度にこだわりすぎて疲れないようにしましょう。楽しむことが一番大切です。他のクリエイターとのコラボや交流を通じて新しい刺激を得ると、創作の幅がさらに広がります。SNSでの発信を続けると、あなたの作品が推しの目に留まる日が来るかもしれませんよ！",
-  traits:["創作力🎨","表現力豊か✍️","インスピレーション💡","こだわり職人🔧","推しが創作の源泉🌊"]},
-L:{name:"ライブ現場至上主義タイプ",emoji:"🎤",bg:"linear-gradient(135deg,#00b894,#00cec9)",
-  desc:"あなたは現場で生の推しを浴びることに全てを懸けるライブ至上主義タイプです！画面越しでは物足りない、推しの息遣いや汗のきらめき、会場の一体感を肌で感じたい——そんなあなたはチケット争奪戦の猛者であり、遠征も厭わない行動力の持ち主。現場での推しとのアイコンタクトや、ファン同士の熱狂を共有する瞬間こそが、あなたにとって何物にも代えがたい宝物です。",
-  advice:"💡 推し活アドバイス：現場主義は最高の体験ですが、体力と財力の管理は計画的に。遠征の際は交通手段や宿泊を早めに手配すると安心です。ライブレポをSNSで共有すると、行けなかったファンへの素敵なギフトになります。現場での思い出を記録に残す工夫をすると、推し活の財産がどんどん積み上がりますよ！",
-  traits:["現場主義🎤","行動力MAX🏃","チケ取りの鬼🎟️","遠征マスター🚄","臨場感重視🔥"]}
+B:{name:{ja:"布教マスタータイプ",en:"Evangelist Master",zh:"安利达人型",ko:"포교 마스터 타입"},emoji:"📢",bg:"linear-gradient(135deg,#e74c3c,#c0392b)",
+  desc:{ja:"あなたは推しの魅力を世界に広めることに命を懸けるタイプです！推しの良さを語り出すと止まらず、気づけば周りの人も推しのファンに染めてしまう天性の布教師。SNSでの発信力はピカイチで、推しの最新情報をいち早くキャッチして拡散するスピード感も持ち合わせています。あなたの情熱的なプレゼンで推しのファンが増えるたびに、まるで自分のことのように嬉しくなる——それがあなたの推し活の原動力です。",en:"You live to spread your fave's charm to the world! Once you start talking about them, there's no stopping you — you're a born evangelist who naturally converts everyone around you into fans. Your SNS presence is unmatched, and you catch and share the latest news at lightning speed. Every time your passionate pitch wins a new fan, you feel as happy as if it happened to you — that's what drives your fan life.",zh:"你是把推的魅力传播到全世界的类型！一旦开始讲推的优点就停不下来，不知不觉就把周围的人都变成了粉丝的天生安利达人。在SNS上的传播力首屈一指，还有快速捕捉和扩散推的最新消息的速度感。每当你热情的安利让推的粉丝增加，就会像自己的事一样开心——这就是你追星的原动力。",ko:"당신은 최애의 매력을 세상에 알리는 데 목숨을 거는 타입입니다! 최애의 장점을 말하기 시작하면 멈출 수 없고, 어느새 주변 사람들도 최애의 팬으로 물들이는 타고난 포교사. SNS 발신력은 최강이며, 최애의 최신 정보를 가장 빨리 캐치해 확산하는 스피드감도 갖추고 있습니다. 당신의 열정적인 프레젠으로 최애의 팬이 늘어날 때마다 마치 자기 일처럼 기쁜——그것이 당신의 덕질의 원동력입니다."},
+  advice:{ja:"布教する相手のペースも大事にしよう。あなたの情熱は素晴らしいけれど、押しすぎると逆効果になることもあります。「興味あったら教えてね」くらいの余裕を持つと、もっと自然に沼に引きずり込めるはず。布教用の資料やまとめを丁寧に作ると、より効果的に推しの魅力が伝わりますよ！",en:"Respect the pace of those you're evangelizing to. Your passion is wonderful, but pushing too hard can backfire. Having the chill to say 'let me know if you're interested' will actually pull people into the fandom more naturally. Creating neat introductory materials will convey your fave's charm even more effectively!",zh:"要尊重被安利对象的节奏。你的热情很棒，但推得太紧反而会适得其反。保持「有兴趣的话告诉我」的余裕，才能更自然地把人拉入坑。用心制作安利资料和整理材料，能更有效地传达推的魅力哦！",ko:"포교 대상의 페이스도 존중하세요. 당신의 열정은 훌륭하지만, 너무 밀면 역효과가 날 수도 있어요. '관심 있으면 알려줘' 정도의 여유를 갖으면 더 자연스럽게 늪에 끌어들일 수 있을 거예요. 포교용 자료를 정성껏 만들면 최애의 매력이 더 효과적으로 전해져요!"},
+  traits:{ja:["布教力MAX📣","プレゼン上手🎤","情熱的🔥","コミュ力おばけ💬","推し愛が溢れる❤️"],en:["Max Evangelism 📣","Great Presenter 🎤","Passionate 🔥","Social Butterfly 💬","Overflowing Love ❤️"],zh:["安利力MAX📣","演讲高手🎤","热情🔥","社交达人💬","满溢的爱❤️"],ko:["포교력MAX📣","프레젠 달인🎤","열정적🔥","커뮤력 괴물💬","최애 사랑 넘침❤️"]}},
+H:{name:{ja:"箱推しハーモニータイプ",en:"All-Member Harmony Type",zh:"团推和谐型",ko:"박스 추시 하모니 타입"},emoji:"🌈",bg:"linear-gradient(135deg,#3498db,#1abc9c)",
+  desc:{ja:"あなたはグループ全体を愛する博愛タイプです！メンバーそれぞれの個性や才能を深く理解し、グループの関係性やケミストリーに胸を熱くします。「みんな違ってみんないい」がモットーで、メンバー間の絡みや成長を見守るのが最高に幸せな瞬間。ファン同士の争いを仲裁する平和の使者としても活躍し、コミュニティのバランスを保つ重要な存在です。",en:"You're the all-embracing type who loves the entire group! You deeply understand each member's personality and talents, and the group's chemistry makes your heart race. Your motto is 'everyone's different and that's great,' and watching members interact and grow is pure bliss. You also serve as a peacekeeper among fans, maintaining community balance.",zh:"你是爱整个团体的博爱型！深刻理解每位成员的个性和才能，为团体的关系和化学反应心潮澎湃。座右铭是「每个人不同每个人都好」，看成员之间的互动和成长是最幸福的时刻。也是调解粉丝争端的和平使者，是维持社区平衡的重要存在。",ko:"당신은 그룹 전체를 사랑하는 박애 타입입니다! 멤버 각각의 개성과 재능을 깊이 이해하고, 그룹의 관계성과 케미스트리에 가슴이 뜨거워집니다. '다 다르고 다 좋아'가 모토이며, 멤버 간의 교류와 성장을 지켜보는 것이 최고로 행복한 순간. 팬 사이의 다툼을 중재하는 평화의 사자로도 활약하며, 커뮤니티의 균형을 유지하는 중요한 존재입니다."},
+  advice:{ja:"全員を推すことで出費がかさみがちなので、予算管理はしっかりと行いましょう。全体を見渡せる視野の広さは、新規ファンにグループの魅力を教えるのに最適な才能です。メンバー間の関係性マップやグループの歴史をまとめると、あなたならではの素晴らしいコンテンツになりますよ！",en:"Supporting everyone can get expensive, so budget carefully. Your wide perspective is perfect for introducing new fans to the group's charm. Creating relationship maps and group histories would make amazing content that only you could produce!",zh:"推全员容易花销增大，所以要好好管理预算。能俯瞰全局的视野是向新粉丝介绍团体魅力的最佳才能。整理成员关系图和团体历史的话，会成为只有你才能做出的精彩内容哦！",ko:"전원을 추시하면 지출이 늘기 쉬우므로 예산 관리를 철저히 합시다. 전체를 내려다볼 수 있는 넓은 시야는 신규 팬에게 그룹의 매력을 알려주기에 최적의 재능입니다. 멤버 간의 관계도나 그룹의 역사를 정리하면, 당신만의 멋진 콘텐츠가 될 거예요!"},
+  traits:{ja:["博愛主義🌈","全体を見渡す👀","平和主義🕊","関係性萌え💞","バランス感覚⚖️"],en:["All-Embracing 🌈","Big-Picture View 👀","Peacekeeper 🕊","Ship Chemistry 💞","Balanced ⚖️"],zh:["博爱主义🌈","纵观全局👀","和平主义🕊","关系萌💞","平衡感⚖️"],ko:["박애주의🌈","전체를 조망👀","평화주의🕊","관계성 모에💞","밸런스 감각⚖️"]}},
+G:{name:{ja:"ガチ恋一途タイプ",en:"Devoted Single-Fave Type",zh:"真爱专一型",ko:"갓사랑 한길 타입"},emoji:"💘",bg:"linear-gradient(135deg,#e91e63,#f06292)",
+  desc:{ja:"あなたは推し一人に全力で愛を注ぐ一途タイプです！推しの一挙一動にドキドキし、推しの笑顔が自分の生きる糧。感情の振れ幅が大きく、推しの活動に一喜一憂する日々ですが、その純粋で深い愛こそがあなたの推し活の最大の魅力です。推しへの想いは誰にも負けない——その熱量が推しに届いていると信じて応援し続ける姿は、まさにファンの鑑と言えるでしょう。",en:"You pour all your love into one single fave! Every move they make sets your heart racing, and their smile is what keeps you going. Your emotions ride high and low with their activities, but that pure, deep love is the greatest charm of your fan life. Your feelings for them are second to none — believing that passion reaches them as you keep cheering is what makes you a model fan.",zh:"你是全力将爱倾注给一个推的专一型！推的一举一动都让你心跳加速，推的笑容就是你活着的动力。情绪波动很大，每天为推的活动时喜时忧，但那份纯粹而深沉的爱正是你追星最大的魅力。对推的感情不输任何人——相信那份热量传达到了推那里而持续应援的身姿，堪称粉丝的楷模。",ko:"당신은 최애 한 명에게 전력으로 사랑을 쏟는 한길 타입입니다! 최애의 일거수일투족에 두근거리고, 최애의 미소가 살아가는 힘. 감정의 폭이 크고 최애의 활동에 일희일비하는 나날이지만, 그 순수하고 깊은 사랑이야말로 당신의 덕질의 최대 매력입니다. 최애에 대한 마음은 누구에게도 지지 않는——그 열량이 최애에게 닿고 있다고 믿으며 응원하는 모습은 팬의 귀감이라 할 수 있습니다."},
+  advice:{ja:"推しとの「距離感」を大切にしましょう。推しはあなただけのものではないけれど、あなたの愛は本物です。推しの幸せ＝あなたの幸せという気持ちを軸に置くと、もっと穏やかに推し活を楽しめます。時には推し以外のことにも目を向けて、心のバランスを保つことも大切ですよ！",en:"Cherish the 'distance' with your fave. They're not yours alone, but your love is real. Centering on 'their happiness = my happiness' lets you enjoy fan life more peacefully. Sometimes looking at things beyond your fave helps maintain emotional balance too!",zh:"要珍惜和推之间的「距离感」。推不是只属于你的，但你的爱是真实的。以推的幸福＝你的幸福为轴心，就能更平静地享受追星。偶尔关注推以外的事情，保持心理平衡也很重要哦！",ko:"최애와의 '거리감'을 소중히 합시다. 최애는 당신만의 것이 아니지만, 당신의 사랑은 진짜입니다. 최애의 행복＝당신의 행복이라는 마음을 중심에 두면 더 평온하게 덕질을 즐길 수 있어요. 가끔은 최애 외의 것에도 눈을 돌려 마음의 균형을 유지하는 것도 중요해요!"},
+  traits:{ja:["一途💘","純粋🌸","感情豊か😭","献身的🙏","推しの幸せ第一❤️"],en:["Devoted 💘","Pure 🌸","Emotional 😭","Dedicated 🙏","Fave's Happiness First ❤️"],zh:["专一💘","纯粹🌸","感情丰富😭","全心奉献🙏","推的幸福第一❤️"],ko:["한길💘","순수🌸","감정 풍부😭","헌신적🙏","최애의 행복이 최우선❤️"]}},
+R:{name:{ja:"研究者・考察オタクタイプ",en:"Researcher & Analyst Type",zh:"研究者・考据宅型",ko:"연구자・고찰 오타쿠 타입"},emoji:"🔬",bg:"linear-gradient(135deg,#2ecc71,#27ae60)",
+  desc:{ja:"あなたは推しや作品を深く分析・考察するのが大好きな知的探究タイプです！裏設定、伏線、演出意図…表面だけでは満足できず、その奥にある意味を読み解くことに快感を覚えます。膨大な情報をインプットして独自の視点で考察を組み立てる能力は圧巻。あなたの考察はファンコミュニティの知識の宝庫であり、他のファンの推し活をより深く豊かにする貴重な存在です。",en:"You're the intellectual type who loves deeply analyzing your fave and their work! Hidden lore, foreshadowing, directorial intent… the surface isn't enough — you find thrill in decoding deeper meaning. Your ability to absorb vast information and build unique analyses is stunning. Your insights are a treasure trove for the fan community, enriching everyone's fan experience.",zh:"你是喜欢深入分析・考据推和作品的知性探究型！隐藏设定、伏笔、演出意图……光看表面无法满足，解读其深层含义让你感到快感。输入海量信息并以独特视角组建考据的能力令人叹服。你的考据是粉丝社区的知识宝库，是让其他粉丝的追星更深更丰富的珍贵存在。",ko:"당신은 최애와 작품을 깊이 분석・고찰하는 것을 좋아하는 지적 탐구 타입입니다! 숨겨진 설정, 복선, 연출 의도… 표면만으로는 만족할 수 없고, 그 안에 숨겨진 의미를 읽어내는 데 쾌감을 느낍니다. 방대한 정보를 인풋하여 독자적인 시점으로 고찰을 구축하는 능력은 압권. 당신의 고찰은 팬 커뮤니티의 지식의 보고이며, 다른 팬들의 덕질을 더 깊고 풍부하게 만드는 소중한 존재입니다."},
+  advice:{ja:"考察にのめり込みすぎて「公式より詳しい」状態になることもしばしば。時には理屈を忘れて感情のままに推しを楽しむことも大切です。あなたの分析力はブログやYouTubeで発信すると大きな反響が得られるかも。考察は他のファンへの最高のギフトになりますよ！",en:"You sometimes end up 'knowing more than the official sources.' Sometimes it's important to forget logic and just enjoy your fave emotionally. Your analytical skills could get huge responses on blogs or YouTube. Your analyses are the greatest gift to fellow fans!",zh:"沉迷考据到「比官方还详细」的状态也是常有的事。有时忘掉道理用感情去享受推也很重要。你的分析力如果在博客或YouTube上发布可能会获得很大反响。考据是给其他粉丝的最好礼物哦！",ko:"고찰에 빠져 '공식보다 더 자세한' 상태가 되기도 합니다. 가끔은 이치를 잊고 감정 그대로 최애를 즐기는 것도 중요해요. 당신의 분석력은 블로그나 유튜브에서 발신하면 큰 반향을 얻을 수 있을지도. 고찰은 다른 팬에게 최고의 선물이 될 거예요!"},
+  traits:{ja:["分析力🔍","知識量がヤバい📚","考察好き🧩","冷静🧊","探究心旺盛🌟"],en:["Analytical 🔍","Vast Knowledge 📚","Theory Lover 🧩","Cool-Headed 🧊","Endlessly Curious 🌟"],zh:["分析力🔍","知识量惊人📚","考据爱好者🧩","冷静🧊","探究心旺盛🌟"],ko:["분석력🔍","지식량 엄청📚","고찰 좋아함🧩","냉정🧊","탐구심 왕성🌟"]}},
+C:{name:{ja:"コレクター至上主義タイプ",en:"Supreme Collector Type",zh:"收藏至上主义型",ko:"콜렉터 지상주의 타입"},emoji:"🏆",bg:"linear-gradient(135deg,#f39c12,#e67e22)",
+  desc:{ja:"あなたはグッズ収集に命を懸けるコレクタータイプです！限定品、レア物、コンプリートセット…推しに関するアイテムは全て手に入れないと気が済みません。保存用・観賞用・布教用と複数買いは当たり前で、コレクションの整理・陳列にもこだわりを持っています。あなたの部屋はまさに推しの博物館であり、その収集への情熱と管理能力はコレクター仲間からも一目置かれる存在です。",en:"You're the collector type who lives for merch! Limited editions, rare items, complete sets… you won't rest until you have every item related to your fave. Buying multiples for keeping, displaying, and evangelizing is standard, and you take pride in organizing and displaying your collection. Your room is basically a museum dedicated to your fave, and your passion and management skills earn respect from fellow collectors.",zh:"你是把命押在收集周边上的收藏家型！限定品、稀有物、全套……推相关的物品不全部到手就不罢休。保存用・观赏用・安利用分别购买是常态，对收藏的整理和陈列也非常讲究。你的房间简直就是推的博物馆，那份对收集的热情和管理能力连收藏伙伴们也刮目相看。",ko:"당신은 굿즈 수집에 목숨을 거는 콜렉터 타입입니다! 한정품, 레어 아이템, 컴플리트 세트… 최애에 관한 아이템은 전부 손에 넣지 않으면 성에 안 찹니다. 보관용・감상용・포교용으로 복수 구매는 당연하고, 컬렉션의 정리・진열에도 집착이 있습니다. 당신의 방은 그야말로 최애의 박물관이며, 그 수집에 대한 열정과 관리 능력은 콜렉터 동료들로부터도 인정받는 존재입니다."},
+  advice:{ja:"収集欲は際限がないので、予算と保管スペースの管理は計画的に行いましょう。コレクションを美しく飾る方法を工夫すると、集める喜びがさらに倍増します。SNSでコレクション写真を共有すると、同じアイテムを探しているファン仲間と繋がれるチャンスも広がりますよ！",en:"The desire to collect is endless, so plan your budget and storage carefully. Finding beautiful ways to display your collection doubles the joy of collecting. Sharing collection photos on SNS opens chances to connect with fans looking for the same items!",zh:"收集欲是无限的，所以要有计划地管理预算和保管空间。花心思把收藏品陈列得漂漂亮亮，收集的喜悦会加倍。在SNS上分享收藏照片，还能扩大与寻找同款物品的粉丝伙伴联系的机会哦！",ko:"수집욕은 끝이 없으니 예산과 보관 공간 관리를 계획적으로 합시다. 컬렉션을 아름답게 장식하는 방법을 궁리하면 모으는 기쁨이 배가됩니다. SNS에서 컬렉션 사진을 공유하면 같은 아이템을 찾는 팬 동료와 연결될 기회도 넓어져요!"},
+  traits:{ja:["収集欲MAX🛒","整理整頓🗄️","レア物ハンター💎","完璧主義✨","保管のプロ📦"],en:["Max Collector 🛒","Organized 🗄️","Rare Hunter 💎","Perfectionist ✨","Storage Pro 📦"],zh:["收集欲MAX🛒","整理整顿🗄️","稀有猎手💎","完美主义✨","保管专家📦"],ko:["수집욕MAX🛒","정리정돈🗄️","레어 헌터💎","완벽주의✨","보관의 프로📦"]}},
+P:{name:{ja:"プロデューサー応援タイプ",en:"Producer Support Type",zh:"制作人应援型",ko:"프로듀서 응원 타입"},emoji:"📈",bg:"linear-gradient(135deg,#9b59b6,#8e44ad)",
+  desc:{ja:"あなたは推しの成長を見守り、応援することに生きがいを感じるプロデューサータイプです！推しの目標達成やスキルアップを自分のことのように喜び、時には厳しい目線で推しの将来を考えることも。投票企画やランキングでは戦略的に動き、推しの評価を高めるために全力を尽くします。まるで芸能事務所のマネージャーのように推しのキャリアを見守るあなたは、推しにとって最も頼もしいファンの一人です。",en:"You're the producer type who finds purpose in watching your fave grow! You celebrate their achievements and skill growth as if they were your own, sometimes even taking a critical eye to their future. You move strategically in voting events and rankings, giving everything to boost your fave's standing. Like a talent agency manager watching over their career, you're one of the most reassuring fans your fave could have.",zh:"你是看着推的成长而感到生命意义的制作人型！为推的目标达成和技能提升像自己的事一样开心，有时也会以严格的眼光思考推的未来。在投票企划和排名中战略性地行动，为提升推的评价全力以赴。像娱乐公司的经纪人一样守护推的事业的你，是推最可靠的粉丝之一。",ko:"당신은 최애의 성장을 지켜보며 응원하는 것에 보람을 느끼는 프로듀서 타입입니다! 최애의 목표 달성이나 스킬업을 자기 일처럼 기뻐하고, 때로는 엄격한 시선으로 최애의 장래를 생각하기도. 투표 기획이나 랭킹에서는 전략적으로 움직이며, 최애의 평가를 높이기 위해 전력을 다합니다. 마치 연예 사무소의 매니저처럼 최애의 커리어를 지켜보는 당신은 최애에게 가장 든든한 팬 중 한 명입니다."},
+  advice:{ja:"推しの成長を見守る姿勢は素晴らしいですが、推しはあなたのプロデュース通りに動くとは限りません。推しの選択を尊重し、どんな道を選んでも応援する懐の深さを持ちましょう。投票や買い支えの戦略を共有すると、ファンコミュニティ全体の力を結集できますよ！",en:"Watching over their growth is wonderful, but your fave won't always follow your 'production plan.' Respect their choices and have the generosity to support whatever path they choose. Sharing voting and support strategies can unite the entire fan community!",zh:"守护推的成长的姿态非常棒，但推不一定会按你的制作计划行动。尊重推的选择，拥有无论选什么路都支持的宽广胸怀吧。分享投票和购买支持的策略，可以凝聚整个粉丝社区的力量哦！",ko:"최애의 성장을 지켜보는 자세는 훌륭하지만, 최애가 당신의 프로듀스대로 움직이지는 않아요. 최애의 선택을 존중하고, 어떤 길을 선택하든 응원하는 넓은 마음을 가집시다. 투표나 구매 지원 전략을 공유하면 팬 커뮤니티 전체의 힘을 결집할 수 있어요!"},
+  traits:{ja:["戦略家🎯","見守り力💪","成長推し📈","マネージャー気質🗂️","長期的視野🔭"],en:["Strategist 🎯","Watchful 💪","Growth-Oriented 📈","Manager Mentality 🗂️","Long-Term Vision 🔭"],zh:["战略家🎯","守护力💪","成长推📈","经纪人气质🗂️","长期视野🔭"],ko:["전략가🎯","지켜보기💪","성장 추시📈","매니저 기질🗂️","장기적 시야🔭"]}},
+A:{name:{ja:"アート系二次創作タイプ",en:"Creative Fan Artist Type",zh:"艺术系二创型",ko:"아트계 2차 창작 타입"},emoji:"🎨",bg:"linear-gradient(135deg,#e84393,#fd79a8)",
+  desc:{ja:"あなたは推しへの愛を創作活動で表現するアーティストタイプです！ファンアート、小説、動画編集、コスプレ…推しからインスピレーションを受けて作品を生み出すことが最高の推し活。推しの存在があなたの創作意欲に火をつけ、あなたの作品が他のファンの心を動かすという素晴らしい循環を生み出しています。創作を通じて推しへの愛を形にできるあなたは、ファンコミュニティの文化を支える重要な存在です。",en:"You're the artist type who expresses love through creation! Fan art, fiction, video edits, cosplay… creating works inspired by your fave is the ultimate fan activity. Your fave ignites your creative passion, and your works move other fans' hearts — a beautiful cycle. By giving shape to your love through creation, you're a vital part of the fan community's culture.",zh:"你是通过创作活动表达对推的爱的艺术家型！同人画、小说、视频剪辑、cosplay……从推获得灵感创作作品是最棒的追星方式。推的存在点燃你的创作欲，你的作品感动其他粉丝——形成了美好的循环。通过创作将对推的爱化为形态的你，是粉丝社区文化的重要支柱。",ko:"당신은 최애에 대한 사랑을 창작 활동으로 표현하는 아티스트 타입입니다! 팬아트, 소설, 영상 편집, 코스프레… 최애에게서 영감을 받아 작품을 만드는 것이 최고의 덕질. 최애의 존재가 당신의 창작 의욕에 불을 붙이고, 당신의 작품이 다른 팬의 마음을 움직이는 멋진 선순환을 만들어내고 있습니다. 창작을 통해 최애에 대한 사랑을 형태로 만들 수 있는 당신은 팬 커뮤니티의 문화를 지탱하는 중요한 존재입니다."},
+  advice:{ja:"創作活動は素晴らしい推し活ですが、完成度にこだわりすぎて疲れないようにしましょう。楽しむことが一番大切です。他のクリエイターとのコラボや交流を通じて新しい刺激を得ると、創作の幅がさらに広がります。SNSでの発信を続けると、あなたの作品が推しの目に留まる日が来るかもしれませんよ！",en:"Creating is wonderful fan activity, but don't exhaust yourself obsessing over perfection. Having fun is what matters most. Collaborating with other creators brings fresh inspiration and broadens your creative range. Keep posting on SNS — the day your work catches your fave's eye might come!",zh:"创作活动是很棒的追星方式，但不要太执着于完成度而疲惫不堪。享受过程才是最重要的。通过与其他创作者的合作和交流获得新刺激，创作的范围会进一步拓宽。继续在SNS上发布，你的作品被推看到的那天也许会到来哦！",ko:"창작 활동은 훌륭한 덕질이지만, 완성도에 너무 집착해서 지치지 않도록 합시다. 즐기는 것이 가장 중요해요. 다른 크리에이터와의 콜라보나 교류를 통해 새로운 자극을 받으면 창작의 폭이 더 넓어집니다. SNS에서 계속 발신하면 당신의 작품이 최애의 눈에 들어오는 날이 올지도 몰라요!"},
+  traits:{ja:["創作力🎨","表現力豊か✍️","インスピレーション💡","こだわり職人🔧","推しが創作の源泉🌊"],en:["Creative 🎨","Expressive ✍️","Inspired 💡","Perfectionist Craftsman 🔧","Fave = Muse 🌊"],zh:["创作力🎨","表现力丰富✍️","灵感💡","讲究的匠人🔧","推是创作的源泉🌊"],ko:["창작력🎨","표현력 풍부✍️","인스피레이션💡","장인 기질🔧","최애가 창작의 원천🌊"]}},
+L:{name:{ja:"ライブ現場至上主義タイプ",en:"Live Concert Supremacy Type",zh:"现场至上主义型",ko:"라이브 현장 지상주의 타입"},emoji:"🎤",bg:"linear-gradient(135deg,#00b894,#00cec9)",
+  desc:{ja:"あなたは現場で生の推しを浴びることに全てを懸けるライブ至上主義タイプです！画面越しでは物足りない、推しの息遣いや汗のきらめき、会場の一体感を肌で感じたい——そんなあなたはチケット争奪戦の猛者であり、遠征も厭わない行動力の持ち主。現場での推しとのアイコンタクトや、ファン同士の熱狂を共有する瞬間こそが、あなたにとって何物にも代えがたい宝物です。",en:"You're the live supremacy type who lives for experiencing your fave in person! Screens aren't enough — you want to feel their breath, the gleam of sweat, the venue's unity with your own body. You're a ticket war veteran who doesn't hesitate to travel far. Eye contact with your fave at a venue and sharing the thrill with fellow fans — these irreplaceable moments are your greatest treasures.",zh:"你是把一切都赌在现场体验真实偶像的现场至上主义型！隔着屏幕无法满足，想亲身感受推的呼吸、汗水的闪耀和会场的一体感——这样的你是抢票大战的猛将，也是不惧远征的行动派。在现场与推的眼神交流，与粉丝们共享狂热的瞬间，对你来说是无可替代的宝物。",ko:"당신은 현장에서 생생한 최애를 느끼는 것에 모든 것을 거는 라이브 지상주의 타입입니다! 화면 너머로는 부족하고, 최애의 숨소리와 땀의 반짝임, 회장의 일체감을 피부로 느끼고 싶은——그런 당신은 티켓 쟁탈전의 용사이며, 원정도 마다하지 않는 행동력의 소유자. 현장에서의 최애와의 아이컨택이나 팬끼리의 열광을 공유하는 순간이야말로 당신에게 그 무엇과도 바꿀 수 없는 보물입니다."},
+  advice:{ja:"現場主義は最高の体験ですが、体力と財力の管理は計画的に。遠征の際は交通手段や宿泊を早めに手配すると安心です。ライブレポをSNSで共有すると、行けなかったファンへの素敵なギフトになります。現場での思い出を記録に残す工夫をすると、推し活の財産がどんどん積み上がりますよ！",en:"Being a live fan is the ultimate experience, but manage your stamina and finances wisely. Book travel and hotels early for out-of-town events. Sharing live reports on SNS is a wonderful gift for fans who couldn't attend. Finding ways to record your memories builds up an ever-growing treasure trove of fan experiences!",zh:"现场主义是最棒的体验，但要有计划地管理体力和财力。远征时提前安排交通和住宿比较安心。在SNS上分享现场报告，会成为送给无法到场的粉丝的美好礼物。想办法记录现场的回忆，追星的财富就会不断积累哦！",ko:"현장주의는 최고의 체험이지만, 체력과 재력 관리는 계획적으로. 원정 시에는 교통수단이나 숙박을 일찍 준비하면 안심입니다. 라이브 리포를 SNS에서 공유하면 가지 못한 팬에게 멋진 선물이 됩니다. 현장에서의 추억을 기록으로 남기는 궁리를 하면 덕질의 재산이 점점 쌓여가요!"},
+  traits:{ja:["現場主義🎤","行動力MAX🏃","チケ取りの鬼🎟️","遠征マスター🚄","臨場感重視🔥"],en:["Live Fan 🎤","Max Mobility 🏃","Ticket Hunter 🎟️","Tour Master 🚄","All About Presence 🔥"],zh:["现场主义🎤","行动力MAX🏃","抢票鬼🎟️","远征达人🚄","重视临场感🔥"],ko:["현장주의🎤","행동력MAX🏃","티켓 귀신🎟️","원정 마스터🚄","임장감 중시🔥"]}}
 };
 const allTypes=[
-{key:'B',emoji:'📢',name:'布教マスタータイプ'},{key:'H',emoji:'🌈',name:'箱推しハーモニータイプ'},
-{key:'G',emoji:'💘',name:'ガチ恋一途タイプ'},{key:'R',emoji:'🔬',name:'研究者・考察オタクタイプ'},
-{key:'C',emoji:'🏆',name:'コレクター至上主義タイプ'},{key:'P',emoji:'📈',name:'プロデューサー応援タイプ'},
-{key:'A',emoji:'🎨',name:'アート系二次創作タイプ'},{key:'L',emoji:'🎤',name:'ライブ現場至上主義タイプ'}
+{key:'B',emoji:'📢',name:{ja:'布教マスタータイプ',en:'Evangelist Master',zh:'安利达人型',ko:'포교 마스터 타입'}},
+{key:'H',emoji:'🌈',name:{ja:'箱推しハーモニータイプ',en:'All-Member Harmony',zh:'团推和谐型',ko:'박스 추시 하모니 타입'}},
+{key:'G',emoji:'💘',name:{ja:'ガチ恋一途タイプ',en:'Devoted Single-Fave',zh:'真爱专一型',ko:'갓사랑 한길 타입'}},
+{key:'R',emoji:'🔬',name:{ja:'研究者・考察オタクタイプ',en:'Researcher & Analyst',zh:'研究者・考据宅型',ko:'연구자・고찰 오타쿠 타입'}},
+{key:'C',emoji:'🏆',name:{ja:'コレクター至上主義タイプ',en:'Supreme Collector',zh:'收藏至上主义型',ko:'콜렉터 지상주의 타입'}},
+{key:'P',emoji:'📈',name:{ja:'プロデューサー応援タイプ',en:'Producer Support',zh:'制作人应援型',ko:'프로듀서 응원 타입'}},
+{key:'A',emoji:'🎨',name:{ja:'アート系二次創作タイプ',en:'Creative Fan Artist',zh:'艺术系二创型',ko:'아트계 2차 창작 타입'}},
+{key:'L',emoji:'🎤',name:{ja:'ライブ現場至上主義タイプ',en:'Live Supremacy',zh:'现场至上主义型',ko:'라이브 현장 지상주의 타입'}}
 ];
 let current=0,scores={B:0,H:0,G:0,R:0,C:0,P:0,A:0,L:0};
+
+/* ───── setLang ───── */
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  const u=ui[lang];
+  document.getElementById('badgeText').innerHTML=u.badge;
+  document.getElementById('heroTitle').innerHTML=u.title;
+  document.getElementById('heroSubtitle').innerHTML=u.subtitle;
+  document.getElementById('startBtn').textContent=u.start;
+  document.getElementById('hintText').textContent=u.hint;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('sectionHead').textContent=u.sectionHead;
+  document.getElementById('shareXBtn').textContent=u.shareX;
+  document.getElementById('shareLineBtn').textContent=u.shareLine;
+  document.getElementById('retryBtn').textContent=u.retry;
+  if(document.getElementById('quiz').classList.contains('active'))render();
+  if(document.getElementById('result').classList.contains('active'))showResult();
+}
 function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
 function render(){
   const q=questions[current];
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
   document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qText').textContent=q.q[curLang];
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t[curLang];b.onclick=()=>answer(opt.s);o.appendChild(b);});
 }
 function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
 function showResult(){
   let max='B',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
+  const r=results[max];const u=ui[curLang];
   document.getElementById('quiz').classList.remove('active');
   const hero=document.getElementById('resultHero');hero.style.background=r.bg;
   document.getElementById('resultEmoji').textContent=r.emoji;
-  document.getElementById('resultName').textContent=r.name;
+  document.getElementById('resultLabel').textContent=u.resultLabel;
+  document.getElementById('resultName').textContent=r.name[curLang];
   const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
-  document.getElementById('adviceBox').innerHTML='<h3>💡 推し活アドバイス</h3><p>'+r.advice+'</p>';
+  r.traits[curLang].forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
+  document.getElementById('resultDesc').textContent=r.desc[curLang];
+  document.getElementById('adviceBox').innerHTML='<h3>'+u.adviceHead+'</h3><p>'+r.advice[curLang]+'</p>';
+  document.getElementById('sectionHead').textContent=u.sectionHead;
   const ag=document.getElementById('allGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name[curLang]}</div>${t.key===max?'<div class="tc-me">'+u.you+'</div>':''}</div></div>`;});
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の推し活タイプは「'+n+'」でした！⭐\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
+function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareTpl[curLang](n))}`,'_blank');}
 function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+setLang(curLang);
+
 </script>
 </body>
 </html>
