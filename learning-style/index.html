@@ -119,146 +119,293 @@ h1{font-size:1.55em;font-weight:900;color:#1a1040;line-height:1.4;margin-bottom:
 
 </div>
 <script>
+
+let curLang='ja';
+
+const ui={
+ja:{
+  badge:"📚 学習法診断",
+  title:"あなたに合う<br>学習法診断",
+  subtitle:"10の質問で、最適な学習スタイルと<br>おすすめツールがわかる！",
+  startBtn:"🔮 診断スタート！",
+  hint:"全10問・約1分で完了",
+  resultLabel:"あなたの学習タイプは…",
+  sectionHead:"🗺 全タイプ一覧",
+  methodHead:"📝 おすすめ学習法",
+  toolHead:"🛠️ おすすめツール",
+  shareX:"𝕏 シェア",
+  shareLine:"LINE シェア",
+  retryBtn:"🔄 もう一度診断する",
+  youLabel:"← あなた！"
+},
+en:{
+  badge:"📚 Learning Style Quiz",
+  title:"Discover Your<br>Learning Style",
+  subtitle:"Answer 10 questions to find your ideal<br>learning style and recommended tools!",
+  startBtn:"🔮 Start the Quiz!",
+  hint:"10 questions, about 1 minute",
+  resultLabel:"Your learning type is...",
+  sectionHead:"🗺 All Types",
+  methodHead:"📝 Recommended Methods",
+  toolHead:"🛠️ Recommended Tools",
+  shareX:"𝕏 Share",
+  shareLine:"LINE Share",
+  retryBtn:"🔄 Try Again",
+  youLabel:"← You!"
+},
+zh:{
+  badge:"📚 学习风格测试",
+  title:"发现你的<br>学习风格",
+  subtitle:"通过10个问题，找到最适合你的<br>学习方式和推荐工具！",
+  startBtn:"🔮 开始测试！",
+  hint:"共10题，约1分钟完成",
+  resultLabel:"你的学习类型是…",
+  sectionHead:"🗺 全部类型一览",
+  methodHead:"📝 推荐学习方法",
+  toolHead:"🛠️ 推荐工具",
+  shareX:"𝕏 分享",
+  shareLine:"LINE 分享",
+  retryBtn:"🔄 重新测试",
+  youLabel:"← 就是你！"
+},
+ko:{
+  badge:"📚 학습법 진단",
+  title:"나에게 맞는<br>학습법 진단",
+  subtitle:"10개의 질문으로 나에게 맞는<br>학습 스타일과 추천 도구를 알아보세요!",
+  startBtn:"🔮 진단 시작!",
+  hint:"총 10문항, 약 1분 소요",
+  resultLabel:"당신의 학습 유형은…",
+  sectionHead:"🗺 전체 유형 목록",
+  methodHead:"📝 추천 학습법",
+  toolHead:"🛠️ 추천 도구",
+  shareX:"𝕏 공유",
+  shareLine:"LINE 공유",
+  retryBtn:"🔄 다시 진단하기",
+  youLabel:"← 바로 나!"
+}
+};
+
+const shareTpl={
+ja:n=>'私の学習タイプは「'+n+'」でした！📚\nあなたも診断してみて👇\n'+location.href,
+en:n=>'My learning type is \"'+n+'\"! 📚\nTry it yourself 👇\n'+location.href,
+zh:n=>'我的学习类型是「'+n+'」！📚\n你也来测测看吧👇\n'+location.href,
+ko:n=>'내 학습 유형은 \"'+n+'\"이었어요! 📚\n당신도 진단해보세요 👇\n'+location.href
+};
+
 const questions=[
-{q:"新しい知識を得るとき、一番わかりやすいのは？",opts:[
-{t:"📊 図やグラフ、チャートで見る",s:{V:3}},
-{t:"🎧 説明を聞いたり音声で学ぶ",s:{A:3}},
-{t:"✋ 実際に手を動かして試す",s:{K:3}},
-{t:"🗣️ 誰かに説明したり議論する",s:{S:3}}
+{q:{ja:"新しい知識を得るとき、一番わかりやすいのは？",en:"When learning something new, what helps you understand best?",zh:"学习新知识时，什么方式最容易理解？",ko:"새로운 지식을 얻을 때 가장 이해하기 쉬운 방법은?"},opts:[
+{t:{ja:"📊 図やグラフ、チャートで見る",en:"📊 Looking at diagrams, graphs, and charts",zh:"📊 通过图表和图形来理解",ko:"📊 도표나 그래프, 차트로 보기"},s:{V:3}},
+{t:{ja:"🎧 説明を聞いたり音声で学ぶ",en:"🎧 Listening to explanations or audio",zh:"🎧 听讲解或通过音频学习",ko:"🎧 설명을 듣거나 음성으로 배우기"},s:{A:3}},
+{t:{ja:"✋ 実際に手を動かして試す",en:"✋ Trying it hands-on",zh:"✋ 亲自动手尝试",ko:"✋ 직접 손으로 해보기"},s:{K:3}},
+{t:{ja:"🗣️ 誰かに説明したり議論する",en:"🗣️ Explaining to someone or discussing",zh:"🗣️ 向别人讲解或参与讨论",ko:"🗣️ 누군가에게 설명하거나 토론하기"},s:{S:3}}
 ]},
-{q:"勉強中、最も集中できる環境は？",opts:[
-{t:"📓 ビジュアル豊富な参考書や動画",s:{V:3}},
-{t:"🎵 音楽やポッドキャストを聴きながら",s:{A:3}},
-{t:"📖 テキストを読み込んでノートにまとめる",s:{R:3}},
-{t:"👥 グループ学習や勉強会",s:{S:3}}
+{q:{ja:"勉強中、最も集中できる環境は？",en:"What environment helps you focus most while studying?",zh:"学习时，什么环境最能让你集中注意力？",ko:"공부할 때 가장 집중이 잘 되는 환경은?"},opts:[
+{t:{ja:"📓 ビジュアル豊富な参考書や動画",en:"📓 Visual-rich textbooks and videos",zh:"📓 图文丰富的参考书或视频",ko:"📓 시각적으로 풍부한 참고서나 영상"},s:{V:3}},
+{t:{ja:"🎵 音楽やポッドキャストを聴きながら",en:"🎵 While listening to music or podcasts",zh:"🎵 一边听音乐或播客一边学习",ko:"🎵 음악이나 팟캐스트를 들으며"},s:{A:3}},
+{t:{ja:"📖 テキストを読み込んでノートにまとめる",en:"📖 Reading texts deeply and taking notes",zh:"📖 深入阅读并整理笔记",ko:"📖 텍스트를 읽고 노트에 정리하기"},s:{R:3}},
+{t:{ja:"👥 グループ学習や勉強会",en:"👥 Group study sessions",zh:"👥 小组学习或读书会",ko:"👥 그룹 학습이나 스터디 모임"},s:{S:3}}
 ]},
-{q:"記憶に残りやすいのはどんなとき？",opts:[
-{t:"🎨 色分けしたノートや図解を書いたとき",s:{V:3}},
-{t:"🏃 体験や実践を通じて学んだとき",s:{K:3}},
-{t:"🔢 論理的に整理して法則を見つけたとき",s:{L:3}},
-{t:"💬 友達に説明して「わかった！」と言われたとき",s:{S:3}}
+{q:{ja:"記憶に残りやすいのはどんなとき？",en:"When do things stick in your memory most easily?",zh:"什么时候最容易记住？",ko:"기억에 가장 잘 남는 건 어떤 때?"},opts:[
+{t:{ja:"🎨 色分けしたノートや図解を書いたとき",en:"🎨 When I make color-coded notes or diagrams",zh:"🎨 做了彩色笔记或画了图解的时候",ko:"🎨 색깔별로 노트나 도해를 그렸을 때"},s:{V:3}},
+{t:{ja:"🏃 体験や実践を通じて学んだとき",en:"🏃 When I learn through experience and practice",zh:"🏃 通过体验和实践来学习的时候",ko:"🏃 체험이나 실습을 통해 배웠을 때"},s:{K:3}},
+{t:{ja:"🔢 論理的に整理して法則を見つけたとき",en:"🔢 When I organize logically and find patterns",zh:"🔢 通过逻辑整理发现规律的时候",ko:"🔢 논리적으로 정리해서 법칙을 발견했을 때"},s:{L:3}},
+{t:{ja:"💬 友達に説明して「わかった！」と言われたとき",en:"💬 When I explain to a friend and they get it",zh:"💬 给朋友讲解后对方恍然大悟的时候",ko:"💬 친구에게 설명해서 이해시켰을 때"},s:{S:3}}
 ]},
-{q:"本を読むとき、あなたは？",opts:[
-{t:"📊 図や表、イラストを先にチェックする",s:{V:3}},
-{t:"🔊 頭の中で声を再現しながら読む",s:{A:3}},
-{t:"✏️ 要点をノートに書き写しながら読む",s:{R:3}},
-{t:"🧩 論理構造や著者の主張を分析しながら読む",s:{L:3}}
+{q:{ja:"本を読むとき、あなたは？",en:"When reading a book, you tend to...",zh:"读书的时候，你会？",ko:"책을 읽을 때, 당신은?"},opts:[
+{t:{ja:"📊 図や表、イラストを先にチェックする",en:"📊 Check diagrams, tables, and illustrations first",zh:"📊 先看图表和插图",ko:"📊 그림이나 표, 일러스트를 먼저 확인한다"},s:{V:3}},
+{t:{ja:"🔊 頭の中で声を再現しながら読む",en:"🔊 Read while hearing the voice in my head",zh:"🔊 在脑海中还原声音来阅读",ko:"🔊 머릿속으로 소리를 재현하며 읽는다"},s:{A:3}},
+{t:{ja:"✏️ 要点をノートに書き写しながら読む",en:"✏️ Read while writing key points in notes",zh:"✏️ 边读边把要点抄到笔记上",ko:"✏️ 요점을 노트에 옮겨 적으며 읽는다"},s:{R:3}},
+{t:{ja:"🧩 論理構造や著者の主張を分析しながら読む",en:"🧩 Analyze the logical structure and author's argument",zh:"🧩 边分析逻辑结构和作者观点边阅读",ko:"🧩 논리 구조와 저자의 주장을 분석하며 읽는다"},s:{L:3}}
 ]},
-{q:"何かを習得するとき、最初にすることは？",opts:[
-{t:"🖥️ 動画やスライドで概要を把握する",s:{V:2,D:1}},
-{t:"🎧 音声解説や講義を聞く",s:{A:3}},
-{t:"🤲 とりあえず試してみる（手を動かす）",s:{K:3}},
-{t:"👨‍🏫 詳しい人に直接聞く",s:{S:3}}
+{q:{ja:"何かを習得するとき、最初にすることは？",en:"When mastering something new, what do you do first?",zh:"学习新事物时，你首先会做什么？",ko:"무언가를 배울 때, 가장 먼저 하는 것은?"},opts:[
+{t:{ja:"🖥️ 動画やスライドで概要を把握する",en:"🖥️ Watch videos or slides to get an overview",zh:"🖥️ 看视频或幻灯片了解大概",ko:"🖥️ 영상이나 슬라이드로 개요를 파악한다"},s:{V:2,D:1}},
+{t:{ja:"🎧 音声解説や講義を聞く",en:"🎧 Listen to audio explanations or lectures",zh:"🎧 听音频讲解或课程",ko:"🎧 음성 해설이나 강의를 듣는다"},s:{A:3}},
+{t:{ja:"🤲 とりあえず試してみる（手を動かす）",en:"🤲 Just try it out (hands-on)",zh:"🤲 先动手试试看",ko:"🤲 일단 직접 해본다 (손으로)"},s:{K:3}},
+{t:{ja:"👨‍🏫 詳しい人に直接聞く",en:"👨‍🏫 Ask an expert directly",zh:"👨‍🏫 直接请教有经验的人",ko:"👨‍🏫 잘 아는 사람에게 직접 물어본다"},s:{S:3}}
 ]},
-{q:"テスト前日、あなたの勉強法は？",opts:[
-{t:"📷 マインドマップや図解で整理する",s:{V:3}},
-{t:"📝 ひたすら書いて記憶に叩き込む",s:{K:2,R:1}},
-{t:"🌿 散歩しながら頭の中で整理する",s:{N:3}},
-{t:"💻 アプリやデジタルツールで効率的に復習",s:{D:3}}
+{q:{ja:"テスト前日、あなたの勉強法は？",en:"How do you study the night before a test?",zh:"考试前一天，你的学习方法是？",ko:"시험 전날, 당신의 공부법은?"},opts:[
+{t:{ja:"📷 マインドマップや図解で整理する",en:"📷 Organize with mind maps and diagrams",zh:"📷 用思维导图和图解来整理",ko:"📷 마인드맵이나 도해로 정리한다"},s:{V:3}},
+{t:{ja:"📝 ひたすら書いて記憶に叩き込む",en:"📝 Keep writing to drill it into memory",zh:"📝 不断抄写来加深记忆",ko:"📝 계속 쓰면서 기억에 새긴다"},s:{K:2,R:1}},
+{t:{ja:"🌿 散歩しながら頭の中で整理する",en:"🌿 Take a walk and organize thoughts in my head",zh:"🌿 散步时在脑海中整理思路",ko:"🌿 산책하면서 머릿속으로 정리한다"},s:{N:3}},
+{t:{ja:"💻 アプリやデジタルツールで効率的に復習",en:"💻 Review efficiently with apps and digital tools",zh:"💻 用应用和数字工具高效复习",ko:"💻 앱이나 디지털 도구로 효율적으로 복습한다"},s:{D:3}}
 ]},
-{q:"新しいアプリを使うとき、まず何をする？",opts:[
-{t:"🖱️ とにかく触って操作しながら学ぶ",s:{K:2,D:1}},
-{t:"📘 マニュアルやヘルプ文書をしっかり読む",s:{R:3}},
-{t:"🔍 仕組みやロジックを理解しようとする",s:{L:3}},
-{t:"💬 使った人のレビューや口コミを確認",s:{S:3}}
+{q:{ja:"新しいアプリを使うとき、まず何をする？",en:"When using a new app, what do you do first?",zh:"使用新应用时，你首先会做什么？",ko:"새로운 앱을 쓸 때, 먼저 무엇을 하나요?"},opts:[
+{t:{ja:"🖱️ とにかく触って操作しながら学ぶ",en:"🖱️ Just start tapping around and learn by doing",zh:"🖱️ 直接操作，边用边学",ko:"🖱️ 일단 이것저것 눌러보면서 배운다"},s:{K:2,D:1}},
+{t:{ja:"📘 マニュアルやヘルプ文書をしっかり読む",en:"📘 Read the manual or help docs thoroughly",zh:"📘 认真阅读说明书或帮助文档",ko:"📘 매뉴얼이나 도움말을 꼼꼼히 읽는다"},s:{R:3}},
+{t:{ja:"🔍 仕組みやロジックを理解しようとする",en:"🔍 Try to understand the logic and how it works",zh:"🔍 尝试理解其原理和逻辑",ko:"🔍 구조나 로직을 이해하려고 한다"},s:{L:3}},
+{t:{ja:"💬 使った人のレビューや口コミを確認",en:"💬 Check reviews and feedback from other users",zh:"💬 查看其他用户的评价和口碑",ko:"💬 사용해 본 사람의 리뷰나 후기를 확인한다"},s:{S:3}}
 ]},
-{q:"自分に合った趣味の学び方は？",opts:[
-{t:"🎙️ 好きなYouTuberの解説を繰り返し聞く",s:{A:2,D:1}},
-{t:"📓 日記やブログに学んだことを書き出す",s:{R:3}},
-{t:"🌳 自然の中で観察・フィールドワークする",s:{N:3}},
-{t:"📱 専用アプリやオンラインサービスで進める",s:{D:3}}
+{q:{ja:"自分に合った趣味の学び方は？",en:"How do you prefer to learn a hobby?",zh:"最适合你的兴趣爱好学习方式是？",ko:"취미를 배울 때 나에게 맞는 방법은?"},opts:[
+{t:{ja:"🎙️ 好きなYouTuberの解説を繰り返し聞く",en:"🎙️ Repeatedly listen to a favorite YouTuber's explanations",zh:"🎙️ 反复听喜欢的YouTuber的讲解",ko:"🎙️ 좋아하는 유튜버의 설명을 반복해서 듣는다"},s:{A:2,D:1}},
+{t:{ja:"📓 日記やブログに学んだことを書き出す",en:"📓 Write what I've learned in a journal or blog",zh:"📓 在日记或博客中写下所学内容",ko:"📓 일기나 블로그에 배운 것을 적는다"},s:{R:3}},
+{t:{ja:"🌳 自然の中で観察・フィールドワークする",en:"🌳 Observe and do fieldwork in nature",zh:"🌳 在大自然中观察和做实地调查",ko:"🌳 자연 속에서 관찰하고 필드워크를 한다"},s:{N:3}},
+{t:{ja:"📱 専用アプリやオンラインサービスで進める",en:"📱 Use dedicated apps and online services",zh:"📱 用专门的应用或在线服务学习",ko:"📱 전용 앱이나 온라인 서비스를 활용한다"},s:{D:3}}
 ]},
-{q:"問題を解くとき、あなたのアプローチは？",opts:[
-{t:"🎧 問題文を声に出して読み上げる",s:{A:3}},
-{t:"📐 数式や論理で順序立てて考える",s:{L:3}},
-{t:"🌏 実生活や自然界の例に置き換えて考える",s:{N:3}},
-{t:"💻 ネットで検索してAIやツールも活用する",s:{D:3}}
+{q:{ja:"問題を解くとき、あなたのアプローチは？",en:"What's your approach to solving problems?",zh:"解题时，你的方法是？",ko:"문제를 풀 때, 당신의 접근 방식은?"},opts:[
+{t:{ja:"🎧 問題文を声に出して読み上げる",en:"🎧 Read the problem aloud",zh:"🎧 把题目大声读出来",ko:"🎧 문제를 소리 내어 읽는다"},s:{A:3}},
+{t:{ja:"📐 数式や論理で順序立てて考える",en:"📐 Think step by step using formulas and logic",zh:"📐 用公式和逻辑按步骤思考",ko:"📐 수식이나 논리로 순서대로 생각한다"},s:{L:3}},
+{t:{ja:"🌏 実生活や自然界の例に置き換えて考える",en:"🌏 Relate it to real-life or nature examples",zh:"🌏 联系现实生活或自然界的例子来思考",ko:"🌏 실생활이나 자연계의 예시로 바꿔서 생각한다"},s:{N:3}},
+{t:{ja:"💻 ネットで検索してAIやツールも活用する",en:"💻 Search online and use AI or tools",zh:"💻 上网搜索，借助AI和工具",ko:"💻 인터넷으로 검색하고 AI나 도구를 활용한다"},s:{D:3}}
 ]},
-{q:"長期休暇中にスキルアップするなら？",opts:[
-{t:"✋ ワークショップやハンズオン講座に参加",s:{K:3}},
-{t:"📚 本をたくさん読んで読書ノートをつける",s:{R:3}},
-{t:"🔬 自然観察や科学実験を楽しむ",s:{N:3}},
-{t:"🧠 パズルやロジックゲームで頭を鍛える",s:{L:2,D:1}}
+{q:{ja:"長期休暇中にスキルアップするなら？",en:"How would you spend a long vacation improving your skills?",zh:"长假期间想提升技能的话，你会？",ko:"긴 휴가 동안 스킬을 올리려면?"},opts:[
+{t:{ja:"✋ ワークショップやハンズオン講座に参加",en:"✋ Attend workshops or hands-on courses",zh:"✋ 参加工作坊或动手实践课程",ko:"✋ 워크숍이나 핸즈온 강좌에 참가한다"},s:{K:3}},
+{t:{ja:"📚 本をたくさん読んで読書ノートをつける",en:"📚 Read lots of books and keep a reading journal",zh:"📚 大量阅读并做读书笔记",ko:"📚 책을 많이 읽고 독서 노트를 작성한다"},s:{R:3}},
+{t:{ja:"🔬 自然観察や科学実験を楽しむ",en:"🔬 Enjoy nature observation and science experiments",zh:"🔬 享受自然观察和科学实验",ko:"🔬 자연 관찰이나 과학 실험을 즐긴다"},s:{N:3}},
+{t:{ja:"🧠 パズルやロジックゲームで頭を鍛える",en:"🧠 Train your brain with puzzles and logic games",zh:"🧠 用益智游戏和逻辑游戏锻炼大脑",ko:"🧠 퍼즐이나 로직 게임으로 머리를 단련한다"},s:{L:2,D:1}}
 ]}
 ];
+
 const results={
-V:{name:"視覚型（ビジュアルラーナー）",emoji:"👁️",bg:"linear-gradient(135deg,#667eea,#764ba2)",
-  desc:"あなたは「見て覚える」のが最も効率的なタイプです。図解、チャート、マインドマップ、動画など、視覚的に情報を整理すると記憶に定着しやすくなります。色分けされたノートやイラスト付きの参考書があると理解度が格段に上がります。「百聞は一見にしかず」をまさに体現する学習者で、一度見た映像や図は長期間忘れにくいという強みを持っています。",
-  method:"📝 おすすめ学習法：マインドマップで知識を体系的に整理する / 自分で図解やフローチャートを描いて理解を深める / カラーペンでノートを色分けして重要度を可視化 / YouTube等の解説動画を繰り返し視聴する / フラッシュカードを作成して視覚的に暗記する",
-  tool:"🛠️ おすすめツール：Notion（ビジュアルノート作成）/ Miro（オンラインマインドマップ）/ Canva（図解・インフォグラフィック作成）/ YouTube（動画学習）/ Anki（フラッシュカードアプリ）",
-  traits:["図解が好き📊","映像記憶が得意🎬","ノートが綺麗✨","色分け大好き🎨","動画学習派📺"]},
-A:{name:"聴覚型（オーディオラーナー）",emoji:"👂",bg:"linear-gradient(135deg,#f093fb,#f5576c)",
-  desc:"あなたは「聞いて覚える」のが最も効率的なタイプです。講義やポッドキャスト、音声教材を聴くことで情報が自然と頭に入ってきます。声に出して読み上げたり、リズムに乗せて暗記したりするのも非常に効果的です。移動中でもイヤホンひとつで学習を続けられるため、スキマ時間の活用力が抜群に高いのが大きな強みです。",
-  method:"📝 おすすめ学習法：音声教材やポッドキャストをフル活用する / 重要事項を声に出して読む・音読を習慣にする / 自分の声で講義を録音して繰り返し聴く / 人に説明する練習で理解度を確認する / リズムや語呂合わせで暗記する",
-  tool:"🛠️ おすすめツール：Audible（オーディオブック）/ Voicy・Spotify（ポッドキャスト）/ YouTube（解説動画の音声）/ NotebookLM（AI音声まとめ）/ ボイスメモアプリ（自分の声で録音）",
-  traits:["音から覚える🎧","議論が好き💬","音読で定着🗣️","移動中学習派☕","講義型が得意🎙️"]},
-K:{name:"身体感覚型（キネスセティックラーナー）",emoji:"✋",bg:"linear-gradient(135deg,#f6d365,#fda085)",
-  desc:"あなたは「手を動かして覚える」のが最も効率的なタイプです。実践・体験・実験を通じて学ぶことで、知識が体に染み込むように定着します。机に長時間向かってじっとしているより、実際に試したり作ったりする方が断然身につきます。ものづくりやハンズオン型の学習で才能が開花するタイプで、失敗からも多くを学べる行動派です。",
-  method:"📝 おすすめ学習法：ひたすら書いて手で記憶に叩き込む / 実際にプロジェクトを作りながら学ぶ / ロールプレイや模擬練習で体験的に学ぶ / 歩きながら暗記する・立って勉強する / 実験やワークショップに積極的に参加する",
-  tool:"🛠️ おすすめツール：紙のノート＆お気に入りのペン / ホワイトボード（大きく書いて整理）/ 付箋（貼って剥がして並べ替え）/ Arduino・Raspberry Pi（実験用）/ 自作問題集・ワークブック",
-  traits:["実践で覚える🔨","手を動かす📝","体で記憶する🏃","書きまくる派✍️","実験が好き🔬"]},
-S:{name:"対話型（ソーシャルラーナー）",emoji:"🗣️",bg:"linear-gradient(135deg,#11998e,#38ef7d)",
-  desc:"あなたは「人と関わりながら覚える」のが最も効率的なタイプです。誰かに説明したり、議論を交わしたり、グループで学んだりすることで理解が飛躍的に深まります。「教えることは最大の学び」を自然と実践できる人で、学習仲間がいると成長スピードが何倍にもなります。コミュニティの中心となって周囲も一緒に成長させる力を持っています。",
-  method:"📝 おすすめ学習法：学んだことを誰かに教えてアウトプットする / 学習仲間と定期的に勉強会を開く / 質問し合う形式で問題演習をする / SNSやブログで学習内容を発信する / オンライン・オフラインのスタディグループに参加する",
-  tool:"🛠️ おすすめツール：Discord（学習コミュニティ運営）/ Twitter/X（発信型学習）/ Zoom（オンライン勉強会）/ Notion（共有ノート・Wiki）/ Miro（グループブレスト）",
-  traits:["教えて覚える🏫","議論で深まる💬","仲間と伸びる👥","発信型学習📢","チーム活動好き🌟"]},
-R:{name:"読み書き型（リーディング/ライティングラーナー）",emoji:"📖",bg:"linear-gradient(135deg,#a18cd1,#fbc2eb)",
-  desc:"あなたは「読んで書いて覚える」のが最も効率的なタイプです。テキストを丹念に読み込み、自分の言葉でノートにまとめ直すことで理解が深まります。参考書やレポート、論文など文字情報との相性が抜群で、要約力・文章力にも優れています。読書ノートや学習日記をつけることで知識が体系的に整理され、長期記憶に定着しやすいのが大きな強みです。",
-  method:"📝 おすすめ学習法：教科書や参考書を精読して要約ノートを作る / 学んだことをブログや日記に書き出す / 箇条書きリストで知識を整理する / レポートや論文形式でまとめ直す / 自分だけの用語集・単語帳を作成する",
-  tool:"🛠️ おすすめツール：Notion（構造化ノート）/ Obsidian（Zettelkasten式メモ）/ Scrapbox（知識ネットワーク）/ Kindle（電子書籍で読書）/ はてなブログ（学習アウトプット）",
-  traits:["読書家タイプ📚","要約が得意📝","ノート整理好き🗂️","文章力が高い✒️","辞書・資料好き📖"]},
-L:{name:"論理型（ロジカルラーナー）",emoji:"🧠",bg:"linear-gradient(135deg,#4facfe,#00f2fe)",
-  desc:"あなたは「論理的に考えて覚える」のが最も効率的なタイプです。物事の因果関係やパターン、法則を見つけ出すことで深い理解に到達します。「なぜそうなるのか？」を常に追求し、根拠と理由を明確にすることで記憶が定着します。数式やアルゴリズム、分類体系など、構造化された知識の扱いに特に強く、問題解決能力が非常に高いのが特徴です。",
-  method:"📝 おすすめ学習法：因果関係や論理構造をフレームワークで整理する / 「なぜ？」を5回繰り返して深掘りする / 分類・カテゴリ分けで知識を体系化する / 数式やアルゴリズムでパターンを抽出する / 仮説→検証のサイクルで学びを深める",
-  tool:"🛠️ おすすめツール：Wolfram Alpha（数式・計算）/ Excel/スプレッドシート（データ整理）/ Notion（データベース型ノート）/ Python/Jupyter（分析・検証）/ ChatGPT（論理的議論の壁打ち）",
-  traits:["分析が好き🔍","法則を見つける🔢","Why思考型🤔","構造化が得意📐","問題解決力が高い🧩"]},
-N:{name:"自然観察型（ナチュラリストラーナー）",emoji:"🌿",bg:"linear-gradient(135deg,#56ab2f,#a8e063)",
-  desc:"あなたは「自然や環境と結びつけて覚える」のが最も効率的なタイプです。身の回りの自然現象や実生活の具体例と関連づけることで、抽象的な知識も生き生きと理解できます。フィールドワークや観察を通じた学びが特に得意で、五感を使った体験が記憶の定着を助けます。パターン認識力に優れ、分類や比較を通じて全体像を把握する力が非常に高いのが強みです。",
-  method:"📝 おすすめ学習法：自然の中で観察・フィールドワークを行う / 学んだ内容を実生活の例に置き換えて理解する / 分類・比較表を作ってパターンを発見する / 屋外や自然の多い場所で学習する / 実物・標本・模型を使って学ぶ",
-  tool:"🛠️ おすすめツール：iNaturalist（自然観察記録）/ Google Earth（地理探索）/ 図鑑アプリ（種の分類）/ フィールドノート（観察記録用）/ GreenSnap（植物観察）",
-  traits:["観察力が鋭い🔭","自然が好き🌳","パターン認識力🌏","五感で学ぶ🌸","分類が得意🔬"]},
-D:{name:"デジタル型（デジタルラーナー）",emoji:"💻",bg:"linear-gradient(135deg,#6a11cb,#2575fc)",
-  desc:"あなたは「デジタルツールを活用して覚える」のが最も効率的なタイプです。最新のアプリやAI、オンラインプラットフォームを使いこなし、効率的に学習を進めることができます。テクノロジーとの親和性が非常に高く、デジタル環境で情報を素早く検索・整理・活用する力に長けています。新しいツールへの適応が早く、学習の効率化と自動化を常に追求する先進的な学習者です。",
-  method:"📝 おすすめ学習法：AI（ChatGPT等）を活用して疑問を即座に解決する / オンライン学習プラットフォームでコースを受講する / デジタルノートアプリで知識を一元管理する / スマホアプリでスキマ時間に学習する / データ分析ツールで学習進捗を可視化する",
-  tool:"🛠️ おすすめツール：ChatGPT/Claude（AI学習パートナー）/ Udemy・Coursera（オンライン講座）/ Notion（デジタルノート）/ Anki（間隔反復アプリ）/ Obsidian（ナレッジグラフ）",
-  traits:["テック好き💻","効率重視⚡","AI活用派🤖","アプリ使いこなす📱","最新ツール好き🚀"]}
+V:{name:{ja:"視覚型（ビジュアルラーナー）",en:"Visual Learner",zh:"视觉型学习者",ko:"시각형 학습자"},emoji:"👁️",bg:"linear-gradient(135deg,#667eea,#764ba2)",
+  desc:{ja:"あなたは「見て覚える」のが最も効率的なタイプです。図解、チャート、マインドマップ、動画など、視覚的に情報を整理すると記憶に定着しやすくなります。色分けされたノートやイラスト付きの参考書があると理解度が格段に上がります。「百聞は一見にしかず」をまさに体現する学習者で、一度見た映像や図は長期間忘れにくいという強みを持っています。",en:"You learn most effectively by seeing. Diagrams, charts, mind maps, and videos help you absorb information naturally. Color-coded notes and illustrated references dramatically boost your comprehension. You truly embody 'a picture is worth a thousand words' — once you see a visual, it stays with you for a long time.",zh:"你是通过“看”来记忆最为高效的类型。图解、图表、思维导图、视频等视觉化信息能让你更好地理解和记忆。彩色笔记和带插图的参考书能大幅提升你的理解力。你是“百闻不如一见”的最佳诠释者，看过一次的画面和图形很难忘记。",ko:"당신은 '보고 기억하는' 타입입니다. 도해, 차트, 마인드맵, 영상 등 시각적으로 정보를 정리하면 기억에 잘 남습니다. 색깔별로 정리한 노트나 일러스트가 있는 참고서가 있으면 이해도가 확 올라갑니다. '백문이 불여일견'을 그대로 실천하는 학습자로, 한 번 본 영상이나 그림은 오래 기억하는 강점이 있습니다."},
+  method:{ja:"マインドマップで知識を体系的に整理する / 自分で図解やフローチャートを描いて理解を深める / カラーペンでノートを色分けして重要度を可視化 / YouTube等の解説動画を繰り返し視聴する / フラッシュカードを作成して視覚的に暗記する",en:"Organize knowledge systematically with mind maps / Draw your own diagrams and flowcharts to deepen understanding / Use colored pens to visually prioritize notes / Watch tutorial videos on YouTube repeatedly / Create flashcards for visual memorization",zh:"用思维导图系统整理知识 / 自己画图解和流程图加深理解 / 用彩色笔给笔记分色标注重点 / 反复观看YouTube等讲解视频 / 制作闪卡进行视觉记忆",ko:"마인드맵으로 지식을 체계적으로 정리하기 / 직접 도해나 플로차트를 그려 이해를 깊게 하기 / 컬러 펜으로 노트를 색깔별로 정리하기 / YouTube 등의 강의 영상을 반복 시청하기 / 플래시카드를 만들어 시각적으로 암기하기"},
+  tool:{ja:"Notion（ビジュアルノート作成）/ Miro（オンラインマインドマップ）/ Canva（図解・インフォグラフィック作成）/ YouTube（動画学習）/ Anki（フラッシュカードアプリ）",en:"Notion (Visual note-taking) / Miro (Online mind mapping) / Canva (Infographic creation) / YouTube (Video learning) / Anki (Flashcard app)",zh:"Notion（可视化笔记）/ Miro（在线思维导图）/ Canva（图解制作）/ YouTube（视频学习）/ Anki（闪卡应用）",ko:"Notion (비주얼 노트) / Miro (온라인 마인드맵) / Canva (인포그래픽 제작) / YouTube (영상 학습) / Anki (플래시카드 앱)"},
+  traits:{ja:["図解が好き📊", "映像記憶が得意🎬", "ノートが綺麗✨", "色分け大好き🎨", "動画学習派📺"],en:["Loves diagrams📊", "Strong visual memory🎬", "Neat notes✨", "Color-coding fan🎨", "Video learner📺"],zh:["喜欢图解📊", "擅长图像记忆🎬", "笔记工整✨", "热爱色彩标注🎨", "视频学习派📺"],ko:["도해를 좋아함📊", "영상 기억에 강함🎬", "노트가 깔끔✨", "색깔 정리 매니아🎨", "영상 학습파📺"]}},
+A:{name:{ja:"聴覚型（オーディオラーナー）",en:"Auditory Learner",zh:"听觉型学习者",ko:"청각형 학습자"},emoji:"👂",bg:"linear-gradient(135deg,#f093fb,#f5576c)",
+  desc:{ja:"あなたは「聞いて覚える」のが最も効率的なタイプです。講義やポッドキャスト、音声教材を聴くことで情報が自然と頭に入ってきます。声に出して読み上げたり、リズムに乗せて暗記したりするのも非常に効果的です。移動中でもイヤホンひとつで学習を続けられるため、スキマ時間の活用力が抜群に高いのが大きな強みです。",en:"You learn most effectively by listening. Lectures, podcasts, and audio materials let information flow naturally into your mind. Reading aloud and memorizing with rhythm work extremely well for you. With just a pair of earphones, you can keep learning on the go — making you exceptional at using spare moments productively.",zh:"你是通过“听”来记忆最为高效的类型。课程讲解、播客、音频教材能让信息自然地留在你的脑海中。大声朗读或用节奏来记忆对你非常有效。戴上耳机就能随时随地学习，善于利用碎片时间是你的最大优势。",ko:"당신은 '듣고 기억하는' 타입입니다. 강의, 팟캐스트, 음성 교재를 들으면 자연스럽게 정보가 머릿속에 들어옵니다. 소리 내어 읽거나 리듬에 맞춰 암기하는 것도 매우 효과적입니다. 이어폰 하나만 있으면 이동 중에도 학습할 수 있어 자투리 시간 활용 능력이 뛰어납니다."},
+  method:{ja:"音声教材やポッドキャストをフル活用する / 重要事項を声に出して読む・音読を習慣にする / 自分の声で講義を録音して繰り返し聴く / 人に説明する練習で理解度を確認する / リズムや語呂合わせで暗記する",en:"Make full use of audio materials and podcasts / Read key points aloud and make it a habit / Record yourself explaining and listen repeatedly / Practice explaining to others to check understanding / Use rhythm and mnemonics for memorization",zh:"充分利用音频教材和播客 / 养成大声朗读重点的习惯 / 录下自己的讲解反复聆听 / 通过向别人讲解来检验理解 / 用节奏和谐音来辅助记忆",ko:"음성 교재와 팟캐스트를 적극 활용하기 / 중요 내용을 소리 내어 읽기, 음독을 습관화하기 / 자신의 목소리로 녹음해서 반복 듣기 / 남에게 설명하는 연습으로 이해도 확인하기 / 리듬이나 어감으로 암기하기"},
+  tool:{ja:"Audible（オーディオブック）/ Voicy・Spotify（ポッドキャスト）/ YouTube（解説動画の音声）/ NotebookLM（AI音声まとめ）/ ボイスメモアプリ（自分の声で録音）",en:"Audible (Audiobooks) / Voicy & Spotify (Podcasts) / YouTube (Audio from tutorials) / NotebookLM (AI audio summaries) / Voice Memo app (Record yourself)",zh:"Audible（有声书）/ Voicy & Spotify（播客）/ YouTube（教学音频）/ NotebookLM（AI语音总结）/ 语音备忘录（自录自听）",ko:"Audible (오디오북) / Voicy & Spotify (팟캐스트) / YouTube (강의 음성) / NotebookLM (AI 음성 요약) / 음성 메모 앱 (자기 목소리 녹음)"},
+  traits:{ja:["音から覚える🎧", "議論が好き💬", "音読で定着🗣️", "移動中学習派☕", "講義型が得意🎙️"],en:["Learns by listening🎧", "Loves discussions💬", "Retains by reading aloud🗣️", "Learns on the go☕", "Excels at lectures🎙️"],zh:["听觉记忆型🎧", "喜欢讨论💬", "朗读巩固🗣️", "移动学习派☕", "擅长听课🎙️"],ko:["소리로 기억🎧", "토론을 좋아함💬", "음독으로 정착🗣️", "이동 중 학습파☕", "강의형에 강함🎙️"]}},
+K:{name:{ja:"身体感覚型（キネスセティックラーナー）",en:"Kinesthetic Learner",zh:"体感型学习者",ko:"체감형 학습자"},emoji:"✋",bg:"linear-gradient(135deg,#f6d365,#fda085)",
+  desc:{ja:"あなたは「手を動かして覚える」のが最も効率的なタイプです。実践・体験・実験を通じて学ぶことで、知識が体に染み込むように定着します。机に長時間向かってじっとしているより、実際に試したり作ったりする方が断然身につきます。ものづくりやハンズオン型の学習で才能が開花するタイプで、失敗からも多くを学べる行動派です。",en:"You learn most effectively through hands-on experience. Knowledge sinks in deeply when you practice, experiment, and build things. Sitting still at a desk for hours doesn't work for you — actually trying and creating is far more effective. You thrive in maker and hands-on learning environments, and you learn a great deal from trial and error.",zh:"你是通过“动手实践”来记忆最为高效的类型。通过实践、体验和实验，知识能像融入身体一样牢固。比起长时间坐在桌前，实际去尝试和创造对你来说效果更好。你是在动手制作和实操型学习中绽放光彩的类型，也善于从失败中学习。",ko:"당신은 '직접 해보면서 기억하는' 타입입니다. 실습, 체험, 실험을 통해 배우면 지식이 몸에 배듯이 기억에 남습니다. 책상에 오래 앉아 있는 것보다 직접 시도하고 만들어보는 것이 훨씬 효과적입니다. 메이커 활동이나 핸즈온 학습에서 재능이 빛나며, 실패에서도 많은 것을 배우는 행동파입니다."},
+  method:{ja:"ひたすら書いて手で記憶に叩き込む / 実際にプロジェクトを作りながら学ぶ / ロールプレイや模擬練習で体験的に学ぶ / 歩きながら暗記する・立って勉強する / 実験やワークショップに積極的に参加する",en:"Write repeatedly to engrain in memory / Learn by building actual projects / Use role-play and simulations for experiential learning / Memorize while walking or studying standing up / Actively join experiments and workshops",zh:"反复书写加深手部记忆 / 通过实际制作项目来学习 / 用角色扮演和模拟练习来体验式学习 / 走路时背诵、站着学习 / 积极参加实验和工作坊",ko:"반복해서 쓰면서 기억에 새기기 / 실제 프로젝트를 만들면서 배우기 / 역할극이나 모의 연습으로 체험 학습하기 / 걸으면서 암기하기, 서서 공부하기 / 실험이나 워크숍에 적극 참가하기"},
+  tool:{ja:"紙のノート＆お気に入りのペン / ホワイトボード（大きく書いて整理）/ 付箋（貼って剥がして並べ替え）/ Arduino・Raspberry Pi（実験用）/ 自作問題集・ワークブック",en:"Paper notebook & favorite pen / Whiteboard (write big and organize) / Sticky notes (stick, move, rearrange) / Arduino & Raspberry Pi (experiments) / DIY workbooks & problem sets",zh:"纸质笔记本和心爱的笔 / 白板（大字书写整理）/ 便利贴（贴、撕、重新排列）/ Arduino & Raspberry Pi（实验用）/ 自制习题集和练习册",ko:"종이 노트 & 좋아하는 펜 / 화이트보드 (크게 쓰며 정리) / 포스트잇 (붙이고 떼고 재배열) / Arduino & Raspberry Pi (실험용) / 직접 만든 문제집 & 워크북"},
+  traits:{ja:["実践で覚える🔨", "手を動かす📝", "体で記憶する🏃", "書きまくる派✍️", "実験が好き🔬"],en:["Learns by doing🔨", "Hands-on type📝", "Body memory🏃", "Writes a lot✍️", "Loves experiments🔬"],zh:["实践中学习🔨", "爱动手📝", "身体记忆型🏃", "疯狂书写派✍️", "喜欢做实验🔬"],ko:["실습으로 기억🔨", "손으로 배움📝", "몸으로 기억🏃", "쓰기 마니아✍️", "실험을 좋아함🔬"]}},
+S:{name:{ja:"対話型（ソーシャルラーナー）",en:"Social Learner",zh:"社交型学习者",ko:"소셜형 학습자"},emoji:"🗣️",bg:"linear-gradient(135deg,#11998e,#38ef7d)",
+  desc:{ja:"あなたは「人と関わりながら覚える」のが最も効率的なタイプです。誰かに説明したり、議論を交わしたり、グループで学んだりすることで理解が飛躍的に深まります。「教えることは最大の学び」を自然と実践できる人で、学習仲間がいると成長スピードが何倍にもなります。コミュニティの中心となって周囲も一緒に成長させる力を持っています。",en:"You learn most effectively through interaction. Explaining to others, debating, and group study dramatically deepen your understanding. You naturally practice 'teaching is the best learning,' and having study partners multiplies your growth. You have the power to become the heart of a community, lifting everyone around you.",zh:"你是通过“与人交流”来记忆最为高效的类型。向别人讲解、参与讨论、小组学习都能让你的理解力大幅提升。你天生践行着“教是最好的学”，有学习伙伴时进步速度成倍增长。你有成为社群核心、带动大家一起成长的力量。",ko:"당신은 '사람과 교류하면서 기억하는' 타입입니다. 누군가에게 설명하거나, 토론하거나, 그룹으로 공부하면 이해도가 비약적으로 높아집니다. '가르치는 것이 최고의 배움'을 자연스럽게 실천하며, 함께 공부하는 동료가 있으면 성장 속도가 몇 배로 빨라집니다. 커뮤니티의 중심이 되어 주변 사람도 함께 성장시키는 힘이 있습니다."},
+  method:{ja:"学んだことを誰かに教えてアウトプットする / 学習仲間と定期的に勉強会を開く / 質問し合う形式で問題演習をする / SNSやブログで学習内容を発信する / オンライン・オフラインのスタディグループに参加する",en:"Teach others what you've learned for output / Hold regular study sessions with peers / Practice with Q&A-style exercises / Share your learning on social media or blogs / Join online and offline study groups",zh:"把学到的知识教给别人 / 定期和学习伙伴举办学习会 / 用互相提问的方式做练习 / 在社交媒体或博客上分享学习内容 / 参加线上线下学习小组",ko:"배운 것을 누군가에게 가르치며 아웃풋하기 / 학습 동료와 정기적으로 스터디 모임 열기 / 서로 질문하는 형식으로 문제 연습하기 / SNS나 블로그로 학습 내용 발신하기 / 온라인·오프라인 스터디 그룹 참가하기"},
+  tool:{ja:"Discord（学習コミュニティ運営）/ Twitter/X（発信型学習）/ Zoom（オンライン勉強会）/ Notion（共有ノート・Wiki）/ Miro（グループブレスト）",en:"Discord (Learning community) / Twitter/X (Learning by sharing) / Zoom (Online study sessions) / Notion (Shared notes & wiki) / Miro (Group brainstorming)",zh:"Discord（学习社群）/ Twitter/X（发信式学习）/ Zoom（在线学习会）/ Notion（共享笔记 & Wiki）/ Miro（小组头脑风暴）",ko:"Discord (학습 커뮤니티) / Twitter/X (발신형 학습) / Zoom (온라인 스터디) / Notion (공유 노트 & Wiki) / Miro (그룹 브레인스토밍)"},
+  traits:{ja:["教えて覚える🏫", "議論で深まる💬", "仲間と伸びる👥", "発信型学習📢", "チーム活動好き🌟"],en:["Learns by teaching🏫", "Grows through debate💬", "Thrives with peers👥", "Learning by sharing📢", "Team player🌟"],zh:["教中学🏫", "讨论中深入💬", "与伙伴共同成长👥", "分享式学习📢", "喜欢团队活动🌟"],ko:["가르치며 기억🏫", "토론으로 깊어짐💬", "동료와 함께 성장👥", "발신형 학습📢", "팀 활동 좋아함🌟"]}},
+R:{name:{ja:"読み書き型（リーディング/ライティングラーナー）",en:"Reading/Writing Learner",zh:"读写型学习者",ko:"읽기/쓰기형 학습자"},emoji:"📖",bg:"linear-gradient(135deg,#a18cd1,#fbc2eb)",
+  desc:{ja:"あなたは「読んで書いて覚える」のが最も効率的なタイプです。テキストを丹念に読み込み、自分の言葉でノートにまとめ直すことで理解が深まります。参考書やレポート、論文など文字情報との相性が抜群で、要約力・文章力にも優れています。読書ノートや学習日記をつけることで知識が体系的に整理され、長期記憶に定着しやすいのが大きな強みです。",en:"You learn most effectively through reading and writing. Carefully reading texts and rewriting notes in your own words deepens comprehension. You have an exceptional affinity for written materials — references, reports, and papers. Your ability to summarize and write is outstanding. Keeping a reading journal or study diary helps you organize knowledge systematically and retain it long-term.",zh:"你是通过“读和写”来记忆最为高效的类型。仔细阅读文本并用自己的话整理笔记能加深理解。你与文字信息的相性极佳——参考书、报告、论文都能高效吸收。概括能力和写作能力突出，通过做读书笔记和学习日记，知识能被系统整理并长期记住。",ko:"당신은 '읽고 쓰면서 기억하는' 타입입니다. 텍스트를 꼼꼼히 읽고 자기 말로 노트에 정리하면 이해가 깊어집니다. 참고서, 리포트, 논문 등 문자 정보와의 궁합이 뛰어나며, 요약력과 문장력도 우수합니다. 독서 노트나 학습 일기를 쓰면서 지식이 체계적으로 정리되고, 장기 기억에 잘 남는 것이 큰 강점입니다."},
+  method:{ja:"教科書や参考書を精読して要約ノートを作る / 学んだことをブログや日記に書き出す / 箇条書きリストで知識を整理する / レポートや論文形式でまとめ直す / 自分だけの用語集・単語帳を作成する",en:"Read textbooks carefully and create summary notes / Write what you've learned in blogs or journals / Organize knowledge with bullet-point lists / Restructure information in report or essay format / Build your own glossary or vocabulary book",zh:"精读教材并做摘要笔记 / 在博客或日记中写下所学 / 用条目式列表整理知识 / 以报告或论文形式重新整理 / 制作自己的术语表和单词本",ko:"교과서를 정독하고 요약 노트를 만들기 / 배운 것을 블로그나 일기에 적기 / 항목별 리스트로 지식 정리하기 / 리포트나 논문 형식으로 재정리하기 / 나만의 용어집·단어장 만들기"},
+  tool:{ja:"Notion（構造化ノート）/ Obsidian（Zettelkasten式メモ）/ Scrapbox（知識ネットワーク）/ Kindle（電子書籍で読書）/ はてなブログ（学習アウトプット）",en:"Notion (Structured notes) / Obsidian (Zettelkasten notes) / Scrapbox (Knowledge network) / Kindle (E-book reading) / Blog platforms (Learning output)",zh:"Notion（结构化笔记）/ Obsidian（卡片盒笔记法）/ Scrapbox（知识网络）/ Kindle（电子书阅读）/ 博客平台（学习输出）",ko:"Notion (구조화 노트) / Obsidian (제텔카스텐 메모) / Scrapbox (지식 네트워크) / Kindle (전자책 독서) / 블로그 (학습 아웃풋)"},
+  traits:{ja:["読書家タイプ📚", "要約が得意📝", "ノート整理好き🗂️", "文章力が高い✒️", "辞書・資料好き📖"],en:["Avid reader📚", "Great at summarizing📝", "Loves organizing notes🗂️", "Strong writer✒️", "Reference lover📖"],zh:["爱读书📚", "擅长总结📝", "笔记整理达人🗂️", "写作能力强✒️", "爱查资料📖"],ko:["독서가 타입📚", "요약에 강함📝", "노트 정리 좋아함🗂️", "문장력이 높음✒️", "사전·자료 좋아함📖"]}},
+L:{name:{ja:"論理型（ロジカルラーナー）",en:"Logical Learner",zh:"逻辑型学习者",ko:"논리형 학습자"},emoji:"🧠",bg:"linear-gradient(135deg,#4facfe,#00f2fe)",
+  desc:{ja:"あなたは「論理的に考えて覚える」のが最も効率的なタイプです。物事の因果関係やパターン、法則を見つけ出すことで深い理解に到達します。「なぜそうなるのか？」を常に追求し、根拠と理由を明確にすることで記憶が定着します。数式やアルゴリズム、分類体系など、構造化された知識の扱いに特に強く、問題解決能力が非常に高いのが特徴です。",en:"You learn most effectively through logic and reasoning. You reach deep understanding by uncovering cause-and-effect relationships, patterns, and rules. You always ask 'why?' and solidify memory by clarifying evidence and reasoning. You excel at handling structured knowledge like formulas, algorithms, and classification systems, with exceptionally strong problem-solving skills.",zh:"你是通过“逻辑思考”来记忆最为高效的类型。通过发现因果关系、规律和法则来达到深层理解。你总是追问“为什么？”，通过明确根据和理由来巩固记忆。你擅长处理公式、算法、分类体系等结构化知识，解决问题的能力非常突出。",ko:"당신은 '논리적으로 생각하면서 기억하는' 타입입니다. 인과관계, 패턴, 법칙을 찾아내면서 깊은 이해에 도달합니다. 항상 '왜 그런가?'를 추구하고, 근거와 이유를 명확히 하면서 기억이 정착됩니다. 수식, 알고리즘, 분류 체계 등 구조화된 지식을 다루는 데 특히 강하며, 문제 해결 능력이 매우 높은 것이 특징입니다."},
+  method:{ja:"因果関係や論理構造をフレームワークで整理する / 「なぜ？」を5回繰り返して深掘りする / 分類・カテゴリ分けで知識を体系化する / 数式やアルゴリズムでパターンを抽出する / 仮説→検証のサイクルで学びを深める",en:"Organize cause-and-effect with frameworks / Ask 'why?' five times to dig deeper / Categorize and classify to systematize knowledge / Extract patterns using formulas and algorithms / Deepen learning through hypothesis-verification cycles",zh:"用框架整理因果关系和逻辑结构 / 反复追问“为什么？”深入探究 / 通过分类归纳系统化知识 / 用公式和算法提取规律 / 通过假设→验证的循环深化学习",ko:"인과관계와 논리 구조를 프레임워크로 정리하기 / '왜?'를 5번 반복해서 깊이 파기 / 분류·카테고리로 지식을 체계화하기 / 수식이나 알고리즘으로 패턴 추출하기 / 가설→검증 사이클로 배움을 깊게 하기"},
+  tool:{ja:"Wolfram Alpha（数式・計算）/ Excel/スプレッドシート（データ整理）/ Notion（データベース型ノート）/ Python/Jupyter（分析・検証）/ ChatGPT（論理的議論の壁打ち）",en:"Wolfram Alpha (Formulas & calculations) / Excel/Spreadsheets (Data organization) / Notion (Database-style notes) / Python/Jupyter (Analysis & verification) / ChatGPT (Logical discussion partner)",zh:"Wolfram Alpha（公式和计算）/ Excel/电子表格（数据整理）/ Notion（数据库式笔记）/ Python/Jupyter（分析和验证）/ ChatGPT（逻辑讨论伙伴）",ko:"Wolfram Alpha (수식·계산) / Excel/스프레드시트 (데이터 정리) / Notion (데이터베이스형 노트) / Python/Jupyter (분석·검증) / ChatGPT (논리적 토론 상대)"},
+  traits:{ja:["分析が好き🔍", "法則を見つける🔢", "Why思考型🤔", "構造化が得意📐", "問題解決力が高い🧩"],en:["Loves analysis🔍", "Finds patterns🔢", "Why-thinker🤔", "Structuring pro📐", "Strong problem solver🧩"],zh:["喜欢分析🔍", "善于发现规律🔢", "Why思维型🤔", "擅长结构化📐", "问题解决力强🧩"],ko:["분석을 좋아함🔍", "법칙을 발견함🔢", "Why 사고형🤔", "구조화에 강함📐", "문제 해결력이 높음🧩"]}},
+N:{name:{ja:"自然観察型（ナチュラリストラーナー）",en:"Naturalist Learner",zh:"自然观察型学习者",ko:"자연관찰형 학습자"},emoji:"🌿",bg:"linear-gradient(135deg,#56ab2f,#a8e063)",
+  desc:{ja:"あなたは「自然や環境と結びつけて覚える」のが最も効率的なタイプです。身の回りの自然現象や実生活の具体例と関連づけることで、抽象的な知識も生き生きと理解できます。フィールドワークや観察を通じた学びが特に得意で、五感を使った体験が記憶の定着を助けます。パターン認識力に優れ、分類や比較を通じて全体像を把握する力が非常に高いのが強みです。",en:"You learn most effectively by connecting with nature and real-world environments. Linking abstract knowledge to natural phenomena and everyday examples makes it vivid and memorable. You excel at fieldwork and observational learning, with all five senses supporting retention. Your pattern recognition is outstanding, and you grasp the big picture through classification and comparison.",zh:"你是通过“与自然和环境联系”来记忆最为高效的类型。将抽象知识与身边的自然现象和实际案例联系起来，就能生动地理解。你特别擅长通过实地考察和观察来学习，五感体验有助于记忆巩固。模式识别能力出众，善于通过分类和比较来把握全貌。",ko:"당신은 '자연과 환경에 연결지어 기억하는' 타입입니다. 주변의 자연현상이나 실생활의 구체적인 예시와 연관 지으면 추상적인 지식도 생생하게 이해할 수 있습니다. 필드워크와 관찰을 통한 학습에 특히 강하며, 오감을 사용한 체험이 기억 정착을 돕습니다. 패턴 인식 능력이 뛰어나고, 분류와 비교를 통해 전체를 파악하는 힘이 큰 강점입니다."},
+  method:{ja:"自然の中で観察・フィールドワークを行う / 学んだ内容を実生活の例に置き換えて理解する / 分類・比較表を作ってパターンを発見する / 屋外や自然の多い場所で学習する / 実物・標本・模型を使って学ぶ",en:"Do observation and fieldwork in nature / Relate what you learn to real-life examples / Create classification and comparison charts to find patterns / Study outdoors or in nature-rich settings / Learn with real objects, specimens, and models",zh:"在自然中进行观察和实地考察 / 将所学内容与现实生活的例子联系 / 制作分类比较表发现规律 / 在户外或自然环境中学习 / 用实物、标本和模型来学习",ko:"자연 속에서 관찰·필드워크 하기 / 배운 내용을 실생활 예시로 바꿔서 이해하기 / 분류·비교표를 만들어 패턴 발견하기 / 야외나 자연이 많은 곳에서 학습하기 / 실물·표본·모형을 활용해 배우기"},
+  tool:{ja:"iNaturalist（自然観察記録）/ Google Earth（地理探索）/ 図鑑アプリ（種の分類）/ フィールドノート（観察記録用）/ GreenSnap（植物観察）",en:"iNaturalist (Nature observation log) / Google Earth (Geographic exploration) / Field guide apps (Species classification) / Field notebook (Observation records) / GreenSnap (Plant observation)",zh:"iNaturalist（自然观察记录）/ Google Earth（地理探索）/ 图鉴应用（物种分类）/ 野外笔记本（观察记录）/ GreenSnap（植物观察）",ko:"iNaturalist (자연 관찰 기록) / Google Earth (지리 탐색) / 도감 앱 (종 분류) / 필드 노트 (관찰 기록용) / GreenSnap (식물 관찰)"},
+  traits:{ja:["観察力が鋭い🔭", "自然が好き🌳", "パターン認識力🌏", "五感で学ぶ🌸", "分類が得意🔬"],en:["Sharp observer🔭", "Nature lover🌳", "Pattern recognition🌏", "Learns with all senses🌸", "Great at classifying🔬"],zh:["观察力敏锐🔭", "热爱自然🌳", "模式识别力🌏", "五感学习🌸", "擅长分类🔬"],ko:["관찰력이 예리함🔭", "자연을 좋아함🌳", "패턴 인식력🌏", "오감으로 배움🌸", "분류에 강함🔬"]}},
+D:{name:{ja:"デジタル型（デジタルラーナー）",en:"Digital Learner",zh:"数字型学习者",ko:"디지털형 학습자"},emoji:"💻",bg:"linear-gradient(135deg,#6a11cb,#2575fc)",
+  desc:{ja:"あなたは「デジタルツールを活用して覚える」のが最も効率的なタイプです。最新のアプリやAI、オンラインプラットフォームを使いこなし、効率的に学習を進めることができます。テクノロジーとの親和性が非常に高く、デジタル環境で情報を素早く検索・整理・活用する力に長けています。新しいツールへの適応が早く、学習の効率化と自動化を常に追求する先進的な学習者です。",en:"You learn most effectively by leveraging digital tools. You master the latest apps, AI, and online platforms to study efficiently. With high tech affinity, you excel at quickly searching, organizing, and applying information in digital environments. You adapt to new tools fast and constantly pursue ways to optimize and automate your learning process.",zh:"你是通过“数字工具”来学习最为高效的类型。你能熟练运用最新的应用、AI和在线平台来高效学习。你与科技的亲和力极高，擅长在数字环境中快速搜索、整理和利用信息。你适应新工具速度快，始终追求学习效率的最大化和自动化。",ko:"당신은 '디지털 도구를 활용해서 기억하는' 타입입니다. 최신 앱, AI, 온라인 플랫폼을 자유자재로 사용하며 효율적으로 학습합니다. 테크놀로지와의 친화성이 매우 높아 디지털 환경에서 정보를 빠르게 검색·정리·활용하는 데 강합니다. 새로운 도구에 대한 적응이 빠르고, 학습의 효율화와 자동화를 끊임없이 추구하는 선진적인 학습자입니다."},
+  method:{ja:"AI（ChatGPT等）を活用して疑問を即座に解決する / オンライン学習プラットフォームでコースを受講する / デジタルノートアプリで知識を一元管理する / スマホアプリでスキマ時間に学習する / データ分析ツールで学習進捗を可視化する",en:"Use AI (ChatGPT, etc.) to resolve questions instantly / Take courses on online learning platforms / Manage knowledge centrally with digital note apps / Learn during spare moments with smartphone apps / Visualize study progress with analytics tools",zh:"利用AI（ChatGPT等）即时解答疑问 / 在在线学习平台上修课 / 用数字笔记应用集中管理知识 / 用手机应用利用碎片时间学习 / 用数据分析工具可视化学习进度",ko:"AI(ChatGPT 등)를 활용해 의문을 바로 해결하기 / 온라인 학습 플랫폼에서 강좌 수강하기 / 디지털 노트 앱으로 지식을 일원 관리하기 / 스마트폰 앱으로 자투리 시간에 학습하기 / 데이터 분석 도구로 학습 진도를 시각화하기"},
+  tool:{ja:"ChatGPT/Claude（AI学習パートナー）/ Udemy・Coursera（オンライン講座）/ Notion（デジタルノート）/ Anki（間隔反復アプリ）/ Obsidian（ナレッジグラフ）",en:"ChatGPT/Claude (AI learning partner) / Udemy & Coursera (Online courses) / Notion (Digital notes) / Anki (Spaced repetition app) / Obsidian (Knowledge graph)",zh:"ChatGPT/Claude（AI学习伙伴）/ Udemy & Coursera（在线课程）/ Notion（数字笔记）/ Anki（间隔重复应用）/ Obsidian（知识图谱）",ko:"ChatGPT/Claude (AI 학습 파트너) / Udemy & Coursera (온라인 강좌) / Notion (디지털 노트) / Anki (간격 반복 앱) / Obsidian (지식 그래프)"},
+  traits:{ja:["テック好き💻", "効率重視⚡", "AI活用派🤖", "アプリ使いこなす📱", "最新ツール好き🚀"],en:["Tech enthusiast💻", "Efficiency-driven⚡", "AI-powered🤖", "App master📱", "Loves new tools🚀"],zh:["科技爱好者💻", "注重效率⚡", "AI活用派🤖", "应用达人📱", "热爱新工具🚀"],ko:["테크 좋아함💻", "효율 중시⚡", "AI 활용파🤖", "앱 마스터📱", "최신 도구 좋아함🚀"]}}
 };
+
 const allTypes=[
-{key:'V',emoji:'👁️',name:'視覚型'},{key:'A',emoji:'👂',name:'聴覚型'},
-{key:'K',emoji:'✋',name:'身体感覚型'},{key:'S',emoji:'🗣️',name:'対話型'},
-{key:'R',emoji:'📖',name:'読み書き型'},{key:'L',emoji:'🧠',name:'論理型'},
-{key:'N',emoji:'🌿',name:'自然観察型'},{key:'D',emoji:'💻',name:'デジタル型'}
+{key:'V',emoji:"👁️",name:{ja:"視覚型",en:"Visual",zh:"视觉型",ko:"시각형"}},
+{key:'A',emoji:"👂",name:{ja:"聴覚型",en:"Auditory",zh:"听觉型",ko:"청각형"}},
+{key:'K',emoji:"✋",name:{ja:"身体感覚型",en:"Kinesthetic",zh:"体感型",ko:"체감형"}},
+{key:'S',emoji:"🗣️",name:{ja:"対話型",en:"Social",zh:"社交型",ko:"소셜형"}},
+{key:'R',emoji:"📖",name:{ja:"読み書き型",en:"Read/Write",zh:"读写型",ko:"읽기/쓰기형"}},
+{key:'L',emoji:"🧠",name:{ja:"論理型",en:"Logical",zh:"逻辑型",ko:"논리형"}},
+{key:'N',emoji:"🌿",name:{ja:"自然観察型",en:"Naturalist",zh:"自然观察型",ko:"자연관찰형"}},
+{key:'D',emoji:"💻",name:{ja:"デジタル型",en:"Digital",zh:"数字型",ko:"디지털형"}}
 ];
+
 let current=0,scores={V:0,A:0,K:0,S:0,R:0,L:0,N:0,D:0};
-function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+let quizActive=false;
+let resultKey=null;
+
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('data-lang')===lang);
+  });
+  const t=ui[lang];
+  document.getElementById('heroBadge').textContent=t.badge;
+  document.getElementById('heroTitle').innerHTML=t.title;
+  document.getElementById('heroSubtitle').innerHTML=t.subtitle;
+  document.getElementById('startBtn').textContent=t.startBtn;
+  document.getElementById('heroHint').textContent=t.hint;
+  document.getElementById('resultLabel').textContent=t.resultLabel;
+  document.getElementById('sectionHead').textContent=t.sectionHead;
+  document.getElementById('shareXBtn').textContent=t.shareX;
+  document.getElementById('shareLineBtn').textContent=t.shareLine;
+  document.getElementById('retryBtn').textContent=t.retryBtn;
+  if(quizActive) render();
+  if(resultKey) showResultContent(resultKey);
+}
+
+function startQuiz(){
+  document.getElementById('start').style.display='none';
+  document.getElementById('quiz').classList.add('active');
+  quizActive=true;
+  render();
+}
+
 function render(){
   const q=questions[current];
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
   document.getElementById('qCount').textContent=(current+1)+'/'+questions.length;
   document.getElementById('qLabel').textContent='Q'+(current+1);
-  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qText').textContent=q.q[curLang];
   const o=document.getElementById('options');o.innerHTML='';
-  q.opts.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=opt.t;b.onclick=()=>answer(opt.s);o.appendChild(b);});
+  q.opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=opt.t[curLang];
+    b.onclick=()=>answer(opt.s);
+    o.appendChild(b);
+  });
 }
-function answer(s){for(let k in s)scores[k]+=s[k];current++;if(current<questions.length)render();else showResult();}
+
+function answer(s){
+  for(let k in s)scores[k]+=s[k];
+  current++;
+  if(current<questions.length) render();
+  else showResult();
+}
+
 function showResult(){
-  let max='V',maxVal=0;for(let k in scores)if(scores[k]>maxVal){maxVal=scores[k];max=k;}
-  const r=results[max];
+  quizActive=false;
+  let max='V',maxVal=0;
+  for(let k in scores) if(scores[k]>maxVal){maxVal=scores[k];max=k;}
+  resultKey=max;
   document.getElementById('quiz').classList.remove('active');
-  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
-  document.getElementById('resultEmoji').textContent=r.emoji;
-  document.getElementById('resultName').textContent=r.name;
-  const tags=document.getElementById('resultTags');tags.innerHTML='';
-  r.traits.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;tags.appendChild(s);});
-  document.getElementById('resultDesc').textContent=r.desc;
-  document.getElementById('methodBox').innerHTML='<h3>📝 おすすめ学習法</h3><p>'+r.method+'</p>';
-  document.getElementById('toolBox').innerHTML='<h3>🛠️ おすすめツール</h3><p>'+r.tool+'</p>';
-  const ag=document.getElementById('allGrid');ag.innerHTML='';
-  allTypes.forEach(t=>{ag.innerHTML+=`<div class="type-chip${t.key===max?' me':''}"><span class="tc-icon">${t.emoji}</span><div><div class="tc-name">${t.name}</div>${t.key===max?'<div class="tc-me">← あなた！</div>':''}</div></div>`;});
+  showResultContent(max);
   document.getElementById('result').classList.add('active');
 }
-function shareX(){const n=document.getElementById('resultName').textContent;window.open(`https://x.com/intent/tweet?text=${encodeURIComponent('私の学習タイプは「'+n+'」でした！📚\nあなたも診断してみて👇\n'+location.href)}`,'_blank');}
-function shareLine(){window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');}
+
+function showResultContent(max){
+  const r=results[max];
+  const t=ui[curLang];
+  const hero=document.getElementById('resultHero');hero.style.background=r.bg;
+  document.getElementById('resultEmoji').textContent=r.emoji;
+  document.getElementById('resultName').textContent=r.name[curLang];
+  const tags=document.getElementById('resultTags');tags.innerHTML='';
+  r.traits[curLang].forEach(tr=>{
+    const s=document.createElement('span');
+    s.className='tag';
+    s.textContent=tr;
+    tags.appendChild(s);
+  });
+  document.getElementById('resultDesc').textContent=r.desc[curLang];
+  document.getElementById('methodBox').innerHTML='<h3>'+t.methodHead+'</h3><p>'+r.method[curLang]+'</p>';
+  document.getElementById('toolBox').innerHTML='<h3>'+t.toolHead+'</h3><p>'+r.tool[curLang]+'</p>';
+  const ag=document.getElementById('allGrid');ag.innerHTML='';
+  allTypes.forEach(tp=>{
+    ag.innerHTML+='<div class="type-chip'+(tp.key===max?' me':'')+'"><span class="tc-icon">'+tp.emoji+'</span><div><div class="tc-name">'+tp.name[curLang]+'</div>'+(tp.key===max?'<div class="tc-me">'+t.youLabel+'</div>':'')+'</div></div>';
+  });
+}
+
+function shareX(){
+  const n=document.getElementById('resultName').textContent;
+  const msg=shareTpl[curLang](n);
+  window.open('https://x.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
+}
+
+function shareLine(){
+  window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href),'_blank');
+}
+
+setLang(curLang);
 </script>
 </body>
 </html>
