@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>おもしろ診断まとめ</title>
+<meta name="description" content="性格診断・相性チェック・おもしろ診断が盛りだくさん！全部無料で遊べます">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Zen Maru Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#fff8f0 0%,#fce4ec 50%,#ede7f6 100%);padding:20px}
+.container{max-width:560px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:32px;padding:36px 20px 28px;background:#fff;border-radius:28px;box-shadow:0 8px 40px rgba(255,112,67,.15);position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,#ffe0b2 0%,transparent 70%);border-radius:50%}
+.header::after{content:'';position:absolute;bottom:-40px;left:-40px;width:120px;height:120px;background:radial-gradient(circle,#f8bbd0 0%,transparent 70%);border-radius:50%}
+.header h1{font-size:1.6em;font-weight:900;color:#2D2D2D;position:relative;z-index:1;margin-bottom:8px}
+.header p{color:#888;font-size:.88em;position:relative;z-index:1}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.card{background:#fff;border-radius:20px;padding:22px 16px;box-shadow:0 4px 20px rgba(0,0,0,.07);text-decoration:none;color:inherit;transition:all .25s;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(255,112,67,.2)}
+.card:active{transform:translateY(0)}
+
+.card-emoji{font-size:2.8em;line-height:1;margin-bottom:10px;display:block}
+.card-title{font-size:.95em;font-weight:700;color:#2D2D2D;margin-bottom:6px;line-height:1.3}
+.card-desc{font-size:.72em;color:#999;line-height:1.5}
+.card-badge{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#FF7043,#EC407A);color:#fff;font-size:.6em;font-weight:700;padding:2px 8px;border-radius:10px}
+
+.footer{text-align:center;margin-top:28px;font-size:.75em;color:#bbb}
+
+@media(max-width:360px){
+  .grid{grid-template-columns:1fr;gap:12px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>🎯 おもしろ診断まとめ</h1>
+  <p>全部無料！気になる診断をタップしてね</p>
+</div>
+
+<div class="grid">
+  <a class="card" href="animal-type/">
+    <span class="card-emoji">🐾</span>
+    <div class="card-title">動物に例えると診断</div>
+    <div class="card-desc">あなたにピッタリの動物は？</div>
+  </a>
+
+  <a class="card" href="what-to-eat/">
+    <span class="card-emoji">🍽️</span>
+    <div class="card-title">今日なに食べる？</div>
+    <div class="card-desc">気分からベスト飯を提案！</div>
+  </a>
+
+  <a class="card" href="thinking-type/">
+    <span class="card-emoji">🧠</span>
+    <div class="card-title">思考タイプ診断</div>
+    <div class="card-desc">論理型？直感型？感情型？</div>
+  </a>
+
+  <a class="card" href="stress-type/">
+    <span class="card-emoji">😤</span>
+    <div class="card-title">ストレス耐性診断</div>
+    <div class="card-desc">最適なリフレッシュ法がわかる</div>
+  </a>
+
+  <a class="card" href="work-style/">
+    <span class="card-emoji">💼</span>
+    <div class="card-title">理想の働き方診断</div>
+    <div class="card-desc">リモート？出社？フリーランス？</div>
+  </a>
+
+  <a class="card" href="best-city/">
+    <span class="card-emoji">🏙️</span>
+    <div class="card-title">理想の住む街診断</div>
+    <div class="card-desc">あなたに一番合う街は？</div>
+  </a>
+
+  <a class="card" href="side-job/">
+    <span class="card-emoji">🚀</span>
+    <div class="card-title">向いてる副業診断</div>
+    <div class="card-desc">あなたの強みに合う副業</div>
+  </a>
+
+  <a class="card" href="love-phrase/">
+    <span class="card-emoji">💘</span>
+    <div class="card-title">恋愛キラーフレーズ</div>
+    <div class="card-desc">無意識の恋愛ワードを診断</div>
+  </a>
+
+  <a class="card" href="compatibility/">
+    <span class="card-emoji">💕</span>
+    <div class="card-title">相性チェッカー</div>
+    <div class="card-desc">2人で回答して相性診断！</div>
+  </a>
+
+  <a class="card" href="learning-style/">
+    <span class="card-emoji">📚</span>
+    <div class="card-title">学習スタイル診断</div>
+    <div class="card-desc">あなたに最適な勉強法は？</div>
+  </a>
+
+  <a class="card" href="isekai/">
+    <span class="card-emoji">⚔️</span>
+    <div class="card-title">異世界転生スキル診断</div>
+    <div class="card-desc">あなたのジョブ＆スキルは？</div>
+  </a>
+
+  <a class="card" href="oshikatsu-type/">
+    <span class="card-emoji">🎤</span>
+    <div class="card-title">推し活タイプ診断</div>
+    <div class="card-desc">布教マスター？ガチ恋？</div>
+  </a>
+</div>
+
+<div class="footer">© 2025 おもしろ診断</div>
+
+</div>
+</body>
+</html>
