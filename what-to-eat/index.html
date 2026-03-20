@@ -66,6 +66,19 @@ h1{font-size:1.55em;font-weight:900;color:#2D2D2D;line-height:1.4;margin-bottom:
 .lang-btn{width:40px;height:40px;border:2px solid #eee;border-radius:50%;background:#fff;font-size:1.2em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0}
 .lang-btn.active{border-color:#f6a623;box-shadow:0 2px 8px rgba(246,166,35,.3)}
 .lang-btn:hover{transform:scale(1.1)}
+
+.about-info{background:#fff;border-radius:20px;padding:22px 20px;box-shadow:0 4px 20px rgba(0,0,0,.07);margin-bottom:16px;line-height:1.85;color:#555;font-size:.88em}
+.about-info h2{font-size:1em;color:#2D2D2D;margin-bottom:10px;font-weight:700}
+.affiliate-section{margin-top:20px;padding-top:16px;border-top:1.5px dashed #eee}
+.affiliate-section h3{font-size:.85em;color:#aaa;font-weight:700;margin-bottom:12px;letter-spacing:.05em}
+.aff-card{display:flex;align-items:center;gap:12px;background:#fafafa;border-radius:14px;padding:14px;margin-bottom:8px;text-decoration:none;color:inherit;transition:all .2s;border:1.5px solid #f0f0f0}
+.aff-card:hover{border-color:#FF7043;background:#fff8f0;transform:translateY(-2px)}
+.aff-emoji{font-size:1.6em;flex-shrink:0}
+.aff-info{flex:1;min-width:0}
+.aff-name{font-size:.88em;font-weight:700;color:#333}
+.aff-desc{font-size:.75em;color:#999;line-height:1.5;margin-top:2px}
+.aff-btn{flex-shrink:0;background:linear-gradient(135deg,#FF7043,#EC407A);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:.75em;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.aff-note{font-size:.7em;color:#ccc;text-align:center;margin-top:6px}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8164261002836824" crossorigin="anonymous"></script>
 </head>
@@ -88,6 +101,11 @@ h1{font-size:1.55em;font-weight:900;color:#2D2D2D;line-height:1.4;margin-bottom:
   <p class="hint" id="hintText">全10問・約1分で完了</p>
 </div>
 
+
+<div class="about-info" id="aboutSection">
+  <h2>今日なに食べる？診断について</h2>
+  <p>「今日のご飯、何にしよう？」そんな毎日の悩みを解決する食事診断です。今の気分や体調、シチュエーションに関する質問に答えるだけで、あなたにぴったりのメニューを提案します。一人ご飯からデートディナーまで、食事選びの参考にどうぞ。</p>
+</div>
 <div class="quiz-card" id="quiz">
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
@@ -115,6 +133,16 @@ h1{font-size:1.55em;font-weight:900;color:#2D2D2D;line-height:1.4;margin-bottom:
       <button class="share-btn btn-line" id="shareLineBtn" onclick="shareLine()">LINE シェア</button>
     </div>
     <button class="retry-btn" id="retryBtn" onclick="location.reload()">🔄 もう一度診断する</button>
+    <div class="affiliate-section" id="affSection">
+      <h3>おすすめグルメサービス</h3>
+      <a class="aff-card" href="#" target="_blank" rel="noopener sponsored">
+        <span class="aff-emoji">🛵</span>
+        <div class="aff-info"><div class="aff-name">Uber Eats</div><div class="aff-desc">初回注文が割引になるクーポン配布中！好きな料理をデリバリー</div></div>
+        <span class="aff-btn">クーポンを見る</span>
+      </a>
+      <p class="aff-note">※ 広告・PR</p>
+    </div>
+
   </div>
 </div>
 
@@ -571,6 +599,7 @@ setLang(curLang);
 function startQuiz(){
   current=0;scores={G:0,O:0,M:0,H:0,C:0,S:0,N:0,B:0};
   document.getElementById('start').style.display='none';
+  document.getElementById('aboutSection').style.display='none';
   document.getElementById('quiz').classList.add('active');
   render();
 }

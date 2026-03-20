@@ -65,6 +65,19 @@ h1{font-size:1.55em;font-weight:900;color:#1a3330;line-height:1.4;margin-bottom:
 .lang-btn{width:40px;height:40px;border:2px solid #eee;border-radius:50%;background:#fff;font-size:1.2em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0}
 .lang-btn.active{border-color:#26A69A;box-shadow:0 2px 8px rgba(38,166,154,.3)}
 .lang-btn:hover{transform:scale(1.1)}
+
+.about-info{background:#fff;border-radius:20px;padding:22px 20px;box-shadow:0 4px 20px rgba(0,0,0,.07);margin-bottom:16px;line-height:1.85;color:#555;font-size:.88em}
+.about-info h2{font-size:1em;color:#2D2D2D;margin-bottom:10px;font-weight:700}
+.affiliate-section{margin-top:20px;padding-top:16px;border-top:1.5px dashed #eee}
+.affiliate-section h3{font-size:.85em;color:#aaa;font-weight:700;margin-bottom:12px;letter-spacing:.05em}
+.aff-card{display:flex;align-items:center;gap:12px;background:#fafafa;border-radius:14px;padding:14px;margin-bottom:8px;text-decoration:none;color:inherit;transition:all .2s;border:1.5px solid #f0f0f0}
+.aff-card:hover{border-color:#FF7043;background:#fff8f0;transform:translateY(-2px)}
+.aff-emoji{font-size:1.6em;flex-shrink:0}
+.aff-info{flex:1;min-width:0}
+.aff-name{font-size:.88em;font-weight:700;color:#333}
+.aff-desc{font-size:.75em;color:#999;line-height:1.5;margin-top:2px}
+.aff-btn{flex-shrink:0;background:linear-gradient(135deg,#FF7043,#EC407A);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:.75em;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.aff-note{font-size:.7em;color:#ccc;text-align:center;margin-top:6px}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8164261002836824" crossorigin="anonymous"></script>
 </head>
@@ -86,6 +99,11 @@ h1{font-size:1.55em;font-weight:900;color:#1a3330;line-height:1.4;margin-bottom:
   <p class="hint" id="hint">全10問・約1分で完了</p>
 </div>
 
+
+<div class="about-info" id="aboutSection">
+  <h2>ストレス耐性診断について</h2>
+  <p>ストレスを感じたとき、あなたはどう反応しますか？この診断では、ストレスへの対処パターンを分析し、あなたに合ったリフレッシュ方法を提案します。ストレスマネジメントの考え方を参考に、心身の健康維持に役立つヒントが得られます。</p>
+</div>
 <div class="quiz-card" id="quiz">
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
@@ -113,6 +131,16 @@ h1{font-size:1.55em;font-weight:900;color:#1a3330;line-height:1.4;margin-bottom:
       <button class="share-btn btn-line" onclick="shareLine()" id="shareLineBtn">LINE シェア</button>
     </div>
     <button class="retry-btn" onclick="location.reload()" id="retryBtn">🔄 もう一度診断する</button>
+    <div class="affiliate-section" id="affSection">
+      <h3>おすすめリラックスグッズ</h3>
+      <a class="aff-card" href="#" target="_blank" rel="noopener sponsored">
+        <span class="aff-emoji">🧘</span>
+        <div class="aff-info"><div class="aff-name">メディテーションアプリ</div><div class="aff-desc">ストレス解消に。瞑想・呼吸法で心を整える</div></div>
+        <span class="aff-btn">詳しく見る</span>
+      </a>
+      <p class="aff-note">※ 広告・PR</p>
+    </div>
+
   </div>
 </div>
 
@@ -286,7 +314,8 @@ function setLang(lang){
   if(document.getElementById('result').classList.contains('active'))showResult();
 }
 
-function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+function startQuiz(){document.getElementById('start').style.display='none';
+  document.getElementById('aboutSection').style.display='none';document.getElementById('quiz').classList.add('active');render();}
 
 function render(){
   const q=questions[current];

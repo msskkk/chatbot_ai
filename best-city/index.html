@@ -65,6 +65,19 @@ h1{font-size:1.55em;font-weight:900;color:#0a2520;line-height:1.4;margin-bottom:
 .lang-btn{width:40px;height:40px;border:2px solid #eee;border-radius:50%;background:#fff;font-size:1.2em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0}
 .lang-btn.active{border-color:#43e97b;box-shadow:0 2px 8px rgba(67,233,123,.3)}
 .lang-btn:hover{transform:scale(1.1)}
+
+.about-info{background:#fff;border-radius:20px;padding:22px 20px;box-shadow:0 4px 20px rgba(0,0,0,.07);margin-bottom:16px;line-height:1.85;color:#555;font-size:.88em}
+.about-info h2{font-size:1em;color:#2D2D2D;margin-bottom:10px;font-weight:700}
+.affiliate-section{margin-top:20px;padding-top:16px;border-top:1.5px dashed #eee}
+.affiliate-section h3{font-size:.85em;color:#aaa;font-weight:700;margin-bottom:12px;letter-spacing:.05em}
+.aff-card{display:flex;align-items:center;gap:12px;background:#fafafa;border-radius:14px;padding:14px;margin-bottom:8px;text-decoration:none;color:inherit;transition:all .2s;border:1.5px solid #f0f0f0}
+.aff-card:hover{border-color:#FF7043;background:#fff8f0;transform:translateY(-2px)}
+.aff-emoji{font-size:1.6em;flex-shrink:0}
+.aff-info{flex:1;min-width:0}
+.aff-name{font-size:.88em;font-weight:700;color:#333}
+.aff-desc{font-size:.75em;color:#999;line-height:1.5;margin-top:2px}
+.aff-btn{flex-shrink:0;background:linear-gradient(135deg,#FF7043,#EC407A);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:.75em;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.aff-note{font-size:.7em;color:#ccc;text-align:center;margin-top:6px}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8164261002836824" crossorigin="anonymous"></script>
 </head>
@@ -87,6 +100,11 @@ h1{font-size:1.55em;font-weight:900;color:#0a2520;line-height:1.4;margin-bottom:
   <p class="hint" id="hint">全7問・約1分で完了</p>
 </div>
 
+
+<div class="about-info" id="aboutSection">
+  <h2>理想の住む街診断について</h2>
+  <p>あなたのライフスタイルや価値観にぴったり合う街はどこ？この診断では、休日の過ごし方や生活の優先事項に関する質問から、あなたに最適な居住エリアタイプを提案します。引っ越しを考えている方も、今の住まいに満足している方も楽しめます。</p>
+</div>
 <div class="quiz-card" id="quiz">
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
@@ -114,6 +132,16 @@ h1{font-size:1.55em;font-weight:900;color:#0a2520;line-height:1.4;margin-bottom:
       <button class="share-btn btn-line" id="shareLineBtn" onclick="shareLine()">LINE シェア</button>
     </div>
     <button class="retry-btn" id="retryBtn" onclick="location.reload()">🔄 もう一度診断する</button>
+    <div class="affiliate-section" id="affSection">
+      <h3>おすすめ住まいサービス</h3>
+      <a class="aff-card" href="#" target="_blank" rel="noopener sponsored">
+        <span class="aff-emoji">🏠</span>
+        <div class="aff-info"><div class="aff-name">SUUMO</div><div class="aff-desc">理想の街で物件探し。エリア情報も充実</div></div>
+        <span class="aff-btn">物件を探す</span>
+      </a>
+      <p class="aff-note">※ 広告・PR</p>
+    </div>
+
   </div>
 </div>
 
@@ -247,7 +275,8 @@ const allTypes=[
 {key:'H',emoji:'🍁',name:{ja:'広島',en:'Hiroshima',zh:'广岛',ko:'히로시마'}}
 ];
 let current=0,scores={T:0,K:0,F:0,O:0,S:0,Y:0,N:0,H:0};
-function startQuiz(){document.getElementById('start').style.display='none';document.getElementById('quiz').classList.add('active');render();}
+function startQuiz(){document.getElementById('start').style.display='none';
+  document.getElementById('aboutSection').style.display='none';document.getElementById('quiz').classList.add('active');render();}
 function render(){
   const q=questions[current],L=curLang;
   document.getElementById('progress').style.width=(current/questions.length*100)+'%';
